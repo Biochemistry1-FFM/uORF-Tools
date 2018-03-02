@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 rm(list = ls(all.names = TRUE))
 setwd('~/mcf7-ribo/data/seqs/bam_files_anica/')
 
