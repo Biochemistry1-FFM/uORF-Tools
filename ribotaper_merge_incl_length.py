@@ -99,7 +99,7 @@ def main():
     parser = argparse.ArgumentParser(description='Converts ribotaper output to new data frame containing only
 the uORF information.')
     parser.add_argument("-u","--ribotaper_ORFs_path", help='Path to ribotaper ORF file (ORFs_max_filt)')
-    parser.add_argument("-o","--output_gtf_filepath", help='Path to write merged output')
+    parser.add_argument("-o","--output_csv_filepath", help='Path to write merged csv output')
     parser.add_argument("-m","--min_length", default=None, help='Minimal uORF length')
     parser.add_argument("-l","--max_length", default=None, help='Maximal uORF length')
     args = parser.parse_args()
@@ -110,7 +110,7 @@ the uORF information.')
     # get some general info on output
     print(output.describe(include='all'))
     # write output to csv file
-    output.to_csv("../analysis/output_ribotaper/Merged_uORF_results_incl_length.csv")
+    output.to_csv(arg.output_csv_filepath)
 
 
 if '__name__' == '__main__':
