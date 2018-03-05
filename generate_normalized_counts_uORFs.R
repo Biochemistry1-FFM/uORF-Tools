@@ -5,6 +5,8 @@ library("optparse")
 option_list = list(
   make_option(c("-b", "--bam-directory-path"), type="character", default=NULL, 
               help="Path to directory containing .bam files", metavar="character"),
+  make_option(c("-s", "--size-in-path"), type="character", default=NULL, 
+              help="Path for input size factor file", metavar="character"),	      
   make_option(c("-u", "--uorf-result-file-path"), type="character", default=NULL, 
               help="Path to .csv file with merged uORF results", metavar="character"),
   make_option(c("-n", "--norm-count-uorf-out-path"), type="character", default="NULL", 
@@ -101,7 +103,7 @@ dds <- DESeqDataSetFromMatrix(countData = gene.counts,
 
 # supply size factors from whole library on longest protein coding
 #size.factors <- read.csv("~/mcf7-ribo/analysis/results_R/size_factors_longest_protein_4_FP_samples.csv",row.names = 1, stringsAsFactors = FALSE)
-size.factors <- read.csv("options$size-out-path",row.names = 1, stringsAsFactors = FALSE)
+size.factors <- read.csv("options$size-in-path",row.names = 1, stringsAsFactors = FALSE)
 colnames(size.factors) <- "size"
 sizeFactors(dds) <- size.factors$size
 

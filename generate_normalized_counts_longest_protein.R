@@ -8,7 +8,7 @@ option_list = list(
   make_option(c("-a", "--annotation-file-path"), type="character", default=NULL, 
               help="Path to .gtf file with annotation", metavar="character"),
   make_option(c("-s", "--size-out-path"), type="character", default=NULL, 
-              help="Path for writing output size file", metavar="character")
+              help="Path for writing output size file", metavar="character"),
   make_option(c("-n", "--norm-count-out-path"), type="character", default="NULL", 
               help="Path for writing output normalized count file", metavar="character")
 );

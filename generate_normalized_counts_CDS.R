@@ -1,7 +1,25 @@
 #!/usr/bin/env Rscript
 
-rm(list = ls(all.names = TRUE))
-setwd('~/mcf7-ribo/data/seqs/bam_files_anica/')
+library("optparse")
+
+option_list = list(
+  make_option(c("-b", "--bam-directory-path"), type="character", default=NULL, 
+              help="Path to directory containing .bam files", metavar="character"),
+  make_option(c("-a", "--annotation-file-path"), type="character", default=NULL, 
+              help="Path to .gtf file with annotation", metavar="character"),
+  make_option(c("-s", "--size-in-path"), type="character", default=NULL, 
+              help="Path for input size factor file", metavar="character"),
+  make_option(c("-n", "--norm-count-cds-out-path"), type="character", default="NULL", 
+              help="Path for writing CDS output normalized count file", metavar="character")
+);
+
+if (is.null(opt$bam-directory-path)){
+  print_help(opt_parser)
+  stop("Please supply arguments (-b, -a, -s, -n), see --help \n", call.=FALSE)
+}
+
+#rm(list = ls(all.names = TRUE))
+#setwd('~/mcf7-ribo/data/seqs/bam_files_anica/')
 
 library(GenomicRanges)
 library(GenomicAlignments)
@@ -9,7 +27,8 @@ library(DESeq2)
 library(plyr)
 
 # import longest protein coding transcripts
-gencode <- import.gff("/shared/Homo_sapiens/NCBI/GRCh38/Annotation/Genes.gencode/gencode.v27.longest_protein_coding_transcript.gtf")
+#gencode <- import.gff("/shared/Homo_sapiens/NCBI/GRCh38/Annotation/Genes.gencode/gencode.v27.longest_protein_coding_transcript.gtf")
+gencode <- import.gff(options$annotation_file_path)
 
 # keep only cds
 sel <- gencode$type == "CDS"
@@ -19,16 +38,17 @@ cds <- gencode[which(sel),]
 sample.type <- "FP_"
 
 # define bam file folder
-bam.folder <- '~/mcf7-ribo/data/seqs/bam_files_anica/'
+#bam.folder <- '~/mcf7-ribo/data/seqs/bam_files_anica/'
 
 # create empty data frame
 gene.counts <- data.frame(gene.id = cds$transcript_id)
 
 # get sample files
-sample.files <- paste(bam.folder, grep("FP_",list.files(bam.folder), value = TRUE), sep = "")
+sample.files <- paste(options$bam-directory-path, grep("FP_",list.files(options$bam-directory-path), value = TRUE), sep = "")
 
 # exclue samples from experiment no. 1, keep re-sequencing experiment i.e. 1-2 (for now)
-sample.files <- sample.files[c(1,3,4,5,6,8,9,10)]
+#sample.files <- sample.files[c(1,3,4,5,6,8,9,10)]
+sample.files <- sample.files[c(1,2)]
 
 # extract sample names
 sample.names <- regmatches(sample.files,regexpr("FP_.*_[0-9]",sample.files))
@@ -67,7 +87,8 @@ rownames(gene.counts) <- gene.counts$gene.id
 gene.counts$gene.id <- NULL
 
 # set up sample table
-condition <- c(rep("control", each = 4), rep("treat", each = 4))
+#condition <- c(rep("control", each = 4), rep("treat", each = 4))
+condition <- c(rep("control", each = 1), rep("treat", each = 1))
 sampleTable <- data.frame(row.names = sample.names, fileName = sample.files,
                           condition = condition)
 colnames(gene.counts) <- rownames(sampleTable)
@@ -79,7 +100,8 @@ dds <- DESeqDataSetFromMatrix(countData = gene.counts,
 
 
 # supply size factors from whole library on longest protein coding
-size.factors <- read.csv("~/mcf7-ribo/analysis/results_R/size_factors_logest_protein_4_FP_samples.csv",row.names = 1, stringsAsFactors = FALSE)
+#size.factors <- read.csv("~/mcf7-ribo/analysis/results_R/size_factors_logest_protein_4_FP_samples.csv",row.names = 1, stringsAsFactors = FALSE)
+size.factors <- read.csv("options$size-in-path",row.names = 1, stringsAsFactors = FALSE)
 colnames(size.factors) <- "size"
 sizeFactors(dds) <- size.factors$size
 
@@ -90,5 +112,5 @@ dds <- DESeq(dds)
 norm.counts <- counts(dds, normalized = TRUE)
 
 # save normalized counts, change file name
-write.csv(norm.counts, "~/mcf7-ribo/analysis/results_R/norm_counts_cds_4_FP_samples.csv")
-
+#write.csv(norm.counts, "~/mcf7-ribo/analysis/results_R/norm_counts_cds_4_FP_samples.csv")
+write.csv(norm.counts, options$norm-count-uorf-out-path)
