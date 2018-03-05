@@ -12,7 +12,7 @@ The resulting data frame is stored as csv file
 
 import pandas as pd
 import re
-import sys
+import argparse
 
 
 # function to read in ribotaper output files ORFs_max_filt
@@ -66,12 +66,12 @@ def stop(column):
 
 
 # function to create final data frame
-def create_output(input_args):
+def create_output(args):
     # create empty data frame to append to later
     df_final = pd.DataFrame()
 
     # Create data frame from all input files
-    for name in input_args[1:-2]:
+    for name in args.ribotaper_ORFs_path:
         df_sub = drop_cols(name)
         df_final = df_final.append(df_sub)
 
@@ -86,18 +86,27 @@ def create_output(input_args):
         df_final["stop"] = stop(df_final["ORF_id_gen"])
 
         # Filter min and max uORF lengths
-        df_final = df_final[df_final['ORF_length'] >= int(input_args[-2])]
-        df_final = df_final[df_final['ORF_length'] <= int(input_args[-1])]
+        if args.min_length is not None:
+            df_final = df_final[df_final['ORF_length'] >= int(input_args[-2])]
+            
+        if args.max_length is not None:
+            df_final = df_final[df_final['ORF_length'] <= int(input_args[-1])]
     return df_final
 
 
 def main():
     # store commandline args
-    input_args = sys.argv
+    parser = argparse.ArgumentParser(description='Converts ribotaper output to new data frame containing only
+the uORF information.')
+    parser.add_argument("-u","--ribotaper_ORFs_path", help='Path to ribotaper ORF file (ORFs_max_filt)')
+    parser.add_argument("-o","--output_gtf_filepath", help='Path to write merged output')
+    parser.add_argument("-m","--min_length", default=None, help='Minimal uORF length')
+    parser.add_argument("-l","--max_length", default=None, help='Maximal uORF length')
+    args = parser.parse_args()
     # make sure that min_length and max_length are given
-    assert type(int(input_args[-1])) == int, "The last argument is not a number!"
-    assert type(int(input_args[-2])) == int, "The second to last argument is not a number!"
-    output = create_output(input_args)
+    #assert type(int(input_args[-1])) == int, "The last argument is not a number!"
+    #assert type(int(input_args[-2])) == int, "The second to last argument is not a number!"
+    output = create_output(args)
     # get some general info on output
     print(output.describe(include='all'))
     # write output to csv file
