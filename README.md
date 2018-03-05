@@ -1,7 +1,7 @@
 # uORF-Tools
 
 | Dependecies                        |
-| --------------------------------- -|
+| ---------------------------------- |
 | pandas bioconductor-genomicranges  |
 | bioconductor-genomicalignments     |
 | bioconductor-deseq2                |
