@@ -13,7 +13,7 @@ option_list = list(
               help="Path for writing output normalized count file", metavar="character")
 );
 
-if (is.null(opt$file)){
+if (is.null(opt$bam-directory-path)){
   print_help(opt_parser)
   stop("Please supply arguments (-b, -a, -s, -n), see --help \n", call.=FALSE)
 }
@@ -21,7 +21,7 @@ if (is.null(opt$file)){
 option_parser = OptionParser(option_list=option_list);
 options = parse_args(opt_parser);
 
-rm(list = ls(all.names = TRUE))
+#rm(list = ls(all.names = TRUE))
 #setwd('~/mcf7-ribo/data/seqs/bam_files_anica/')
 #use cwd instead
 
