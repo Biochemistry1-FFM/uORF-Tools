@@ -31,7 +31,8 @@ def keep_uORFs(df):
 # function to keep only certain columns
 def drop_cols(df_uORFs):
     df_uORFs = keep_uORFs(df_uORFs)
-    df_dropped = df_uORFs[["gene_id", "gene_symbol", "transcript_id", "strand", "ORF_id_gen", 'ORF_length']]
+    df_dropped = df_uORFs[["gene_id", "gene_symbol", "transcript_id",
+                           "strand", "ORF_id_gen", 'ORF_length']]
     return df_dropped
 
 
@@ -88,7 +89,7 @@ def create_output(args):
         # Filter min and max uORF lengths
         if args.min_length is not None:
             df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
-            
+
         if args.max_length is not None:
             df_final = df_final[df_final['ORF_length'] <= int(args.min_length)]
     return df_final
@@ -96,15 +97,18 @@ def create_output(args):
 
 def main():
     # store commandline args
-    parser = argparse.ArgumentParser(description='Converts ribotaper output to new data frame containing only the uORF information.')
-    parser.add_argument("-u","--ribotaper_ORFs_path", help='Path to ribotaper ORF file (ORFs_max_filt)')
-    parser.add_argument("-o","--output_csv_filepath", help='Path to write merged csv output')
-    parser.add_argument("-m","--min_length", default=None, help='Minimal uORF length')
-    parser.add_argument("-l","--max_length", default=None, help='Maximal uORF length')
+    parser = argparse.ArgumentParser(description='Converts ribotaper output to new data frame\
+                                     containing only the uORF information.')
+    parser.add_argument("-u", "--ribotaper_ORFs_path", help='Path to ribotaper\
+                        ORF file (ORFs_max_filt)')
+    parser.add_argument("-o", "--output_csv_filepath", help='Path to write \
+                        merged csv output')
+    parser.add_argument("-m", "--min_length", default=None, help='Minimal uORF \
+                        length')
+    parser.add_argument("-l", "--max_length", default=None, help='Maximal uORF \
+                        length')
     args = parser.parse_args()
     # make sure that min_length and max_length are given
-    #assert type(int(input_args[-1])) == int, "The last argument is not a number!"
-    #assert type(int(input_args[-2])) == int, "The second to last argument is not a number!"
     output = create_output(args)
     # get some general info on output
     print(output.describe(include='all'))
