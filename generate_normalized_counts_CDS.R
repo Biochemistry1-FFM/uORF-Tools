@@ -3,17 +3,17 @@
 library("optparse")
 
 option_list = list(
-  make_option(c("-b", "--bam-directory-path"), type="character", default=NULL, 
-              help="Path to directory containing .bam files", metavar="character"),
-  make_option(c("-a", "--annotation-file-path"), type="character", default=NULL, 
-              help="Path to .gtf file with annotation", metavar="character"),
-  make_option(c("-s", "--size-in-path"), type="character", default=NULL, 
-              help="Path for input size factor file", metavar="character"),
-  make_option(c("-n", "--norm-count-cds-out-path"), type="character", default="NULL", 
-              help="Path for writing CDS output normalized count file", metavar="character")
+  make_option(c("-b", "--bam_directory_path"), type = "character", default = NULL,
+              help = "Path to directory containing .bam files", metavar="character"),
+  make_option(c("-a", "--annotation_file_path"), type = "character", default = NULL,
+              help = "Path to .gtf file with annotation", metavar = "character"),
+  make_option(c("-s", "--size_in_path"), type = "character", default = NULL,
+              help="Path for input size factor file", metavar = "character"),
+  make_option(c("-n", "--norm_count_cds_out_path"), type = "character", default = "NULL",
+              help = "Path for writing CDS output normalized count file", metavar = "character")
 );
 
-if (is.null(opt$bam-directory-path)){
+if (is.null(opt$bam_directory_path)){
   print_help(opt_parser)
   stop("Please supply arguments (-b, -a, -s, -n), see --help \n", call.=FALSE)
 }
@@ -44,42 +44,42 @@ sample.type <- "FP_"
 gene.counts <- data.frame(gene.id = cds$transcript_id)
 
 # get sample files
-sample.files <- paste(options$bam-directory-path, grep("FP_",list.files(options$bam-directory-path), value = TRUE), sep = "")
+sample.files <- paste(options$bam_directory_path, grep("FP_",list.files(options$bam_directory_path), value = TRUE), sep = "")
 
 # exclue samples from experiment no. 1, keep re-sequencing experiment i.e. 1-2 (for now)
 #sample.files <- sample.files[c(1,3,4,5,6,8,9,10)]
 sample.files <- sample.files[c(1,2)]
 
 # extract sample names
-sample.names <- regmatches(sample.files,regexpr("FP_.*_[0-9]",sample.files))
+sample.names <- regmatches(sample.files, regexpr("FP_.*_[0-9]", sample.files))
 
 for (i in sample.files) {
-  
+
   # get sample name
   name.i <- regmatches(i,regexpr("FP_.*_[0-9]",i))
-  
+
   # import reads
   reads <- readGAlignments(i)
-  
+
   # get read lengths
   widths <- qwidth(reads)
-  
+
   # convert to granges
   reads <- granges(reads)
   mcols(reads)$qwidth <- widths
-  
+
   # keep only first nt
   reads <- flank(reads, -1)
-  
+
   # keep only reads of 25-35 nt
   reads <- reads[elementMetadata(reads)$qwidth%in%c(25:35)]
-  
+
   # count reads into genes
   gene.counts[, name.i] <- countOverlaps(cds, reads)
-  
+
 }
 
-# sum all reads across gene.ids 
+# sum all reads across gene.ids
 gene.counts <- ddply(gene.counts,"gene.id",numcolwise(sum))
 
 # change row names and drop column gene.id
@@ -101,7 +101,7 @@ dds <- DESeqDataSetFromMatrix(countData = gene.counts,
 
 # supply size factors from whole library on longest protein coding
 #size.factors <- read.csv("~/mcf7-ribo/analysis/results_R/size_factors_logest_protein_4_FP_samples.csv",row.names = 1, stringsAsFactors = FALSE)
-size.factors <- read.csv("options$size-in-path",row.names = 1, stringsAsFactors = FALSE)
+size.factors <- read.csv("options$size_in_path",row.names = 1, stringsAsFactors = FALSE)
 colnames(size.factors) <- "size"
 sizeFactors(dds) <- size.factors$size
 
@@ -113,4 +113,4 @@ norm.counts <- counts(dds, normalized = TRUE)
 
 # save normalized counts, change file name
 #write.csv(norm.counts, "~/mcf7-ribo/analysis/results_R/norm_counts_cds_4_FP_samples.csv")
-write.csv(norm.counts, options$norm-count-uorf-out-path)
+write.csv(norm.counts, options$norm_count_uorf_out_path)
