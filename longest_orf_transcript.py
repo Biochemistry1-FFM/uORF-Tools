@@ -42,11 +42,11 @@ def gtf_transkript_length(orf):
 
 def main():
     parser = argparse.ArgumentParser(description='Extract longest transcript per gene id from annotation gtf.')
-    parser.add_argument("-a","--annotation-gtf-filepath", help='Path to annotation gtf file')
-    parser.add_argument("-o","--output-gtf-filepath", help='Path to output gtf file')
+    parser.add_argument("-a","--annotation_gtf_filepath", help='Path to annotation gtf file')
+    parser.add_argument("-o","--output_gtf_filepath", help='Path to output gtf file')
     args = parser.parse_args()
     orfs = []
-    with open(args.annotation-gtf-filepath) as origin_file:
+    with open(args.annotation_gtf_filepath) as origin_file:
         for line in origin_file:
             lineCoding = re.findall(r'protein_coding', line)
             if lineCoding:
@@ -62,7 +62,7 @@ def main():
             else:
                 transcripts[dkey] = [orf]
                 
-    outfile = open("args.output-gtf-filepath","w+")
+    outfile = open("args.output_gtf_filepath","w+")
     for key, value in transcripts.items():
         max_orf = ""
         max_length = 0
