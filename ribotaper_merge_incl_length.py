@@ -87,17 +87,16 @@ def create_output(args):
 
         # Filter min and max uORF lengths
         if args.min_length is not None:
-            df_final = df_final[df_final['ORF_length'] >= int(input_args[-2])]
+            df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
             
         if args.max_length is not None:
-            df_final = df_final[df_final['ORF_length'] <= int(input_args[-1])]
+            df_final = df_final[df_final['ORF_length'] <= int(args.min_length)]
     return df_final
 
 
 def main():
     # store commandline args
-    parser = argparse.ArgumentParser(description='Converts ribotaper output to new data frame containing only
-the uORF information.')
+    parser = argparse.ArgumentParser(description='Converts ribotaper output to new data frame containing only the uORF information.')
     parser.add_argument("-u","--ribotaper_ORFs_path", help='Path to ribotaper ORF file (ORFs_max_filt)')
     parser.add_argument("-o","--output_csv_filepath", help='Path to write merged csv output')
     parser.add_argument("-m","--min_length", default=None, help='Minimal uORF length')
@@ -110,7 +109,7 @@ the uORF information.')
     # get some general info on output
     print(output.describe(include='all'))
     # write output to csv file
-    output.to_csv(arg.output_csv_filepath)
+    output.to_csv(args.output_csv_filepath)
 
 
 if '__name__' == '__main__':
