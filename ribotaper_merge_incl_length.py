@@ -31,7 +31,7 @@ def keep_uORFs(df):
 # function to keep only certain columns
 def drop_cols(df_uORFs):
     df_uORFs = keep_uORFs(df_uORFs)
-    df_dropped = df_uORFs[["gene_id", "gene_symbol", "transcript_id",
+    df_dropped = df_uORFs[["gene_id", "gene_symbol", "transcript_id", \
                            "strand", "ORF_id_gen", 'ORF_length']]
     return df_dropped
 
@@ -72,7 +72,7 @@ def create_output(args):
     df_final = pd.DataFrame()
 
     # Create data frame from all input files
-    for name in args.ribotaper_ORFs_path:
+    for name in args.ribotaper_files:
         df_sub = drop_cols(name)
         df_final = df_final.append(df_sub)
 
@@ -99,22 +99,21 @@ def main():
     # store commandline args
     parser = argparse.ArgumentParser(description='Converts ribotaper output to new data frame\
                                      containing only the uORF information.')
-    parser.add_argument("-u", "--ribotaper_ORFs_path", help='Path to ribotaper\
-                        ORF file (ORFs_max_filt)')
-    parser.add_argument("-o", "--output_csv_filepath", help='Path to write \
+    parser.add_argument('ribotaper_files', nargs='*', metavar='ribotaper', help='Path to ribotaper ORF file (ORFs_max_filt)')
+    parser.add_argument("--output_csv_filepath", help='Path to write \
                         merged csv output')
-    parser.add_argument("-m", "--min_length", default=None, help='Minimal uORF \
+    parser.add_argument("--min_length", default=None, help='Minimal uORF \
                         length')
-    parser.add_argument("-l", "--max_length", default=None, help='Maximal uORF \
+    parser.add_argument("--max_length", default=None, help='Maximal uORF \
                         length')
     args = parser.parse_args()
     # make sure that min_length and max_length are given
     output = create_output(args)
     # get some general info on output
-    print(output.describe(include='all'))
+    #print(output.describe(include='all'))
     # write output to csv file
     output.to_csv(args.output_csv_filepath)
 
 
-if '__name__' == '__main__':
+if __name__ == '__main__':
     main()
