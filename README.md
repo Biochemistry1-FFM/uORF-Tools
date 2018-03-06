@@ -1,4 +1,6 @@
 # uORF-Tools
+Upstream Open Reading Frame analysis tools.
+
 
 | Dependecies                        |
 | ---------------------------------- |
@@ -7,3 +9,4 @@
 | bioconductor-deseq2                |
 | r-plyr                             |
 | bioconductor-rtracklayer           |
+| r-optparse                         |
