@@ -15,7 +15,9 @@ option_list = list(
   make_option(c("-s", "--size_out_path"), type = "character", default = NULL,
               help = "Path for writing output size file", metavar = "character"),
   make_option(c("-n", "--norm_count_out_path"), type = "character", default = "NULL",
-              help = "Path for writing output normalized count file", metavar = "character")
+              help = "Path for writing output normalized count file", metavar = "character"),
+  make_option(c("-r", "--restrict_fragments"), action="store_true", default = TRUE,
+              help = "Restricts fragment length between 25-35nt")
 );
 
 option_parser = OptionParser(option_list = option_list);
@@ -73,7 +75,8 @@ for (i in sample.files) {
   reads <- flank(reads, -1)
 
   # keep only reads of 25-35 nt
-  reads <- reads[elementMetadata(reads)$qwidth%in%c(25:35)]
+  if (options$restrict_fragments)
+      reads <- reads[elementMetadata(reads)$qwidth%in%c(25:35)]
 
   # count reads into genes
   gene.counts[, name.i] <- countOverlaps(gencode, reads)
