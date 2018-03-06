@@ -14,7 +14,7 @@ option_list = list(
 );
 
 option_parser = OptionParser(option_list = option_list);
-options = parse_args(opt_parser);
+options = parse_args(option_parser);
 
 if (is.null(options$bam_directory_path)){
   print_help(opt_parser)
