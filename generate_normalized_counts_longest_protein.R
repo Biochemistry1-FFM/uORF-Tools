@@ -1,6 +1,11 @@
 #!/usr/bin/env Rscript
 
-library("optparse")
+library(optparse)
+library(GenomicRanges)
+library(GenomicAlignments)
+library(DESeq2)
+library(plyr)
+library(rtracklayer)
 
 option_list = list(
   make_option(c("-b", "--bam_directory_path"), type = "character", default = NULL,
@@ -24,11 +29,6 @@ if (is.null(options$bam_directory_path)){
 #rm(list = ls(all.names = TRUE))
 #setwd('~/mcf7-ribo/data/seqs/bam_files_anica/')
 #use cwd instead
-
-library(GenomicRanges)
-library(GenomicAlignments)
-library(DESeq2)
-library(plyr)
 
 # import longest protein coding transcripts
 #gencode <- import.gff("/shared/Homo_sapiens/NCBI/GRCh38/Annotation/Genes.gencode/gencode.v27.longest_protein_coding_transcript.gtf")

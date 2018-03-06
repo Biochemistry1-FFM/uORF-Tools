@@ -1,6 +1,10 @@
 #!/usr/bin/env Rscript
 
-library("optparse")
+library(optparse)
+library(GenomicRanges)
+library(GenomicAlignments)
+library(DESeq2)
+library(plyr)
 
 option_list = list(
   make_option(c("-b", "--bam_directory_path"), type = "character", default = NULL,
@@ -24,11 +28,6 @@ if (is.null(options$bam_directory_path)){
 
 #rm(list = ls(all.names = TRUE))
 #setwd('~/mcf7-ribo/data/seqs/bam_files_anica/')
-
-library(GenomicRanges)
-library(GenomicAlignments)
-library(DESeq2)
-library(plyr)
 
 # import uORFs table
 #table <- read.csv("../../../analysis/ribotaper_anica/Merged_uORF_results.csv", header = TRUE, row.names = 1)
