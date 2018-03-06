@@ -22,7 +22,7 @@ option_parser = OptionParser(option_list = option_list);
 options = parse_args(option_parser);
 
 if (is.null(options$bam_directory_path)){
-  print_help(opt_parser)
+  print_help(option_parser)
   stop("Please supply arguments (-b, -a, -s, -n), see --help \n", call.=FALSE)
 }
 
