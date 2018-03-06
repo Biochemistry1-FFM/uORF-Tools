@@ -88,7 +88,7 @@ rownames(gene.counts) <- gene.counts$gene.id
 gene.counts$gene.id <- NULL
 
 # set up sample table
-condition <- c(rep("control", each = 4), rep("treat", each = 4))
+condition <- c(rep("control", each = 1), rep("treat", each = 1))
 sampleTable <- data.frame(row.names = sample.names, fileName = sample.files,
                            condition = condition)
 colnames(gene.counts) <- rownames(sampleTable)
@@ -109,5 +109,5 @@ norm.counts <- counts(dds, normalized = TRUE)
 # save normalized counts and size factors
 #write.csv(size.factors, "~/mcf7-ribo/analysis/results_R/size_factors_logest_protein_4_FP_samples.csv")
 #write.csv(norm.counts, "~/mcf7-ribo/analysis/results_R/norm_counts_longest_protein_4_FP_samples.csv")
-write.csv(size.factors, "options$size_out_path")
-write.csv(norm.counts, "options$norm_count_out_path")
+write.csv(size.factors, options$size_out_path)
+write.csv(norm.counts, options$norm_count_out_path)
