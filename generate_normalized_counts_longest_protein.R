@@ -16,7 +16,7 @@ option_list = list(
               help = "Path for writing output size file", metavar = "character"),
   make_option(c("-n", "--norm_count_out_path"), type = "character", default = "NULL",
               help = "Path for writing output normalized count file", metavar = "character"),
-  make_option(c("-r", "--restrict_fragments"), action="store_true", default = TRUE,
+  make_option(c("-r", "--restrict_fragments"), action="store_true", default = FALSE,
               help = "Restricts fragment length between 25-35nt")
 );
 
