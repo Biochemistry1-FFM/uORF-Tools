@@ -13,7 +13,10 @@ option_list = list(
               help = "Path for writing CDS output normalized count file", metavar = "character")
 );
 
-if (is.null(opt$bam_directory_path)){
+option_parser = OptionParser(option_list = option_list);
+options = parse_args(opt_parser);
+
+if (is.null(options$bam_directory_path)){
   print_help(opt_parser)
   stop("Please supply arguments (-b, -a, -s, -n), see --help \n", call.=FALSE)
 }
