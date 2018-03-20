@@ -62,7 +62,7 @@ def main():
             else:
                 transcripts[dkey] = [orf]
                 
-    outfile = open("args.output_gtf_filepath","w+")
+    outfile = open(args.output_gtf_filepath,"w+")
     for key, value in transcripts.items():
         max_orf = ""
         max_length = 0
