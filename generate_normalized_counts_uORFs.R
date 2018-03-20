@@ -105,7 +105,7 @@ dds <- DESeqDataSetFromMatrix(countData = gene.counts,
 
 # supply size factors from whole library on longest protein coding
 #size.factors <- read.csv("~/mcf7-ribo/analysis/results_R/size_factors_longest_protein_4_FP_samples.csv",row.names = 1, stringsAsFactors = FALSE)
-size.factors <- read.csv("options$size_in_path",row.names = 1, stringsAsFactors = FALSE)
+size.factors <- read.csv(options$size_in_path,row.names = 1, stringsAsFactors = FALSE)
 colnames(size.factors) <- "size"
 sizeFactors(dds) <- size.factors$size
 

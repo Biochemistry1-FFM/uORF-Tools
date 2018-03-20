@@ -14,7 +14,9 @@ option_list = list(
               help = "Path to .gtf file with annotation", metavar = "character"),
   make_option(c("-s", "--size_in_path"), type = "character", default = NULL,
               help="Path for input size factor file", metavar = "character"),
-  make_option(c("-n", "--norm_count_cds_out_path"), type = "character", default = "NULL",
+  make_option(c("-t", "--type"), type = "character", default = NULL,
+              help="Sample type, e.g. Total for total RNA or FP for Riboseq footprint", metavar = "character"),
+  make_option(c("-n", "--norm_count_cds_out_path"), type = "character", default = NULL,
               help = "Path for writing CDS output normalized count file", metavar = "character")
 );
 
@@ -38,7 +40,8 @@ sel <- gencode$type == "CDS"
 cds <- gencode[which(sel),]
 
 # define sample type (RIBO ("FP_") or RNA ("Total_"))
-sample.type <- "FP_"
+#sample.type <- "FP_"
+sample.type <- paste(options$type, "_", sep="")
 
 # define bam file folder
 #bam.folder <- '~/mcf7-ribo/data/seqs/bam_files_anica/'
@@ -47,19 +50,20 @@ sample.type <- "FP_"
 gene.counts <- data.frame(gene.id = cds$transcript_id)
 
 # get sample files
-sample.files <- paste(options$bam_directory_path, grep("FP_",list.files(options$bam_directory_path), value = TRUE), sep = "")
+sample.files <- paste(options$bam_directory_path, grep(sample.type,list.files(options$bam_directory_path), value = TRUE), sep = "")
 
 # exclue samples from experiment no. 1, keep re-sequencing experiment i.e. 1-2 (for now)
 #sample.files <- sample.files[c(1,3,4,5,6,8,9,10)]
 sample.files <- sample.files[c(1,2)]
 
 # extract sample names
-sample.names <- regmatches(sample.files, regexpr("FP_.*_[0-9]", sample.files))
+sample.file.regex <- paste(sample.type, ".*_[0-9]", sep="")
+sample.names <- regmatches(sample.files, regexpr(sample.file.regex, sample.files))
 
 for (i in sample.files) {
 
   # get sample name
-  name.i <- regmatches(i,regexpr("FP_.*_[0-9]",i))
+  name.i <- regmatches(i,regexpr(sample.file.regex,i))
 
   # import reads
   reads <- readGAlignments(i)
@@ -104,7 +108,7 @@ dds <- DESeqDataSetFromMatrix(countData = gene.counts,
 
 # supply size factors from whole library on longest protein coding
 #size.factors <- read.csv("~/mcf7-ribo/analysis/results_R/size_factors_logest_protein_4_FP_samples.csv",row.names = 1, stringsAsFactors = FALSE)
-size.factors <- read.csv("options$size_in_path",row.names = 1, stringsAsFactors = FALSE)
+size.factors <- read.csv(options$size_in_path,row.names = 1, stringsAsFactors = FALSE)
 colnames(size.factors) <- "size"
 sizeFactors(dds) <- size.factors$size
 
