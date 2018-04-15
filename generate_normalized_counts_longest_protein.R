@@ -10,6 +10,8 @@ library(rtracklayer)
 option_list = list(
   make_option(c("-b", "--bam_directory_path"), type = "character", default = NULL,
               help = "Path to directory containing .bam files", metavar = "character"),
+  make_option(c("-t", "--type"), type = "character", default = NULL,
+              help="Sample type, e.g. Total for total RNA or FP for Riboseq footprint", metavar = "character"),
   make_option(c("-a", "--annotation_file_path"), type = "character", default = NULL,
               help = "Path to .gtf file with annotation", metavar = "character"),
   make_option(c("-s", "--size_out_path"), type = "character", default = NULL,
@@ -37,7 +39,8 @@ if (is.null(options$bam_directory_path)){
 gencode <- import.gff(options$annotation_file_path)
 
 # define sample type (RIBO ("FP_") or RNA ("Total_"))
-sample.type <- "FP_"
+#sample.type <- "FP_"
+sample.type <- paste(options$type, "_", sep="")
 
 # define bam file folder
 #bam.folder <- '~/mcf7-ribo/data/seqs/bam_files_anica/'
@@ -46,20 +49,20 @@ sample.type <- "FP_"
 gene.counts <- data.frame(gene.id = gencode$transcript_id)
 
 # get sample files
-sample.files <- paste(options$bam_directory_path, grep("FP_",list.files(options$bam_directory_path), value = TRUE), sep = "")
+sample.files <- paste(options$bam_directory_path, grep(sample.type,list.files(options$bam_directory_path), value = TRUE), sep = "")
 
 # exclue samples from experiment no. 1, keep re-sequencing experiment i.e. 1-2 (for now)
 #sample.files <- sample.files[c(1,3,4,5,6,8,9,10)]
 sample.files <- sample.files[c(1,2)]
 
 # extract sample names
-sample.names <- regmatches(sample.files,regexpr("FP_.*_[0-9]",sample.files))
-
+sample.file.regex <- paste(sample.type, ".*_[0-9]", sep="")
+sample.names <- regmatches(sample.files, regexpr(sample.file.regex, sample.files))
 
 for (i in sample.files) {
 
   # get sample name
-  name.i <- regmatches(i,regexpr("FP_.*_[0-9]",i))
+  name.i <- regmatches(i,regexpr(sample.file.regex,i))
 
   # import reads
   reads <- readGAlignments(i)
