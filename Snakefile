@@ -3,7 +3,9 @@ import re
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 
 HTTP = HTTPRemoteProvider()
+ADAPTER="AGATCGGAAGAGCACACGTCT"
 RRNADB=config["RRNADBS"]
+
 
 rule all:
    input:
@@ -11,6 +13,16 @@ rule all:
        #"index/rRNA/{rrnadb}.kmer_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
        #"index/rRNA/{rrnadb}.pos_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
        #"index/rRNA/{rrnadb}.stats".format(rrnadb=rrnadb) for rrnadb in RRNADB]
+
+rule trim:
+    input:
+        "fastq/{method}_{condition}.fastq"
+    output:
+        "trimmed/{method}_{condition}.fastq"
+    conda:
+        "envs/cutadapt.yaml"
+    run:
+        shell("mkdir -p trimmed; cutadapt -a {adapter} -j {threads} -u 1 -q 20 -O 1 -m 15 --trim-n -o {output} {input})
 
 rule rrnaretrieve:
     input:
