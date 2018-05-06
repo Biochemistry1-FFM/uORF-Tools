@@ -5,24 +5,27 @@ from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 HTTP = HTTPRemoteProvider()
 ADAPTER="AGATCGGAAGAGCACACGTCT"
 RRNADB=config["RRNADBS"]
+METHODS=["FP","Total"]
+CONDITIONS=["ctrl","treat"]
 
 
 rule all:
    input:
-       ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=re.sub("-id\d+.fasta","",rrnadb)) for rrnadb in RRNADB]
+       ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=re.sub("-id\d+.fasta","",rrnadb)) for rrnadb in RRNADB],
+       expand("trimmed/{method}_{condition}.fastq", method=METHODS, condition=CONDITIONS)
        #"index/rRNA/{rrnadb}.kmer_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
        #"index/rRNA/{rrnadb}.pos_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
        #"index/rRNA/{rrnadb}.stats".format(rrnadb=rrnadb) for rrnadb in RRNADB]
 
 rule trim:
     input:
-        "fastq/{method}_{condition}.fastq"
+        expand("fastq/{method}_{condition}.fastq", method=METHODS, condition=CONDITIONS)
     output:
         "trimmed/{method}_{condition}.fastq"
     conda:
         "envs/cutadapt.yaml"
-    run:
-        shell("mkdir -p trimmed; cutadapt -a {adapter} -j {threads} -u 1 -q 20 -O 1 -m 15 --trim-n -o {output} {input})
+    shell:
+        "mkdir -p trimmed; cutadapt -a {adapter} -j {threads} -u 1 -q 20 -O 1 -m 15 --trim-n -o {output} {input}"
 
 rule rrnaretrieve:
     input:
