@@ -1,3 +1,4 @@
 {
-  "RRNADBS": ["rfam-5.8s-database-id98.fasta","rfam-5s-database-id98.fasta","silva-euk-18s-id95.fasta","silva-euk-28s-id98.fasta"]
+  "RRNADBS": ["rfam-5.8s-database-id98.fasta","rfam-5s-database-id98.fasta","silva-euk-18s-id95.fasta","silva-euk-28s-id98.fasta"],
+  "ADAPTERS": "AGATCGGAAGAGCACACGTCT"
 }

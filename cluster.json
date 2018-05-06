@@ -6,6 +6,6 @@
         "parallelenvironment" : "smp 20",
         "logoutputdir" : "/scratch/bi01/egg/rflow/",
         "erroroutputdir" : "/scratch/bi01/egg/rflow/",
-        "joinlogs" : "y",
+        "joinlogs" : "y"
     }
 }
