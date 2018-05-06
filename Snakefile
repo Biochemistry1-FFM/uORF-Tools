@@ -7,12 +7,13 @@ ADAPTER="AGATCGGAAGAGCACACGTCT"
 RRNADB=config["RRNADBS"]
 METHODS=["FP","Total"]
 CONDITIONS=["ctrl","treat"]
+SAMPLEIDS=["1-2"]
 
 
 rule all:
    input:
        ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=re.sub("-id\d+.fasta","",rrnadb)) for rrnadb in RRNADB],
-       expand("trimmed/{method}_{condition}.fastq", method=METHODS, condition=CONDITIONS)
+       expand("trimmed/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
        #"index/rRNA/{rrnadb}.kmer_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
        #"index/rRNA/{rrnadb}.pos_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
        #"index/rRNA/{rrnadb}.stats".format(rrnadb=rrnadb) for rrnadb in RRNADB]
