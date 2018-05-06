@@ -1,0 +1,11 @@
+{
+    "__default__" :
+    {
+        "jobname" : "rflow",
+        "qname" : "all.q",
+        "parallelenvironment" : "smp 20",
+        "logoutputdir" : "rflow",
+        "erroroutputdir" : "all.q",
+        "joinlogs" : "y",
+    }
+}
