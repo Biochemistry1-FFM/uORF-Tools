@@ -28,7 +28,7 @@ rule trim:
         "envs/cutadapt.yaml"
     threads: 20
     shell:
-        "mkdir -p trimmed; cutadapt -a {params.ada} -j {threads} -u 1 -q 20 -O 1 -m 15 --trim-n -o {output} {input}"
+        "mkdir -p trimmed; cutadapt -a {params.ada} -j {threads} -u 1 -q 20 -O 1 -m 15 --trim-n -o {output} {input[0]}"
 
 rule rrnaretrieve:
     input:
