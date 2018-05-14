@@ -74,6 +74,8 @@ rule rrnafilter:
         "norRNA/{method}_{condition}_{sampleid}.fastq"
     conda:
         "envs/sortmerna.yaml"
+    params:
+        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
     threads: 20
     shell:
-        "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref ./rRNA_databases/silva-euk-18s-id95.fasta,./index/rRNA/silva-euk-18s:./rRNA_databases/silva-euk-28s-id98.fasta,./index/rRNA/silva-euk-28s:./rRNA_databases/rfam-5s-database-id98.fasta,./index/rRNA/rfam-5s-database:./rRNA_databases/rfam-5.8s-database-id98.fasta,./index/rRNA/rfam-5.8s-database --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {output}"
+        "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref ./rRNA_databases/silva-euk-18s-id95.fasta,./index/rRNA/silva-euk-18s:./rRNA_databases/silva-euk-28s-id98.fasta,./index/rRNA/silva-euk-28s:./rRNA_databases/rfam-5s-database-id98.fasta,./index/rRNA/rfam-5s-database:./rRNA_databases/rfam-5.8s-database-id98.fasta,./index/rRNA/rfam-5.8s-database --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {params.prefix}"
