@@ -98,7 +98,7 @@ rule retrieveAnnotation:
     shell:
         "mkdir -p annotation; mv annotation.gtf genomes/"
 
-rule genomeIndex
+rule genomeIndex:
     input:
         "genomes/genome.fa",
         "annotation/annotation.gtf"
@@ -112,7 +112,7 @@ rule genomeIndex
     shell:
         "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles genomes/genome.fa --sjdbGTFfile annotation/annotation.gtf --sjdbOverhang 100"
 
-rule map
+rule map:
     input:
         expand("norRNA/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
     output:
