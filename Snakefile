@@ -106,7 +106,20 @@ rule genomeIndex
         "index/genomeStar/chrLength.txt",
         "index/genomeStar/chrName.txt",
         "index/genomeStar/genomeParameters.txt"
+    conda:
+        "envs/star.yaml"
     threads: 20
     shell:
         "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles genomes/genome.fa --sjdbGTFfile annotation/annotation.gtf --sjdbOverhang 100"
+
+rule map
+    input:
+        expand("norRNA/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+    output:
+        "aligned/{method}_{condition}_{sampleid}.sam"
+    conda:
+        "envs/star.yaml"
+    threads: 20
+    shell:
+        "mkdir -p aligned; STAR --genomeDir index/genomeIndex --readFilesIn {input[0]} --outFileNamePrefix aligned/{output[0]} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
