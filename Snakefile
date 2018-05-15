@@ -103,7 +103,10 @@ rule genomeIndex
         "genomes/genome.fa",
         "annotation/annotation.gtf"
     output:
+        "index/genomeStar/chrLength.txt",
+        "index/genomeStar/chrName.txt",
+        "index/genomeStar/genomeParameters.txt"
     threads: 20
     shell:
-        "mkdir -p index; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index --genomeFastaFiles genomes/genome.fa --sjdbGTFfile annotation/annotation.gtf --sjdbOverhang 100"
+        "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles genomes/genome.fa --sjdbGTFfile annotation/annotation.gtf --sjdbOverhang 100"
 
