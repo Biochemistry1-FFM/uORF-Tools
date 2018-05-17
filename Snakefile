@@ -82,7 +82,7 @@ rule retrieveGenome:
         "genomes/genome.fa"
     threads: 20
     shell:
-        "mkdir -p genome; mv genome.fa genomes/"
+        "mkdir -p genomes; cp genome.fa genomes/"
 
 rule retrieveAnnotation:
     input:
@@ -91,7 +91,7 @@ rule retrieveAnnotation:
         "annotation/annotation.gtf"
     threads: 20
     shell:
-        "mkdir -p annotation; mv annotation.gtf annotation/"
+        "mkdir -p annotation; cp annotation.gtf annotation/"
 
 rule genomeIndex:
     input:
