@@ -129,3 +129,27 @@ rule samtobam:
     threads: 20
     shell:
         "mkdir -p bam; samtools view -bh {input[0]} | samtools sort -o {output[0]} -O bam"
+
+rule ribotaperAnnotation:
+    input:
+        rules.retrieveAnnotation.output,
+        rules.retrieveGenome.output
+    output:
+        "ribotaper_annotation/start_stops_FAR.bed"
+    conda:
+        "envs/ribotaper.yaml"
+    threads: 1
+    shell:
+        "mkdir -p ribotaper/ribotaper_annotations; create_annotations_files.bash {input[0]} {input[1]} true false ribotaper/ribotaper_annotation"
+
+rule ribotaperMetaplot:
+    input:
+        rules.samtobam.output,
+        rules.ribotaperAnnotation.output
+    output:
+        "metaplots/{method}_{condition}_{sampleid}"
+    conda:
+        "envs/ribotaper.yaml"
+    threads: 1
+    shell:
+        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input[0]} {input[1]} {output[0]}"
