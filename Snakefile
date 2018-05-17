@@ -9,15 +9,9 @@ METHODS=["FP","Total"]
 CONDITIONS=["ctrl","treat"]
 SAMPLEIDS=["1-2"]
 
-
 rule all:
    input:
-       ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=re.sub("-id\d+.fasta","",rrnadb)) for rrnadb in RRNADB],
-       expand("trimmed/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("norRNA/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
-       #"index/rRNA/{rrnadb}.kmer_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
-       #"index/rRNA/{rrnadb}.pos_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB,
-       #"index/rRNA/{rrnadb}.stats".format(rrnadb=rrnadb) for rrnadb in RRNADB]
+       expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
 
 rule trim:
     input:
@@ -69,7 +63,8 @@ rule rrnaindex:
 
 rule rrnafilter:
     input:
-        expand("trimmed/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+        rules.trim.output,
+        rules.rrnaindex.output
     output:
         "norRNA/{method}_{condition}_{sampleid}.fastq"
     conda:
@@ -82,7 +77,7 @@ rule rrnafilter:
 
 rule retrieveGenome:
     input:
-        "genome.fa "
+        "genome.fa"
     output:
         "genomes/genome.fa"
     threads: 20
@@ -96,12 +91,12 @@ rule retrieveAnnotation:
         "annotation/annotation.gtf"
     threads: 20
     shell:
-        "mkdir -p annotation; mv annotation.gtf genomes/"
+        "mkdir -p annotation; mv annotation.gtf annotation/"
 
 rule genomeIndex:
     input:
-        "genomes/genome.fa",
-        "annotation/annotation.gtf"
+        rules.retrieveGenome.output,
+        rules.retrieveAnnotation.output
     output:
         "index/genomeStar/chrLength.txt",
         "index/genomeStar/chrName.txt",
@@ -110,11 +105,12 @@ rule genomeIndex:
         "envs/star.yaml"
     threads: 20
     shell:
-        "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles genomes/genome.fa --sjdbGTFfile annotation/annotation.gtf --sjdbOverhang 100"
+        "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100"
 
 rule map:
     input:
         expand("norRNA/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+        rules.genomeIndex.output
     output:
         "aligned/{method}_{condition}_{sampleid}.sam"
     conda:
