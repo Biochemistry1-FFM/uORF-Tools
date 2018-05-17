@@ -11,7 +11,8 @@ SAMPLEIDS=["1-2"]
 
 rule all:
    input:
-       expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+       expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS)
 
 rule trim:
     input:
@@ -153,3 +154,16 @@ rule ribotaperMetaplot:
     threads: 1
     shell:
         "mkdir -p ribotaper/metaplots; create_metaplots.bash {input[0]} {input[1]} {output[0]}"
+
+rule ribotaper:
+    input:
+        fp="bam/FP_{condition}_{sampleid}.bam", total="bam/Total_{condition}_{sampleid}.bam"
+        rules.ribotaperAnnotation.output
+    output:
+        "ribotaper/{condition}_{sampleid}/ORFs_max_filt",
+        "ribotaper/{condition}_{sampleid}/Final_ORF_results.pdf"
+    conda:
+        "envs/ribotaper.yaml"
+    threads: 20
+    shell:
+        "mkdir -p ribotaper/{condition}_{sampleid}; Ribotaper.sh {input.fp} {input.total} ribotaper/results 27,29,30,31 11,11,12,12 ribotaper/results"
