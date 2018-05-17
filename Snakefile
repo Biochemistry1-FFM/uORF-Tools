@@ -116,9 +116,11 @@ rule map:
         "aligned/{method}_{condition}_{sampleid}.sam"
     conda:
         "envs/star.yaml"
+    params:
+        prefix=lambda wildcards, output: os.path.splitext(output[0])
     threads: 20
     shell:
-        "mkdir -p aligned; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix {output[0]} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
+        "mkdir -p aligned; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix {params.prefix} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
 rule samtobam:
     input:
