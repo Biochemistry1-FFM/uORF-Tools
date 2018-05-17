@@ -117,11 +117,11 @@ rule map:
         "envs/star.yaml"
     threads: 20
     shell:
-        "mkdir -p aligned; STAR --genomeDir index/genomeIndex --readFilesIn {input[0]} --outFileNamePrefix {output[0]} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
+        "mkdir -p aligned; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix {output[0]} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
 rule samtobam:
     input:
-        expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+        expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
     output:
         "bam/{method}_{condition}_{sampleid}.bam"
     conda:
