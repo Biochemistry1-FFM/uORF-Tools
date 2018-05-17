@@ -117,7 +117,7 @@ rule map:
         "envs/star.yaml"
     threads: 20
     shell:
-        "mkdir -p aligned; STAR --genomeDir index/genomeIndex --readFilesIn {input[0]} --outFileNamePrefix aligned/{output[0]} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
+        "mkdir -p aligned; STAR --genomeDir index/genomeIndex --readFilesIn {input[0]} --outFileNamePrefix {output[0]} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
 rule samtobam:
     input:
