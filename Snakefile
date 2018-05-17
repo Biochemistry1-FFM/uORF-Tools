@@ -119,3 +119,13 @@ rule map:
     shell:
         "mkdir -p aligned; STAR --genomeDir index/genomeIndex --readFilesIn {input[0]} --outFileNamePrefix aligned/{output[0]} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
+rule samtobam:
+    input:
+        expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+    output:
+        "bam/{method}_{condition}_{sampleid}.bam"
+    conda:
+        "envs/samtools.yaml"
+    threads: 20
+    shell:
+        "mkdir -p bam; samtools view -bh {input[0]} | samtools sort -o {output[0]} -O bam"
