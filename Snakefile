@@ -11,7 +11,7 @@ SAMPLEIDS=["1-2"]
 
 rule all:
    input:
-       expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS)
 
 rule trim:
@@ -113,25 +113,14 @@ rule map:
         expand("norRNA/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
         rules.genomeIndex.output
     output:
-        "aligned/{method}_{condition}_{sampleid}.sam"
-    conda:
-        "envs/star.yaml"
-    params:
-        prefix=lambda wildcards, output: os.path.splitext(output[0])
-    threads: 20
-    shell:
-        "mkdir -p aligned; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix {params.prefix} --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
-
-rule samtobam:
-    input:
-        expand("aligned/{method}_{condition}_{sampleid}.sam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
-    output:
         "bam/{method}_{condition}_{sampleid}.bam"
     conda:
-        "envs/samtools.yaml"
+        "envs/star.yaml"
     threads: 20
+    params:
+        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
     shell:
-        "mkdir -p bam; samtools view -bh {input[0]} | samtools sort -o {output[0]} -O bam"
+        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix {params.prefix} --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
 rule ribotaperAnnotation:
     input:
@@ -147,7 +136,7 @@ rule ribotaperAnnotation:
 
 rule ribotaperMetaplot:
     input:
-        rules.samtobam.output,
+        rules.map.output,
         rules.ribotaperAnnotation.output
     output:
         "metaplots/{method}_{condition}_{sampleid}"
@@ -159,8 +148,8 @@ rule ribotaperMetaplot:
 
 rule ribotaper:
     input:
-        fp="bam/FP_{condition}_{sampleid}.bam", total="bam/Total_{condition}_{sampleid}.bam"
-        rules.ribotaperAnnotation.output
+        fp="bam/FP_{condition}_{sampleid}.bam", total="bam/Total_{condition}_{sampleid}.bam",
+        annotation=rules.ribotaperAnnotation.output
     output:
         "ribotaper/{condition}_{sampleid}/ORFs_max_filt",
         "ribotaper/{condition}_{sampleid}/Final_ORF_results.pdf"
@@ -168,4 +157,4 @@ rule ribotaper:
         "envs/ribotaper.yaml"
     threads: 20
     shell:
-        "mkdir -p ribotaper/{condition}_{sampleid}; Ribotaper.sh {input.fp} {input.total} ribotaper/results 27,29,30,31 11,11,12,12 ribotaper/results"
+        "mkdir -p ribotaper/{condition}_{sampleid}; Ribotaper.sh {input.fp} {input.total} {input.annotation} 27,29,30,31 11,11,12,12 ribotaper/results"
