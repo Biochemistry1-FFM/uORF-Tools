@@ -163,10 +163,22 @@ rule ribotaperMerge:
     input:
         ctrl="ribotaper/ctrl_{sampleid}/Aligned.sortedByCoord.out.bam", treat="ribotaper/treat_{sampleid}/Aligned.sortedByCoord.out.bam", 
     output:
-        "ribotaper/{condition}_{sampleid}/ORFs_max_filt"
+        "ribotaper/{sampleid}/Merged_uORF_results.csv"
     conda:
         "envs/uorftools.yaml"
     threads: 20
     shell:
-        "mkdir -p ribotaper/{sampleid}; ribotaper_merge_incl_length.py {input.ctrl} {input.treat} --output_csv_filepath ribotaper/{sampleid}/Merged_uORF_results.csv"
+        "mkdir -p ribotaper/{sampleid}; uORF-Tools/scripts/ribotaper_merge_incl_length.py {input.ctrl} {input.treat} --output_csv_filepath ribotaper/{sampleid}/Merged_uORF_results.csv"
+
+rule longestTranscript:
+    input:
+        rules.retrieveAnnotation.output
+    output:
+        "uORFs/longest_protein_coding_transcripts.gtf"
+    conda:
+        "envs/uorftools.yaml"
+    threads: 20
+    shell:
+        "mkdir -p uORFs; uORF-Tools/longest_orf_transcript.py -a {input} -o {output}"
+
 
