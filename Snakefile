@@ -11,7 +11,7 @@ SAMPLEIDS=["1-2"]
 
 rule all:
    input:
-       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS)
 
 rule trim:
@@ -113,14 +113,14 @@ rule map:
         expand("norRNA/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
         rules.genomeIndex.output
     output:
-        "bam/{method}_{condition}_{sampleid}.bam"
+        "bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam"
     conda:
         "envs/star.yaml"
     threads: 20
     params:
-        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
+        prefix=lambda wildcards, output: (os.path.basename(output[0]))
     shell:
-        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix {params.prefix} --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
+        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix bam/{params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
 rule ribotaperAnnotation:
     input:
@@ -148,7 +148,7 @@ rule ribotaperMetaplot:
 
 rule ribotaper:
     input:
-        fp="bam/FP_{condition}_{sampleid}.bam", total="bam/Total_{condition}_{sampleid}.bam",
+        fp="bam/FP_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", total="bam/Total_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam",
         annotation=rules.ribotaperAnnotation.output
     output:
         "ribotaper/{condition}_{sampleid}/ORFs_max_filt",
