@@ -158,3 +158,15 @@ rule ribotaper:
     threads: 20
     shell:
         "mkdir -p ribotaper/{condition}_{sampleid}; Ribotaper.sh {input.fp} {input.total} {input.annotation} 27,29,30,31 11,11,12,12 ribotaper/results"
+
+rule ribotaperMerge:
+    input:
+        ctrl="ribotaper/ctrl_{sampleid}/Aligned.sortedByCoord.out.bam", treat="ribotaper/treat_{sampleid}/Aligned.sortedByCoord.out.bam", 
+    output:
+        "ribotaper/{condition}_{sampleid}/ORFs_max_filt"
+    conda:
+        "envs/uorftools.yaml"
+    threads: 20
+    shell:
+        "mkdir -p ribotaper/{sampleid}; ribotaper_merge_incl_length.py {input.ctrl} {input.treat} --output_csv_filepath ribotaper/{sampleid}/Merged_uORF_results.csv"
+
