@@ -118,9 +118,9 @@ rule map:
         "envs/star.yaml"
     threads: 20
     params:
-        prefix=lambda wildcards, output: (os.path.basename(output[0]))
+        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix bam/{params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
+        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input[0]} --outFileNamePrefix {params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
 
 rule ribotaperAnnotation:
     input:
