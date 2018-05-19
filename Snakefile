@@ -127,7 +127,7 @@ rule ribotaperAnnotation:
         rules.retrieveAnnotation.output,
         rules.retrieveGenome.output
     output:
-        "ribotaper_annotation/start_stops_FAR.bed"
+        "ribotaper/ribotaper_annotation/start_stops_FAR.bed"
     conda:
         "envs/ribotaper.yaml"
     threads: 1
