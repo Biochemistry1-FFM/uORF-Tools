@@ -12,7 +12,9 @@ SAMPLEIDS=["1-2"]
 rule all:
    input:
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS)
+       expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("uORFs/sfactors_lprot_{method}.csv, method=METHODS),
+       expand("uORFs/ncounts_lprot_{method}.csv, method=METHODS)
 
 rule trim:
     input:
@@ -148,7 +150,7 @@ rule ribotaperMetaplot:
 
 rule ribotaper:
     input:
-        fp="bam/FP_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", total="bam/Total_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam",
+        fp=expand("bam/FP_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/Total_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
         annotation=rules.ribotaperAnnotation.output
     output:
         "ribotaper/{condition}_{sampleid}/ORFs_max_filt",
@@ -181,4 +183,14 @@ rule longestTranscript:
     shell:
         "mkdir -p uORFs; uORF-Tools/longest_orf_transcript.py -a {input} -o {output}"
 
-
+rule normalizedCounts:
+    input:
+        rules.map.output,
+        rules.retrieveAnnotation.output
+    output:
+        "uORFs/size_factors_longest_protein_{methods}_samples.csv"
+    conda:
+        "envs/uorftools.yaml"
+    threads: 20
+    shell:
+        "mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[1]} -s uORFs/sfactors_lprot_{method}.csv -n uORFs/ncounts_lprot_{method}.csv -t {method}"
