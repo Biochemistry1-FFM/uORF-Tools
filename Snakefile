@@ -134,7 +134,7 @@ rule ribotaperAnnotation:
         "envs/ribotaper.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/ribotaper_annotations; create_annotations_files.bash {input[0]} {input[1]} true false ribotaper/ribotaper_annotation"
+        "mkdir -p ribotaper/ribotaper_annotation; create_annotations_files.bash {input[0]} {input[1]} true false ribotaper/ribotaper_annotation"
 
 rule ribotaperMetaplot:
     input:
@@ -158,19 +158,23 @@ rule ribotaper:
     conda:
         "envs/ribotaper.yaml"
     threads: 20
+    params:
+        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p ribotaper/{condition}_{sampleid}; Ribotaper.sh {input.fp} {input.total} {input.annotation} 27,29,30,31 11,11,12,12 ribotaper/results"
+        "mkdir -p {params.prefix}; cd {params.prefix}; Ribotaper.sh ../../{input.fp[0]} ../../{input.total[0]} ../../ribotaper/ribotaper_annotation/ 27,29,30,31 11,11,12,12 {threads}"
 
 rule ribotaperMerge:
     input:
-        ctrl="ribotaper/ctrl_{sampleid}/Aligned.sortedByCoord.out.bam", treat="ribotaper/treat_{sampleid}/Aligned.sortedByCoord.out.bam", 
+        ctrl=expand("ribotaper/ctrl_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS), 
     output:
         "ribotaper/{sampleid}/Merged_uORF_results.csv"
     conda:
         "envs/uorftools.yaml"
     threads: 20
+    params:
+        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p ribotaper/{sampleid}; uORF-Tools/scripts/ribotaper_merge_incl_length.py {input.ctrl} {input.treat} --output_csv_filepath ribotaper/{sampleid}/Merged_uORF_results.csv"
+        "mkdir -p {params.prefix}; uORF-Tools/scripts/ribotaper_merge_incl_length.py {input.ctrl} {input.treat} --output_csv_filepath {params.prefix}/Merged_uORF_results.csv"
 
 rule longestTranscript:
     input:
@@ -186,7 +190,7 @@ rule longestTranscript:
 rule normalizedCounts:
     input:
         rules.map.output,
-        rules.retrieveAnnotation.output
+        rules.longestTranscript.output
     output:
         "uORFs/size_factors_longest_protein_{methods}_samples.csv"
     conda:
