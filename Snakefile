@@ -13,8 +13,8 @@ rule all:
    input:
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("uORFs/sfactors_lprot_{method}.csv", method=METHODS),
-       expand("uORFs/ncounts_lprot_{method}.csv", method=METHODS)
+       expand("uORFs/sfactors_lprot_{method}.csv", condition=CONDITIONS, method=METHODS),
+       expand("uORFs/ncounts_lprot_{method}.csv", condition=CONDITIONS, method=METHODS)
 
 rule trim:
     input:
@@ -187,12 +187,25 @@ rule longestTranscript:
     shell:
         "mkdir -p uORFs; uORF-Tools/longest_orf_transcript.py -a {input} -o {output}"
 
+
+rule maplink:
+    input:
+        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+        rules.genomeIndex.output
+    output:
+        "bam/{method}_{condition}_{sampleid}.bam"
+    threads: 1
+    shell:
+        "ln -s {input[0]} {output[0]}"
+
+
 rule normalizedCounts:
     input:
-        rules.map.output,
+        expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS), 
         rules.longestTranscript.output
     output:
-        "uORFs/size_factors_longest_protein_{methods}_samples.csv"
+        "uORFs/ncounts_lprot_{method}.csv",
+        "uORFs/sfactors_lprot_{method}.csv"
     conda:
         "envs/uorftools.yaml"
     threads: 20
