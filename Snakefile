@@ -13,8 +13,8 @@ rule all:
    input:
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("uORFs/sfactors_lprot_{method}.csv, method=METHODS),
-       expand("uORFs/ncounts_lprot_{method}.csv, method=METHODS)
+       expand("uORFs/sfactors_lprot_{method}.csv", method=METHODS),
+       expand("uORFs/ncounts_lprot_{method}.csv", method=METHODS)
 
 rule trim:
     input:
