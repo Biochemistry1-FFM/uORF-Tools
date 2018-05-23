@@ -1,13 +1,15 @@
 import os
 import re
-from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+import pandas as pd
+from snakemake.utils import validate, min_version
+min_version("5.1.2")
 
-HTTP = HTTPRemoteProvider()
-ADAPTERS=config["ADAPTERS"]
-RRNADB=config["RRNADBS"]
-METHODS=["FP","Total"]
-CONDITIONS=["ctrl","treat"]
-SAMPLEIDS=["1-2"]
+# load configuration
+configfile: "config.yaml"
+ADAPTERS=config["adapters"]
+METHODS=config["methods"]
+CONDITIONS=config["conditions"]
+SAMPLEIDS=config["sampleids"]
 
 rule all:
    input:
@@ -27,56 +29,6 @@ rule trim:
     threads: 20
     shell:
         "mkdir -p trimmed; cutadapt -a {params.ada} -j {threads} -u 1 -q 20 -O 1 -m 15 --trim-n -o {output} {input[0]}"
-
-rule rrnaretrieve:
-    input:
-        HTTP.remote("https://github.com/biocore/sortmerna/raw/master/rRNA_databases/{rrnadb}",keep_local=True,allow_redirects=True)
-    output:
-        "rRNA_databases/{rrnadb}"
-    run:
-        outputName = os.path.basename(input[0])
-        shell("mkdir -p rRNA_databases; mv {input} rRNA_databases/{outputName}")
-
-#define indexfiles function
-
-def indexfiles (RRNADB):
-    indexstring=""
-    for rrnadb in RRNADB:
-        rrnaprefix = rrnadb.replace(".fasta","")
-        dbstring = "./rRNA_databases/" + rrnadb + ",./index/rRNA/" + rrnaprefix + "-db:"
-        indexstring = dbstring + indexstring
-    return str(indexstring)
-
-rule rrnaindex:
-    input:
-        ["rRNA_databases/{rrnadb}".format(rrnadb=rrnadb) for rrnadb in RRNADB]
-    output:
-        ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=re.sub("-id\d+.fasta","",rrnadb)) for rrnadb in RRNADB]
-        #["index/rRNA/{rrnadb}.kmer_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB]
-        #["index/rRNA/{rrnadb}.pos_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB]
-        #["index/rRNA/{rrnadb}.stats".format(rrnadb=rrnadb) for rrnadb in RRNADB]
-        #"index/rRNA/{rrnadb}.bursttrie_0.dat"
-        #"index/rRNA/{rrnadb}.kmer_0.dat"
-        #"index/rRNA/{rrnadb}.pos_0.dat"
-        #"index/rRNA/{rrnadb}.stats"
-    conda:
-        "envs/sortmerna.yaml"
-    shell:
-        "mkdir -p index/rRNA; indexdb_rna --ref ./rRNA_databases/silva-euk-18s-id95.fasta,./index/rRNA/silva-euk-18s:./rRNA_databases/silva-euk-28s-id98.fasta,./index/rRNA/silva-euk-28s:./rRNA_databases/rfam-5s-database-id98.fasta,./index/rRNA/rfam-5s-database:./rRNA_databases/rfam-5.8s-database-id98.fasta,./index/rRNA/rfam-5.8s-database"
-
-rule rrnafilter:
-    input:
-        rules.trim.output,
-        rules.rrnaindex.output
-    output:
-        "norRNA/{method}_{condition}_{sampleid}.fastq"
-    conda:
-        "envs/sortmerna.yaml"
-    params:
-        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
-    threads: 20
-    shell:
-        "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref ./rRNA_databases/silva-euk-18s-id95.fasta,./index/rRNA/silva-euk-18s:./rRNA_databases/silva-euk-28s-id98.fasta,./index/rRNA/silva-euk-28s:./rRNA_databases/rfam-5s-database-id98.fasta,./index/rRNA/rfam-5s-database:./rRNA_databases/rfam-5.8s-database-id98.fasta,./index/rRNA/rfam-5.8s-database --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {params.prefix}"
 
 rule retrieveGenome:
     input:
@@ -165,7 +117,7 @@ rule ribotaper:
 
 rule ribotaperMerge:
     input:
-        ctrl=expand("ribotaper/ctrl_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS), 
+        ctrl=expand("ribotaper/ctrl_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS),
     output:
         "ribotaper/{sampleid}/Merged_uORF_results.csv"
     conda:
@@ -201,7 +153,7 @@ rule maplink:
 
 rule normalizedCounts:
     input:
-        expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS), 
+        expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
         rules.longestTranscript.output
     output:
         "uORFs/ncounts_lprot_{method}.csv",
@@ -211,3 +163,7 @@ rule normalizedCounts:
     threads: 20
     shell:
         "mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[1]} -s uORFs/sfactors_lprot_{method}.csv -n uORFs/ncounts_lprot_{method}.csv -t {method}"
+
+# Import rules
+
+include: "rules/rrnafiltering.smk"
