@@ -112,12 +112,13 @@ rule ribotaper:
     threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
+    log: "logs/ribotaper_{condition}_{sampleid}.log"
     shell:
         "mkdir -p {params.prefix}; cd {params.prefix}; Ribotaper.sh ../../{input.fp[0]} ../../{input.total[0]} ../../ribotaper/ribotaper_annotation/ 27,29,30,31 11,11,12,12 {threads}"
 
 rule ribotaperMerge:
     input:
-        ctrl=expand("ribotaper/ctrl_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/Aligned.sortedByCoord.out.bam", sampleid=SAMPLEIDS),
+        ctrl=expand("ribotaper/ctrl_{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS),
     output:
         "ribotaper/{sampleid}/Merged_uORF_results.csv"
     conda:
@@ -142,13 +143,13 @@ rule longestTranscript:
 
 rule maplink:
     input:
-        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-        rules.genomeIndex.output
+        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
     output:
         "bam/{method}_{condition}_{sampleid}.bam"
     threads: 1
+    log: "logs/maplink.log"
     shell:
-        "ln -s {input[0]} {output}"
+        "ln -s {input[0]} {output[0]}"
 
 
 rule normalizedCounts:
