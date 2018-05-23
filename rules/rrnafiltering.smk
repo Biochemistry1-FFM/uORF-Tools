@@ -1,51 +1,60 @@
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+HTTP = HTTPRemoteProvider()
 
+def get_dbs():
+    group = config["taxonomy"]
+    dbs=[]
+    if group == "Eukarya":
+        dbs=["rfam-5.8s-database-id98","rfam-5s-database-id98","silva-euk-18s-id95","silva-euk-28s-id98"]
+    elif group == "Bacteria":
+        dbs=["rfam-5s-database-id98","silva-bac-23s-id98","silva-bac-16s-id90"]
+    elif group == "Archea":
+        dbs=["rfam-5s-database-id98","silva-arc-16s-id95","silva-arc-23s-id98"]
+    else:
+        dbs=[]
+    return dbs
+
+def get_indexfiles ():
+    dbs=get_dbs()
+    indexstring=""
+    for rrnadb in dbs:
+        dbstring = "./rRNA_databases/" + rrnadb + ".fasta" + ",./index/rRNA/" + rrnaprefix + ":"
+        indexstring = dbstring + indexstring
+    return str(indexstring)
 
 rule rrnaretrieve:
     input:
-        HTTP.remote("https://github.com/biocore/sortmerna/raw/master/rRNA_databases/{rrnadb}",keep_local=True,allow_redirects=True)
+        HTTP.remote("https://github.com/biocore/sortmerna/raw/master/rRNA_databases/{rrnadb}.fasta",keep_local=True,allow_redirects=True)
     output:
-        "rRNA_databases/{rrnadb}"
+        "rRNA_databases/{rrnadb}.fasta"
     run:
         outputName = os.path.basename(input[0])
         shell("mkdir -p rRNA_databases; mv {input} rRNA_databases/{outputName}")
 
-#define indexfiles function
-
-def indexfiles (RRNADB):
-    indexstring=""
-    for rrnadb in RRNADB:
-        rrnaprefix = rrnadb.replace(".fasta","")
-        dbstring = "./rRNA_databases/" + rrnadb + ",./index/rRNA/" + rrnaprefix + "-db:"
-        indexstring = dbstring + indexstring
-    return str(indexstring)
-
 rule rrnaindex:
     input:
-        ["rRNA_databases/{rrnadb}".format(rrnadb=rrnadb) for rrnadb in RRNADB]
+        ["rRNA_databases/{rrnadb}.fasta".format(rrnadb=rrnadb) for rrnadb in get_dbs()]
     output:
-        ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=re.sub("-id\d+.fasta","",rrnadb)) for rrnadb in RRNADB]
-        #["index/rRNA/{rrnadb}.kmer_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB]
-        #["index/rRNA/{rrnadb}.pos_0.dat".format(rrnadb=rrnadb) for rrnadb in RRNADB]
-        #["index/rRNA/{rrnadb}.stats".format(rrnadb=rrnadb) for rrnadb in RRNADB]
-        #"index/rRNA/{rrnadb}.bursttrie_0.dat"
-        #"index/rRNA/{rrnadb}.kmer_0.dat"
-        #"index/rRNA/{rrnadb}.pos_0.dat"
-        #"index/rRNA/{rrnadb}.stats"
+        ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=rrnadb) for rrnadb in get_dbs()]
     conda:
         "envs/sortmerna.yaml"
+    params:
+        dbstring = get_indexfiles()
     shell:
-        "mkdir -p index/rRNA; indexdb_rna --ref ./rRNA_databases/silva-euk-18s-id95.fasta,./index/rRNA/silva-euk-18s:./rRNA_databases/silva-euk-28s-id98.fasta,./index/rRNA/silva-euk-28s:./rRNA_databases/rfam-5s-database-id98.fasta,./index/rRNA/rfam-5s-database:./rRNA_databases/rfam-5.8s-database-id98.fasta,./index/rRNA/rfam-5.8s-database"
+        "mkdir -p index/rRNA; indexdb_rna --ref {params.dbstring}"
 
 rule rrnafilter:
     input:
         rules.trim.output,
         rules.rrnaindex.output
+
     output:
         "norRNA/{method}_{condition}_{sampleid}.fastq"
     conda:
         "envs/sortmerna.yaml"
     params:
-        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
+        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0]),
+        dbstring = get_indexfiles()
     threads: 20
     shell:
-        "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref ./rRNA_databases/silva-euk-18s-id95.fasta,./index/rRNA/silva-euk-18s:./rRNA_databases/silva-euk-28s-id98.fasta,./index/rRNA/silva-euk-28s:./rRNA_databases/rfam-5s-database-id98.fasta,./index/rRNA/rfam-5s-database:./rRNA_databases/rfam-5.8s-database-id98.fasta,./index/rRNA/rfam-5.8s-database --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {params.prefix}"
+        "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref {params.dbstring} --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {params.prefix}"
