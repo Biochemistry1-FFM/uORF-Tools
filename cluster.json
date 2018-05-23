@@ -1,11 +1,11 @@
 {
     "__default__" :
     {
-        "jobname" : "rflow.{rule}",
+        "jobname" : "{rule}",
         "qname" : "all.q",
-        "parallelenvironment" : "smp 10",
-        "logoutputdir" : "/scratch/bi01/egg/rflow/",
-        "erroroutputdir" : "/scratch/bi01/egg/rflow/",
+        "parallelenvironment" : "smp 20",
+        "logoutputdir" : "/scratch/bi03/egg/rflow/",
+        "erroroutputdir" : "/scratch/bi03/egg/rflow/",
         "joinlogs" : "y"
     }
 }

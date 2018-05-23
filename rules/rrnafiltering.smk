@@ -18,7 +18,7 @@ def get_indexfiles ():
     dbs=get_dbs()
     indexstring=""
     for rrnadb in dbs:
-        dbstring = "./rRNA_databases/" + rrnadb + ".fasta" + ",./index/rRNA/" + rrnaprefix + ":"
+        dbstring = "./rRNA_databases/" + rrnadb + ".fasta" + ",./index/rRNA/" + rrnadb + ":"
         indexstring = dbstring + indexstring
     return str(indexstring)
 

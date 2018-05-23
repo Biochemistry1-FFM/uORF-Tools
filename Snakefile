@@ -4,8 +4,6 @@ import pandas as pd
 from snakemake.utils import validate, min_version
 min_version("5.1.2")
 
-# load configuration
-configfile: "config.yaml"
 ADAPTERS=config["adapter"]
 METHODS=config["methods"]
 CONDITIONS=config["conditions"]
@@ -150,7 +148,7 @@ rule maplink:
         "bam/{method}_{condition}_{sampleid}.bam"
     threads: 1
     shell:
-        "ln -s {input[0]} {output[0]}"
+        "ln -s {input[0]} {output}"
 
 
 rule normalizedCounts:
