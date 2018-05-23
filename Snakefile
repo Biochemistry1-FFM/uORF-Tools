@@ -6,7 +6,7 @@ min_version("5.1.2")
 
 # load configuration
 configfile: "config.yaml"
-ADAPTERS=config["adapters"]
+ADAPTERS=config["adapter"]
 METHODS=config["methods"]
 CONDITIONS=config["conditions"]
 SAMPLEIDS=config["sampleids"]
@@ -17,6 +17,8 @@ rule all:
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("uORFs/sfactors_lprot_{method}.csv", condition=CONDITIONS, method=METHODS),
        expand("uORFs/ncounts_lprot_{method}.csv", condition=CONDITIONS, method=METHODS)
+onsuccess:
+    print("Done, no error")
 
 rule trim:
     input:
