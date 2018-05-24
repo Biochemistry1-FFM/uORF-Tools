@@ -13,6 +13,7 @@ rule all:
    input:
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("uORFs/sfactors_lprot_{method}.csv", condition=CONDITIONS, method=METHODS),
        expand("uORFs/ncounts_lprot_{method}.csv", condition=CONDITIONS, method=METHODS)
 onsuccess:
@@ -61,6 +62,8 @@ rule genomeIndex:
     threads: 20
     shell:
         "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100"
+
+ruleorder: map > maplink
 
 rule map:
     input:
@@ -140,19 +143,20 @@ rule longestTranscript:
     shell:
         "mkdir -p uORFs; uORF-Tools/longest_orf_transcript.py -a {input} -o {output}"
 
-ruleorder: map > maplink
-
 rule maplink:
     input:
-       "bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam"
+      expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
     output:
-        "bam/{method}_{condition}_{sampleid}.bam"
-    threads: 1
+      expand("bam/{method}_{condition}_{sampleid}.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
     params:
-        cwd=lambda wildcards, output: (os.getcwd())
+        cwd=os.getcwd()
     log: "logs/maplink.log"
-    shell:
-        "ln -s {params.cwd}/{input[0]} {params.cwd}/{output[0]} 2> {log}"
+    run:
+        for f in input:
+                str=f
+                outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
+                print(outfile)
+                shell("ln -s {params.cwd}/{input[0]} {params.cwd}/{outfile}")
 
 rule normalizedCounts:
     input:
