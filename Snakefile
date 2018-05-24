@@ -142,7 +142,7 @@ rule longestTranscript:
 
 rule maplink:
     input:
-       "bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam"
+       expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
     output:
         "bam/{method}_{condition}_{sampleid}.bam"
     threads: 1
