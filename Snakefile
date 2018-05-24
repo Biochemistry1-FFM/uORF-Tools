@@ -140,17 +140,17 @@ rule longestTranscript:
     shell:
         "mkdir -p uORFs; uORF-Tools/longest_orf_transcript.py -a {input} -o {output}"
 
-
 rule maplink:
     input:
-        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+       "bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam"
     output:
         "bam/{method}_{condition}_{sampleid}.bam"
     threads: 1
+    params:
+        cwd=lambda wildcards, output: (os.getcwd())
     log: "logs/maplink.log"
     shell:
-        "ln -s {input[0]} {output[0]}"
-
+        "ln -s {params.cwd}/{input[0]} {params.cwd}/{output[0]};"
 
 rule normalizedCounts:
     input:
