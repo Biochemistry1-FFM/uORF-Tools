@@ -49,7 +49,7 @@ sample.type <- paste(options$type, "_", sep="")
 gene.counts <- data.frame(gene.id = gencode$transcript_id)
 
 # get sample files
-sample.files <- paste(options$bam_directory_path, grep(sample.type,list.files(options$bam_directory_path), value = TRUE), sep = "")
+sample.files <- paste(options$bam_directory_path, grep(sample.type,list.files(options$bam_directory_pathi, pattern = "\\.bam$"), value = TRUE), sep = "")
 
 # exclue samples from experiment no. 1, keep re-sequencing experiment i.e. 1-2 (for now)
 #sample.files <- sample.files[c(1,3,4,5,6,8,9,10)]

@@ -14,8 +14,7 @@ rule all:
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("uORFs/sfactors_lprot_{method}.csv", condition=CONDITIONS, method=METHODS),
-       expand("uORFs/ncounts_lprot_{method}.csv", condition=CONDITIONS, method=METHODS)
+       expand("uORFs/sfactors_lprot_{method}.csv", method=METHODS)
 onsuccess:
     print("Done, no error")
 
@@ -150,26 +149,27 @@ rule maplink:
       expand("bam/{method}_{condition}_{sampleid}.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
     params:
         cwd=os.getcwd()
+    threads: 1
     log: "logs/maplink.log"
     run:
         for f in input:
                 str=f
                 outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
-                print(outfile)
-                shell("ln -s {params.cwd}/{input[0]} {params.cwd}/{outfile}")
+                shell("ln -s {params.cwd}/{f} {params.cwd}/{outfile}")
 
 rule normalizedCounts:
     input:
-        expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-        rules.longestTranscript.output
+        rules.longestTranscript.output,
+        rules.maplink.output
     output:
-        "uORFs/ncounts_lprot_{method}.csv",
-        "uORFs/sfactors_lprot_{method}.csv"
+        "uORFs/sfactors_lprot_FP.csv",
+        "uORFs/sfactors_lprot_Total.csv",
+        "uORFs/ncounts_lprot_FP.csv",
+        "uORFs/ncounts_lprot_Total.csv"
     conda:
         "envs/uorftools.yaml"
-    threads: 20
-    shell:
-        "mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[1]} -s uORFs/sfactors_lprot_{method}.csv -n uORFs/ncounts_lprot_{method}.csv -t {method}"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
 
 # Import rules
 

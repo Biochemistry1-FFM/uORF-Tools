@@ -2,11 +2,6 @@
 taxonomy: "Eukarya"
 #Adapter sequence used
 adapter: "AGATCGGAAGAGCACACGTCT"
-methods:
-  - FP
-  - Total
-conditions:
-  - ctrl
-  - treat
-sampleids:
-  - 1-2
+methods: ["FP", "Total"]
+conditions: ["ctrl", "treat"]
+sampleids: ["1-2"]
