@@ -14,8 +14,8 @@ rule all:
        expand("fastqc/{method}_{condition}_{sampleid}_fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("uORFs/sfactors_lprot_{method}.csv", method=METHODS)
+       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+       #expand("uORFs/sfactors_lprot_{method}.csv", method=METHODS)
 onsuccess:
     print("Done, no error")
 
@@ -136,7 +136,7 @@ rule ribotaperMerge:
     output:
         "ribotaper/{sampleid}/Merged_uORF_results.csv"
     conda:
-        "envs/uorftools.yaml"
+        "envs/uorftoolspython.yaml"
     threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
@@ -169,19 +169,19 @@ rule maplink:
                 outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
                 shell("ln -s {params.cwd}/{f} {params.cwd}/{outfile}")
 
-rule normalizedCounts:
-    input:
-        rules.longestTranscript.output,
-        rules.maplink.output
-    output:
-        "uORFs/sfactors_lprot_FP.csv",
-        "uORFs/sfactors_lprot_Total.csv",
-        "uORFs/ncounts_lprot_FP.csv",
-        "uORFs/ncounts_lprot_Total.csv"
-    conda:
-        "envs/uorftools.yaml"
-    threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
+#rule normalizedCounts:
+#    input:
+#        rules.longestTranscript.output,
+#        rules.maplink.output
+#    output:
+#        "uORFs/sfactors_lprot_FP.csv",
+#        "uORFs/sfactors_lprot_Total.csv",
+#        "uORFs/ncounts_lprot_FP.csv",
+#        "uORFs/ncounts_lprot_Total.csv"
+#    conda:
+#        "envs/uorftools.yaml"
+#    threads: 1
+#    shell: ("mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
 
 # Import rules
 
