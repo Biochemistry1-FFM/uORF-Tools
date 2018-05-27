@@ -4,8 +4,8 @@
         "jobname" : "{rule}",
         "qname" : "all.q",
         "parallelenvironment" : "smp 20",
-        "logoutputdir" : "/scratch/bi03/egg/rflow/",
-        "erroroutputdir" : "/scratch/bi03/egg/rflow/",
+        "logoutputdir" : "$PWD",
+        "erroroutputdir" : "$PWD",
         "joinlogs" : "y"
     }
 }
