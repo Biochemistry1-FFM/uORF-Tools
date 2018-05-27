@@ -114,10 +114,24 @@ rule ribotaperMetaplot:
     shell:
         "mkdir -p ribotaper/metaplots; create_metaplots.bash {input[0]} {input[1]} {output[0]}"
 
+rule genomeSamToolsIndex:
+    input:
+        rules.retrieveGenome.output
+    output:
+        "genomes/genome.fa.fai"
+    conda:
+        "../envs/samtools.yaml"
+    threads: 1
+    params:
+    log: "logs/_{condition}_{sampleid}.log"
+    shell:
+        "samtools faidx {rules.retrieveGenome.output}"
+
 rule ribotaper:
     input:
         fp=expand("bam/FP_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/Total_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
-        annotation=rules.ribotaperAnnotation.output
+        annotation=rules.ribotaperAnnotation.output,
+        rules.genomeSamToolsIndex.output
     output:
         "ribotaper/{condition}_{sampleid}/ORFs_max_filt",
         "ribotaper/{condition}_{sampleid}/Final_ORF_results.pdf"
