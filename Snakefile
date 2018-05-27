@@ -18,6 +18,17 @@ rule all:
 onsuccess:
     print("Done, no error")
 
+ule fastqc:
+    input:
+        expand("fastq/{method}_{condition}_{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+    output:
+        "fastqc/{method}_{condition}_{sampleid}_fastqc.html"
+    conda:
+        "envs/fastqc.yaml"
+    threads: 6
+    shell:
+        "mkdir -p fastqc; fastqc -o fastqc -t {threads} {input}"
+
 rule trim:
     input:
         expand("fastq/{method}_{condition}_{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
