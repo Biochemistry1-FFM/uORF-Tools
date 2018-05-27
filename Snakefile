@@ -11,6 +11,7 @@ SAMPLEIDS=config["sampleids"]
 
 rule all:
    input:
+       expand("fastqc/{method}_{condition}_{sampleid}_fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
@@ -18,7 +19,7 @@ rule all:
 onsuccess:
     print("Done, no error")
 
-ule fastqc:
+rule fastqc:
     input:
         expand("fastq/{method}_{condition}_{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
     output:
