@@ -169,19 +169,19 @@ rule maplink:
                 outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
                 shell("ln -s {params.cwd}/{f} {params.cwd}/{outfile}")
 
-#rule normalizedCounts:
-#    input:
-#        rules.longestTranscript.output,
-#        rules.maplink.output
-#    output:
-#        "uORFs/sfactors_lprot_FP.csv",
-#        "uORFs/sfactors_lprot_Total.csv",
-#        "uORFs/ncounts_lprot_FP.csv",
-#        "uORFs/ncounts_lprot_Total.csv"
-#    conda:
-#        "envs/uorftools.yaml"
-#    threads: 1
-#    shell: ("mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
+rule normalizedCounts:
+    input:
+        rules.longestTranscript.output,
+        rules.maplink.output
+    output:
+        "uORFs/sfactors_lprot_FP.csv",
+        "uORFs/sfactors_lprot_Total.csv",
+        "uORFs/ncounts_lprot_FP.csv",
+        "uORFs/ncounts_lprot_Total.csv"
+    conda:
+        "envs/uorftools.yaml"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
 
 # Import rules
 

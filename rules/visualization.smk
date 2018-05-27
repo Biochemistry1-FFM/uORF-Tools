@@ -4,7 +4,7 @@ rule genomeSamToolsIndex:
     output:
         "index/genomeSamtools/sizes.genome"
     conda:
-        "envs/samtools.yaml"
+        "../envs/samtools.yaml"
     threads: 1
     params:
     log: "logs/_{condition}_{sampleid}.log"
@@ -18,7 +18,7 @@ rule wig:
     output:
         "tracks/{method}_{condition}_{sampleid}.wig"
     conda:
-        "envs/wig.yaml"
+        "../envs/wig.yaml"
     threads: 1
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
@@ -32,7 +32,7 @@ rule annotationBed:
     output:
         "tracks/annotation.bed"
     conda:
-        "envs/bed.yaml"
+        "../envs/bed.yaml"
     threads: 1
     shell:
         "mkdir -p tracks; gtf2bed < {input[0]} > tracks/annotation.bed"
@@ -44,7 +44,7 @@ rule annotationBigBed:
     output:
         "tracks/annotation.bb"
     conda:
-        "envs/bed.yaml"
+        "../envs/bed.yaml"
     threads: 1
     shell:
         "mkdir -p tracks; bedToBigBed {input[0]} {input[1]} tracks/annotation.bb"

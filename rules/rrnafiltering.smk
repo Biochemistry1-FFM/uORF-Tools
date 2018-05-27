@@ -37,7 +37,7 @@ rule rrnaindex:
     output:
         ["index/rRNA/{rrnadb}.bursttrie_0.dat".format(rrnadb=rrnadb) for rrnadb in get_dbs()]
     conda:
-        "envs/sortmerna.yaml"
+        "../envs/sortmerna.yaml"
     params:
         dbstring = get_indexfiles()
     shell:
@@ -51,7 +51,7 @@ rule rrnafilter:
     output:
         "norRNA/{method}_{condition}_{sampleid}.fastq"
     conda:
-        "envs/sortmerna.yaml"
+        "../envs/sortmerna.yaml"
     params:
         prefix=lambda wildcards, output: (os.path.splitext(output[0])[0]),
         dbstring = get_indexfiles()

@@ -8,3 +8,4 @@ dependencies:
  - r-plyr
  - bioconductor-rtracklayer
  - r-optparse
+ - r-base=3.4.1
