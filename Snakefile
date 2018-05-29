@@ -14,8 +14,9 @@ rule all:
        expand("fastqc/{method}_{condition}_{sampleid}_fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
-       #expand("uORFs/sfactors_lprot_{method}.csv", method=METHODS)
+       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("tracks/{method}_{condition}_{sampleid}.wig", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       "tracks/annotation.bb"
 onsuccess:
     print("Done, no error")
 
@@ -100,7 +101,7 @@ rule ribotaperAnnotation:
         "envs/ribotaper.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/ribotaper_annotation; create_annotations_files.bash {input[0]} {input[1]} true false ribotaper/ribotaper_annotation"
+        "mkdir -p ribotaper/ribotaper_annotation; create_annotations_files.bash {input[0]} {input[1]} false false ribotaper/ribotaper_annotation"
 
 rule ribotaperMetaplot:
     input:
@@ -120,10 +121,9 @@ rule genomeSamToolsIndex:
     output:
         "genomes/genome.fa.fai"
     conda:
-        "../envs/samtools.yaml"
+        "envs/samtools.yaml"
     threads: 1
     params:
-    log: "logs/_{condition}_{sampleid}.log"
     shell:
         "samtools faidx {rules.retrieveGenome.output}"
 
@@ -131,7 +131,7 @@ rule ribotaper:
     input:
         fp=expand("bam/FP_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/Total_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
         annotation=rules.ribotaperAnnotation.output,
-        rules.genomeSamToolsIndex.output
+        samindex=rules.genomeSamToolsIndex.output
     output:
         "ribotaper/{condition}_{sampleid}/ORFs_max_filt",
         "ribotaper/{condition}_{sampleid}/Final_ORF_results.pdf"
@@ -140,7 +140,6 @@ rule ribotaper:
     threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
-    log: "logs/ribotaper_{condition}_{sampleid}.log"
     shell:
         "mkdir -p {params.prefix}; cd {params.prefix}; Ribotaper.sh ../../{input.fp[0]} ../../{input.total[0]} ../../ribotaper/ribotaper_annotation/ 27,29,30,31 11,11,12,12 {threads}"
 
@@ -176,7 +175,6 @@ rule maplink:
     params:
         cwd=os.getcwd()
     threads: 1
-    log: "logs/maplink.log"
     run:
         for f in input:
                 str=f
@@ -200,3 +198,4 @@ rule normalizedCounts:
 # Import rules
 
 include: "rules/rrnafiltering.smk"
+include: "rules/visualization.smk"
