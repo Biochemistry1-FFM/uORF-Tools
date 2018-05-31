@@ -7,7 +7,7 @@ rule genomeSize:
         "../envs/samtools.yaml"
     threads: 1
     params:
-    log: "logs/_{condition}_{sampleid}.log"
+    log: "logs/genomeSamToolsIndex.log"
     shell:
         "mkdir -p genomes; cut -f1,2 {input[0]} > genomes/sizes.genome"
 
