@@ -45,4 +45,4 @@ rule annotationBigBed:
         "../envs/bed.yaml"
     threads: 1
     shell:
-        "mkdir -p tracks; bedToBigBed -tab {input[0]} {input[1]} tracks/annotation.bb"
+        "mkdir -p tracks; bedToBigBed -type=bed6+4 -tab {input[0]} {input[1]} tracks/annotation.bb"
