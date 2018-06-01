@@ -11,21 +11,18 @@ rule genomeSize:
     shell:
         "mkdir -p genomes; cut -f1,2 {input[0]} > genomes/sizes.genome"
 
-
 rule wig:
     input:
-        expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"]),
+        "bam/{outwig}/Aligned.sortedByCoord.out.bam",
         rules.genomeSize.output
     output:
-        "tracks/{method}_{condition}_{sampleid}.wig"
+        "tracks/{outwig}.wig"
     conda:
         "../envs/wig.yaml"
     threads: 1
-    params:
-        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
-    log: "logs/ribotaper_{condition}_{sampleid}.log"
+    log: "logs/wig.log"
     shell:
-        "mkdir -p tracks; bam2wig.py -i {input[0]} -s {input[1]} -o tracks/{prefix}"
+        "mkdir -p tracks; bam2wig.py -i {input[0]} -s {input[1]} -o tracks/{outwig}"
 
 rule annotationBed:
     input:
@@ -48,4 +45,4 @@ rule annotationBigBed:
         "../envs/bed.yaml"
     threads: 1
     shell:
-        "mkdir -p tracks; bedToBigBed {input[0]} {input[1]} tracks/annotation.bb"
+        "mkdir -p tracks; bedToBigBed -tab {input[0]} {input[1]} tracks/annotation.bb"

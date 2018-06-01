@@ -9,22 +9,25 @@ METHODS=config["methods"]
 CONDITIONS=config["conditions"]
 SAMPLEIDS=config["sampleids"]
 
+(OUTWIGS) = glob_wildcards("fastq/{outwig}.fastq.gz")
+print(OUTWIGS)
+
 rule all:
    input:
-       expand("fastqc/{method}_{condition}_{sampleid}_fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("ribotaper/{condition}_{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("bam/{method}_{condition}_{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("tracks/{method}_{condition}_{sampleid}.wig", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("fastqc/{method}-{condition}-{sampleid}-fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("ribotaper/{condition}-{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("bam/{method}-{condition}-{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("tracks/{outwig}.wig", outwig=OUTWIGS),
        "tracks/annotation.bb"
 onsuccess:
     print("Done, no error")
 
 rule fastqc:
     input:
-        expand("fastq/{method}_{condition}_{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+        expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
     output:
-        "fastqc/{method}_{condition}_{sampleid}_fastqc.html"
+        "fastqc/{method}-{condition}-{sampleid}-fastqc.html"
     conda:
         "envs/fastqc.yaml"
     threads: 6
@@ -33,9 +36,9 @@ rule fastqc:
 
 rule trim:
     input:
-        expand("fastq/{method}_{condition}_{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+        expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
     output:
-        "trimmed/{method}_{condition}_{sampleid}.fastq"
+        "trimmed/{method}-{condition}-{sampleid}.fastq"
     params: ada=ADAPTERS
     conda:
         "envs/cutadapt.yaml"
@@ -73,16 +76,16 @@ rule genomeIndex:
         "envs/star.yaml"
     threads: 20
     shell:
-        "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100"
+        "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
 
 ruleorder: map > maplink
 
 rule map:
     input:
-        expand("norRNA/{method}_{condition}_{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+        expand("norRNA/{method}-{condition}-{sampleid}.fastq", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
         rules.genomeIndex.output
     output:
-        "bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam"
+        "bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam"
     conda:
         "envs/star.yaml"
     threads: 20
@@ -108,7 +111,7 @@ rule ribotaperMetaplot:
         rules.map.output,
         rules.ribotaperAnnotation.output
     output:
-        "metaplots/{method}_{condition}_{sampleid}"
+        "metaplots/{method}-{condition}-{sampleid}"
     conda:
         "envs/ribotaper.yaml"
     threads: 1
@@ -129,12 +132,12 @@ rule genomeSamToolsIndex:
 
 rule ribotaper:
     input:
-        fp=expand("bam/FP_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/Total_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
+        fp=expand("bam/FP-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/Total-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
-        "ribotaper/{condition}_{sampleid}/ORFs_max_filt",
-        "ribotaper/{condition}_{sampleid}/Final_ORF_results.pdf"
+        "ribotaper/{condition}-{sampleid}/ORFs_max_filt",
+        "ribotaper/{condition}-{sampleid}/Final_ORF_results.pdf"
     conda:
         "envs/ribotaper.yaml"
     threads: 20
@@ -145,7 +148,7 @@ rule ribotaper:
 
 rule ribotaperMerge:
     input:
-        ctrl=expand("ribotaper/ctrl_{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS),
+        ctrl=expand("ribotaper/ctrl-{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS),
     output:
         "ribotaper/{sampleid}/Merged_uORF_results.csv"
     conda:
@@ -169,9 +172,9 @@ rule longestTranscript:
 
 rule maplink:
     input:
-      expand("bam/{method}_{condition}_{sampleid}/Aligned.sortedByCoord.out.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
+      expand("bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
     output:
-      expand("bam/{method}_{condition}_{sampleid}.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
+      expand("bam/{method}-{condition}-{sampleid}.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
     params:
         cwd=os.getcwd()
     threads: 1
