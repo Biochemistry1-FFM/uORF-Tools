@@ -57,4 +57,4 @@ rule rrnafilter:
         dbstring = get_indexfiles()
     threads: 20
     shell:
-        "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref {params.dbstring} --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {params.prefix}"
+        "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref {params.dbstring} --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {params.prefix} 2> /dev/null"
