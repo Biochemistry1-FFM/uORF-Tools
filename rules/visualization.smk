@@ -33,7 +33,7 @@ rule annotationBed:
         "../envs/bed.yaml"
     threads: 1
     shell:
-        "mkdir -p tracks; gtf2bed < {input[0]} > tracks/annotation.bed"
+        "mkdir -p tracks; cat {input[0]} | grep -v '\tgene\t' > tracks/annotation-woGenes.gtf; gtf2bed < tracks/annotation-woGenes.gtf > tracks/annotation.bed"
 
 rule annotationBigBed:
     input:
