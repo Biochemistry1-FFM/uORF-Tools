@@ -27,7 +27,7 @@ rule fastqc:
     input:
         expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
     output:
-        "fastqc/{method}-{condition}-{sampleid}-fastqc.html"
+        "fastqc/{method}-{condition}-{sampleid}_fastqc.html"
     conda:
         "envs/fastqc.yaml"
     threads: 6
