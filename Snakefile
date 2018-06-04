@@ -142,7 +142,7 @@ rule longestTranscript:
         "envs/uorftools.yaml"
     threads: 20
     shell:
-        "mkdir -p uORFs; uORF-Tools/longest_orf_transcript.py -a {input} -o {output}"
+        "mkdir -p uORFs; uORF-Tools/scripts/longest_orf_transcript.py -a {input} -o {output}"
 
 rule maplink:
     input:
@@ -170,7 +170,7 @@ rule normalizedCounts:
     conda:
         "envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
 
 # Import rules
 
