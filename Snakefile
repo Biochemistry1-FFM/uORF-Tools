@@ -14,11 +14,11 @@ print(OUTWIGS)
 
 rule all:
    input:
-       expand("fastqc/{method}-{condition}-{sampleid}-fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
+       expand("fastqc/{method}-{condition}-{sampleid}_fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}-{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}-{condition}-{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       expand("tracks/{outwig}.wig", outwig=OUTWIGS),
+       #expand("tracks/{outwig}.wig", outwig=OUTWIGS),
        "tracks/annotation.bb"
 onsuccess:
     print("Done, no error")
@@ -29,14 +29,15 @@ rule trim:
     output:
         "trimmed/{method}-{condition}-{sampleid}.fastq"
     params:
-        ada=ADAPTERS,
-        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
+        ada=lambda wildcards, output: ("" if not ADAPTERS else (" -a " + ADAPTERS)),
+        #ada=lambda wildcards, output: (if not ADAPTERS then "" else (" -a " + ADAPTERS)),
+        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
+        #prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     conda:
         "envs/trimgalore.yaml"
     threads: 20
-    prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p trimmed; trim_galore -a {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip {input[0]}; mv {params.prefix}_trimmed.fq {params.prefix}.fastq"
+        "mkdir -p trimmed; trim_galore {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip {input[0]}; mv {params.prefix}_trimmed.fq {params.prefix}.fastq"
 
 rule fastqc:
     input:
