@@ -23,6 +23,24 @@ rule all:
 onsuccess:
     print("Done, no error")
 
+rule retrieveGenome:
+    input:
+        "genome.fa"
+    output:
+        "genomes/genome.fa"
+    threads: 1
+    shell:
+        "mkdir -p genomes; cp genome.fa genomes/"
+
+rule retrieveAnnotation:
+    input:
+        "annotation.gtf"
+    output:
+        "annotation/annotation.gtf"
+    threads: 1
+    shell:
+        "mkdir -p annotation; cp annotation.gtf annotation/"
+
 rule trim:
     input:
         expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
@@ -39,6 +57,12 @@ rule trim:
     shell:
         "mkdir -p trimmed; trim_galore {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip {input[0]}; mv {params.prefix}_trimmed.fq {params.prefix}.fastq"
 
+
+# Import rules
+
+include: "rules/rrnafiltering.smk"
+include: "rules/mapping.smk"
+
 rule fastqc:
     input:
         rules.trim.output
@@ -49,24 +73,6 @@ rule fastqc:
     threads: 6
     shell:
         "mkdir -p fastqc; fastqc -o fastqc -t {threads} {input}"
-
-rule retrieveGenome:
-    input:
-        "genome.fa"
-    output:
-        "genomes/genome.fa"
-    threads: 20
-    shell:
-        "mkdir -p genomes; cp genome.fa genomes/"
-
-rule retrieveAnnotation:
-    input:
-        "annotation.gtf"
-    output:
-        "annotation/annotation.gtf"
-    threads: 20
-    shell:
-        "mkdir -p annotation; cp annotation.gtf annotation/"
 
 rule ribotaperAnnotation:
     input:
@@ -172,8 +178,5 @@ rule normalizedCounts:
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
 
-# Import rules
-
-include: "rules/rrnafiltering.smk"
-include: "rules/mapping.smk"
 include: "rules/visualization.smk"
+
