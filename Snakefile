@@ -23,9 +23,24 @@ rule all:
 onsuccess:
     print("Done, no error")
 
-rule fastqc:
+rule trim:
     input:
         expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+    output:
+        "trimmed/{method}-{condition}-{sampleid}.fastq"
+    params:
+        ada=ADAPTERS,
+        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
+    conda:
+        "envs/trimgalore.yaml"
+    threads: 20
+    prefix=lambda wildcards, output: (os.path.dirname(output[0]))
+    shell:
+        "mkdir -p trimmed; trim_galore -a {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip {input[0]}; mv {params.prefix}_trimmed.fq {params.prefix}.fastq"
+
+rule fastqc:
+    input:
+        rules.trim.output
     output:
         "fastqc/{method}-{condition}-{sampleid}_fastqc.html"
     conda:
@@ -33,18 +48,6 @@ rule fastqc:
     threads: 6
     shell:
         "mkdir -p fastqc; fastqc -o fastqc -t {threads} {input}"
-
-rule trim:
-    input:
-        expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
-    output:
-        "trimmed/{method}-{condition}-{sampleid}.fastq"
-    params: ada=ADAPTERS
-    conda:
-        "envs/cutadapt.yaml"
-    threads: 20
-    shell:
-        "mkdir -p trimmed; cutadapt -a {params.ada} -j {threads} -u 1 -q 20 -O 1 -m 15 --trim-n -o {output} {input[0]}"
 
 rule retrieveGenome:
     input:
