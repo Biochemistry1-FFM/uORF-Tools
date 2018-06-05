@@ -13,7 +13,7 @@ rule genomeSize:
 
 rule wig:
     input:
-        "bam/{outwig}/Aligned.sortedByCoord.out.bam",
+        rules.map.output, #"bam/{outwig}/Aligned.sortedByCoord.out.bam",
         rules.genomeSize.output
     output:
         "tracks/{outwig}.wig"
