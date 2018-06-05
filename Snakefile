@@ -18,7 +18,7 @@ rule all:
        expand("bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("ribotaper/{condition}-{sampleid}/ORFs_max_filt", condition=CONDITIONS, sampleid=SAMPLEIDS),
        expand("bam/{method}-{condition}-{sampleid}.bam", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
-       #expand("tracks/{outwig}.wig", outwig=OUTWIGS),
+       expand("tracks/{method}-{condition}-{sampleid}.wig", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
        "tracks/annotation.bb"
 onsuccess:
     print("Done, no error")

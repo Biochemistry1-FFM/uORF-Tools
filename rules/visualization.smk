@@ -6,7 +6,6 @@ rule genomeSize:
     conda:
         "../envs/samtools.yaml"
     threads: 1
-    params:
     log: "logs/genomeSamToolsIndex.log"
     shell:
         "mkdir -p genomes; cut -f1,2 {input[0]} > genomes/sizes.genome"
@@ -16,13 +15,14 @@ rule wig:
         rules.map.output, #"bam/{outwig}/Aligned.sortedByCoord.out.bam",
         rules.genomeSize.output
     output:
-        "tracks/{outwig}.wig"
+        "tracks/{method}-{condition}-{sampleid}.wig"
     conda:
         "../envs/wig.yaml"
     threads: 1
-    log: "logs/wig.log"
+    params:
+        prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0]))[0])
     shell:
-        "mkdir -p tracks; bam2wig.py -i {input[0]} -s {input[1]} -o tracks/{outwig}"
+        "mkdir -p tracks; bam2wig.py -i bam/{params.prefix}.bam -s {input[1]} -o tracks/{params.prefix}"
 
 rule annotationBed:
     input:
