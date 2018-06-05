@@ -7,7 +7,7 @@ rule genomeIndex:
         "index/genomeStar/chrName.txt",
         "index/genomeStar/genomeParameters.txt"
     conda:
-        "envs/star.yaml"
+        "../envs/star.yaml"
     threads: 20
     shell:
         "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
@@ -21,7 +21,7 @@ rule map:
     output:
         "bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam"
     conda:
-        "envs/star.yaml"
+        "../envs/star.yaml"
     threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))

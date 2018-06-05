@@ -41,25 +41,7 @@ rule retrieveAnnotation:
     shell:
         "mkdir -p annotation; cp annotation.gtf annotation/"
 
-rule trim:
-    input:
-        expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
-    output:
-        "trimmed/{method}-{condition}-{sampleid}.fastq"
-    params:
-        ada=lambda wildcards, output: ("" if not ADAPTERS else (" -a " + ADAPTERS)),
-        #ada=lambda wildcards, output: (if not ADAPTERS then "" else (" -a " + ADAPTERS)),
-        prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0])))
-        #prefix=lambda wildcards, output: (os.path.dirname(output[0]))
-    conda:
-        "envs/trimgalore.yaml"
-    threads: 20
-    shell:
-        "mkdir -p trimmed; trim_galore {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip fastq/{params.prefix}.fastq; mv trimmed/{params.prefix}_trimmed.fq trimmed/{params.prefix}.fastq"
-
-
-# Import rules
-
+include: "rules/trimming.smk"
 include: "rules/rrnafiltering.smk"
 include: "rules/mapping.smk"
 
@@ -120,7 +102,7 @@ rule ribotaper:
         "ribotaper/{condition}-{sampleid}/Final_ORF_results.pdf"
     conda:
         "envs/ribotaper.yaml"
-    threads: 20
+    threads: 6
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
@@ -133,7 +115,7 @@ rule ribotaperMerge:
         "ribotaper/{sampleid}/Merged_uORF_results.csv"
     conda:
         "envs/uorftoolspython.yaml"
-    threads: 20
+    threads: 6
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
