@@ -9,9 +9,6 @@ METHODS=config["methods"]
 CONDITIONS=config["conditions"]
 SAMPLEIDS=config["sampleids"]
 
-(OUTWIGS) = glob_wildcards("fastq/{outwig}.fastq.gz")
-print(OUTWIGS)
-
 rule all:
    input:
        expand("fastqc/{method}-{condition}-{sampleid}_fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),

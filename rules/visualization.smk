@@ -10,9 +10,23 @@ rule genomeSize:
     shell:
         "mkdir -p genomes; cut -f1,2 {input[0]} > genomes/sizes.genome"
 
-rule wig:
+rule bamindex:
     input:
         rules.map.output, #"bam/{outwig}/Aligned.sortedByCoord.out.bam",
+        rules.genomeSize.output
+    output:
+        "bam/{method}-{condition}-{sampleid}.bai"
+    conda:
+        "../envs/samtools.yaml"
+    threads: 1
+    params:
+        prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0]))[0])
+    shell:
+        "samtools index bam/{params.prefix}.bam"
+
+rule wig:
+    input:
+        rules.map.output,
         rules.genomeSize.output
     output:
         "tracks/{method}-{condition}-{sampleid}.wig"
