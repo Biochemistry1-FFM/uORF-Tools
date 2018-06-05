@@ -12,22 +12,23 @@ rule genomeSize:
 
 rule bamindex:
     input:
-        rules.map.output, #"bam/{outwig}/Aligned.sortedByCoord.out.bam",
+        rules.map.output,
         rules.genomeSize.output
     output:
-        "bam/{method}-{condition}-{sampleid}.bai"
+        "bam/{method}-{condition}-{sampleid}.bam.bai"
     conda:
         "../envs/samtools.yaml"
     threads: 1
     params:
         prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0]))[0])
     shell:
-        "samtools index bam/{params.prefix}.bam"
+        "samtools index bam/{params.prefix}"
 
 rule wig:
     input:
         rules.map.output,
-        rules.genomeSize.output
+        rules.genomeSize.output,
+        rules.bamindex.output
     output:
         "tracks/{method}-{condition}-{sampleid}.wig"
     conda:
