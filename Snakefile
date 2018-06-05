@@ -49,13 +49,13 @@ rule trim:
     params:
         ada=lambda wildcards, output: ("" if not ADAPTERS else (" -a " + ADAPTERS)),
         #ada=lambda wildcards, output: (if not ADAPTERS then "" else (" -a " + ADAPTERS)),
-        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
+        prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0])))
         #prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     conda:
         "envs/trimgalore.yaml"
     threads: 20
     shell:
-        "mkdir -p trimmed; trim_galore {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip {input[0]}; mv {params.prefix}_trimmed.fq {params.prefix}.fastq"
+        "mkdir -p trimmed; trim_galore {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip fastq/{params.prefix}.fastq; mv trimmed/{params.prefix}_trimmed.fq trimmed/{params.prefix}.fastq"
 
 
 # Import rules
