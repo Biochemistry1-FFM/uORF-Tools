@@ -18,11 +18,11 @@ rule bamindex:
         "bam/{method}-{condition}-{sampleid}.bam.bai"
     conda:
         "../envs/samtools.yaml"
-    threads: 1
+    threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0]))[0])
     shell:
-        "samtools index bam/{params.prefix}"
+        "samtools index -@ {threads} bam/{params.prefix}"
 
 rule wig:
     input:
