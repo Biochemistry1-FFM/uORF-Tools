@@ -1,10 +1,12 @@
 __default__:
+  jobname: "{rule}"
   qname: 'all.q'
   parallelenvironment : 'smp 8'
   logoutputdir : "$PWD"
   erroroutputdir : "$PWD"
   joinlogs : 'y'
-  memory: "h_vmem=10G"
+  memory: "h_vmem=8G"
 
 ribotaper:
-  parallelenvironment : 'smp 6'
+  parallelenvironment : 'smp 5'
+  memory: "h_vmem=15G"
