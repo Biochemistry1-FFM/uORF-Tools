@@ -1,0 +1,10 @@
+__default__:
+  qname: 'all.q'
+  parallelenvironment : 'smp 8'
+  logoutputdir : "$PWD"
+  erroroutputdir : "$PWD"
+  joinlogs : 'y'
+  memory: "h_vmem=10G"
+
+ribotaper:
+  parallelenvironment : 'smp 6'
