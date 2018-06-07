@@ -8,9 +8,9 @@ Installation and basic usage is described below, for more detailed examples plea
 
 uORF-Tools can be installed with all dependencies via [conda](https://conda.io/docs/install/quick.html). Once you have conda installed simply type:
 
-         conda create -c bioconda -c conda-forge -n snakemake snakemake 
+         conda create -c bioconda -c conda-forge -n uORF-Tools snakemake 
          
-         source activate snakemake
+         source activate uORF-Tools
 
 ### <u>Basic usage</u>
 Using the workflow requires a genome sequence (fasta), an annotation file (gtf) and the sequencing results files (fastq).
