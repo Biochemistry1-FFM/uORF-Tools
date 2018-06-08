@@ -20,7 +20,7 @@ demonstrated using an example from [ENA](https://www.ebi.ac.uk/ena)
 
 Retrieve uORF-Tools:
 
-         git clone git@github.com:anibunny/uORF-Tools.git
+         git clone git@github.com:anibunny12/uORF-Tools.git
          
 Copy genome.fa and annotation.gtf to folder.
 
