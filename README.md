@@ -22,9 +22,9 @@ Retrieve uORF-Tools:
 
          git clone git@github.com:anibunny12/uORF-Tools.git
          
-Copy genome.fa and annotation.gtf to folder.
+Copy the genome and the annotation file into the uORF-Tools folder and name them genome.fa and annotation.gtf.
 
-Copy your fastq files and name them according to a METHOD-CONDITION-SAMPLEID.fastq scheme (e.g. Total-ctrl-1.fastq)
+Create a folder fastq/ and copy your fastq files into the folder. Name the files according to a METHOD-CONDITION-SAMPLEID.fastq scheme (e.g. Total-ctrl-1.fastq)
 
 Edit config.yaml and change methods, conditions, sampleids and adapters according to your experiment setup.
 
