@@ -30,7 +30,7 @@ Edit config.yaml and change methods, conditions, sampleids and adapters accordin
 
 Run Snakemake locally:
 
-         snakemake --use-conda -s uORF-Tools/Snakefile --configfile config.yaml --directory ${PWD} -j 20 --latency-wait 60 
+         snakemake --use-conda -s Snakefile --configfile config.yaml --directory ${PWD} -j 20 --latency-wait 60 
          
 
 Run Snakemake on the cluster:
