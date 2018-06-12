@@ -9,6 +9,10 @@ METHODS=config["methods"]
 CONDITIONS=config["conditions"]
 SAMPLEIDS=config["sampleids"]
 
+onstart:
+   if not os.path.exists("logs"):
+    os.makedirs("logs")
+
 rule all:
    input:
        expand("fastqc/{method}-{condition}-{sampleid}_fastqc.html", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS),
