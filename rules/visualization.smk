@@ -12,7 +12,7 @@ rule genomeSize:
 
 rule bamindex:
     input:
-        rules.map.output,
+        rules.maplink.output,
         rules.genomeSize.output
     output:
         "bam/{method}-{condition}-{sampleid}.bam.bai"

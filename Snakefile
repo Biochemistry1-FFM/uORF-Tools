@@ -79,20 +79,6 @@ rule longestTranscript:
     shell:
         "mkdir -p uORFs; uORF-Tools/scripts/longest_orf_transcript.py -a {input} -o {output}"
 
-rule maplink:
-    input:
-      expand("bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
-    output:
-      expand("bam/{method}-{condition}-{sampleid}.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
-    params:
-        cwd=os.getcwd()
-    threads: 1
-    run:
-        for f in input:
-                str=f
-                outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
-                shell("ln -s {params.cwd}/{f} {params.cwd}/{outfile}")
-
 rule normalizedCounts:
     input:
         rules.longestTranscript.output,
