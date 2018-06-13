@@ -1,26 +1,26 @@
 rule ribotaperAnnotation:
     input:
-        rules.retrieveAnnotation.output,
-        rules.retrieveGenome.output
+        annotation=rules.retrieveAnnotation.output,
+        genome=rules.retrieveGenome.output
     output:
         "ribotaper/ribotaper_annotation/start_stops_FAR.bed"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/ribotaper_annotation; create_annotations_files.bash {input[0]} {input[1]} true false ribotaper/ribotaper_annotation"
+        "mkdir -p ribotaper/ribotaper_annotation; create_annotations_files.bash {input.annotation} {input.genome} true false ribotaper/ribotaper_annotation"
 
 rule ribotaperMetaplot:
     input:
-        rules.map.output,
-        rules.ribotaperAnnotation.output
+        map=rules.map.output,
+        annotation=rules.ribotaperAnnotation.output
     output:
         "metaplots/{method}-{condition}-{sampleid}"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input[0]} {input[1]} {output[0]}"
+        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input.map} {input.annotation} {output[0]}"
 
 rule genomeSamToolsIndex:
     input:
@@ -36,7 +36,7 @@ rule genomeSamToolsIndex:
 
 rule ribotaper:
     input:
-        fp=expand("bam/FP-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/Total-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
+        fp=expand("bam/RIBO-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/RNA-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
