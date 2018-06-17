@@ -1,6 +1,9 @@
+def get_fastq(wildcards):
+	return units.loc[(wildcards.sample, wildcards.unit), ["fq1"]].dropna()
+
 rule trim:
     input:
-        expand("fastq/{method}-{condition}-{sampleid}.fastq.gz", method=METHODS, condition=CONDITIONS, sampleid=SAMPLEIDS)
+        get_fastq
     output:
         "trimmed/{method}-{condition}-{sampleid}.fastq"
     params:
