@@ -12,15 +12,15 @@ rule ribotaperAnnotation:
 
 rule ribotaperMetaplot:
     input:
-        map=rules.map.output,
+        map=rules.maplink.output,
         annotation=rules.ribotaperAnnotation.output
     output:
-        "metaplots/{method}-{condition}-{replicate}"
+        "metaplots/{condition}-{replicate}"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input.map} {input.annotation} {output[0]}"
+        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input.map} {input.annotation} {output}"
 
 rule genomeSamToolsIndex:
     input:
@@ -34,9 +34,23 @@ rule genomeSamToolsIndex:
     shell:
         "samtools faidx {rules.retrieveGenome.output}"
 
+rule psiteOffset:
+    input:
+        mplot=rules.ribotaperMetaplot.output
+    output:
+        "offsets/{condition}-{replicate}.offset"
+    conda:
+        "../envs/ribotaper.yaml"
+    threads: 1
+    shell:
+        "mkdir -p ribotaper/offsets; scripts/calculate_p_site_offset.R {input.mplot} {output}"
+
+
 rule ribotaper:
     input:
-        fp=expand("bam/RIBO-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples), total=expand("bam/RNA-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples),
+        fp=expand("bam/RIBO-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples), 
+        total=expand("bam/RNA-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples),
+        offset=expand("offsets/{condition}-{replicate}.offset", **samples),
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
@@ -48,4 +62,4 @@ rule ribotaper:
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p {params.prefix}; cd {params.prefix}; Ribotaper.sh ../../{input.fp[0]} ../../{input.total[0]} ../../ribotaper/ribotaper_annotation/ 27,29,30,31 11,11,12,12 {threads}"
+        "mkdir -p {params.prefix}; offset={{$}}(<{input.offset}) cd {params.prefix}; Ribotaper.sh ../../{input.fp[0]} ../../{input.total[0]} ../../ribotaper/ribotaper_annotation/ {{$offset}} {threads}"
