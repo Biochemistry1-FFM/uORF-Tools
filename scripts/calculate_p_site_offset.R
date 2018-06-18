@@ -1,16 +1,22 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
+
+library(optparse)
+
+option_list = list(
+  make_option(c("-i", "--metaplot_file_path"), type = "character", default = NULL,
+              help = "Path to metaplot file", metavar = "character"),
+  make_option(c("-o", "--offset_out_path"), type = "character", default = NULL,
+              help = "Path for writing output offset file", metavar = "character")
+);
+
+option_parser = OptionParser(option_list = option_list);
+options = parse_args(option_parser)
+
 
 ###script calculating P-site offset for ribotaper pipeline, takes as arguments ONE file created from create_metaplots.bash (table containing downsized bam-file info, in this case named RIBO-THAP-rep1)
 
-print(paste("--- calculating P-site offset","---",date(),sep=" "))
-
-args <- commandArgs(trailingOnly = TRUE)
-
-# hardcoded file path, needs to be fixed
-args <- c("../RIBO-THAP-rep1")
-
 # read in table created by create_metaplots.bash
-reads<-read.table(args[1],stringsAsFactors=F,header=F,sep="\t",comment.char="")
+reads<-read.table(options$metaplot_file_path,stringsAsFactors=F,header=F,sep="\t",comment.char="")
 
 # change colnames
 colnames(reads)<-c("chr","start","end","read_id","map_quality","strand",".1",".2",".3","spanning_exons","length_per_exon","length_introns","chr_stst","start_stst","end_stst","type_stst","gene_id_stst","strand_stst")
@@ -53,6 +59,7 @@ distance <- sapply(list_starts, function(x) x$distance[which(x$counts == max(x$c
 output <- as.data.frame(t(distance))
 
 # write output
-write.csv(output, "../offsets", row.names = F, quote = F)
+write.csv(output, options$offset_out_path, row.names = F, quote = F)
+
 
 
