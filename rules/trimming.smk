@@ -14,3 +14,14 @@ rule trim:
     threads: 1
     shell:
         "mkdir -p trimmed; trim_galore {params.ada} --phred33 --output_dir trimmed/ --trim-n --suppress_warn --dont_gzip fastq/{params.prefix}.fastq.gz; mv trimmed/{params.prefix}_trimmed.fq {output}"
+
+rule fastqc:
+    input:
+        rules.trim.output
+    output:
+        "fastqc/{method}-{condition}-{replicate}_fastqc.html"
+    conda:
+        "envs/fastqc.yaml"
+    threads: 6
+    shell:
+        "mkdir -p fastqc; fastqc -o fastqc -t {threads} {input}"
