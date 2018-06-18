@@ -16,10 +16,10 @@ ruleorder: map > maplink
 
 rule map:
     input:
-        fastq="norRNA/{method}-{condition}-{sampleid}.fastq",
+        fastq="norRNA/{method}-{condition}-{replicate}.fastq",
         index=rules.genomeIndex.output
     output:
-        "bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam"
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     conda:
         "../envs/star.yaml"
     threads: 20
@@ -30,9 +30,9 @@ rule map:
 
 rule maplink:
     input:
-      expand("bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
+      expand("bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples)
     output:
-      expand("bam/{method}-{condition}-{sampleid}.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
+      expand("bam/{method}-{condition}-{replicate}.bam", **samples)
     params:
         cwd=os.getcwd()
     threads: 1

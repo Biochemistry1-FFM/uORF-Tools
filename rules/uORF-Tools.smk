@@ -1,8 +1,8 @@
 rule ribotaperMerge:
     input:
-        ctrl=expand("ribotaper/ctrl-{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS), treat=expand("ribotaper/treat_{sampleid}/ORFs_max_filt", sampleid=SAMPLEIDS),
+        ctrl=expand("ribotaper/ctrl-{replicate}/ORFs_max_filt", **samples), treat=expand("ribotaper/treat_{replicate}/ORFs_max_filt", **samples),
     output:
-        "ribotaper/{sampleid}/Merged_uORF_results.csv"
+        "ribotaper/{replicate}/Merged_uORF_results.csv"
     conda:
         "envs/uorftoolspython.yaml"
     threads: 6

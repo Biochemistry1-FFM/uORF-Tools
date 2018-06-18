@@ -15,7 +15,7 @@ rule bamindex:
         rules.maplink.output,
         rules.genomeSize.output
     output:
-        "bam/{method}-{condition}-{sampleid}.bam.bai"
+        "bam/{method}-{condition}-{replicate}.bam.bai"
     conda:
         "../envs/samtools.yaml"
     threads: 20
@@ -30,7 +30,7 @@ rule wig:
         rules.genomeSize.output,
         rules.bamindex.output
     output:
-        "tracks/{method}-{condition}-{sampleid}.wig"
+        "tracks/{method}-{condition}-{replicate}.wig"
     conda:
         "../envs/wig.yaml"
     threads: 1

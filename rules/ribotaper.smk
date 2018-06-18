@@ -15,7 +15,7 @@ rule ribotaperMetaplot:
         map=rules.map.output,
         annotation=rules.ribotaperAnnotation.output
     output:
-        "metaplots/{method}-{condition}-{sampleid}"
+        "metaplots/{method}-{condition}-{replicate}"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
@@ -36,12 +36,12 @@ rule genomeSamToolsIndex:
 
 rule ribotaper:
     input:
-        fp=expand("bam/RIBO-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS), total=expand("bam/RNA-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", condition=CONDITIONS, sampleid=SAMPLEIDS),
+        fp=expand("bam/RIBO-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples), total=expand("bam/RNA-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples),
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
-        "ribotaper/{condition}-{sampleid}/ORFs_max_filt",
-        "ribotaper/{condition}-{sampleid}/Final_ORF_results.pdf"
+        "ribotaper/{condition}-{replicate}/ORFs_max_filt",
+        "ribotaper/{condition}-{replicate}/Final_ORF_results.pdf"
     conda:
         "../envs/ribotaper.yaml"
     threads: 6

@@ -47,9 +47,8 @@ rule rrnafilter:
     input:
         rules.trim.output,
         rules.rrnaindex.output
-
     output:
-        "norRNA/{method}-{condition}-{sampleid}.fastq"
+        "norRNA/{method}-{condition}-{replicate}.fastq"
     conda:
         "../envs/sortmerna.yaml"
     params:
