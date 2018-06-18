@@ -30,9 +30,9 @@ rule map:
 
 rule maplink:
     input:
-      expand("bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples)
+        expand("bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples)
     output:
-      expand("bam/{method}-{condition}-{replicate}.bam", **samples)
+        "bam/{method}-{condition}-{replicate}.bam"
     params:
         cwd=os.getcwd()
     threads: 1

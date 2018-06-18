@@ -18,7 +18,7 @@ rule all:
    input:
        expand("fastqc/{method}-{condition}-{replicate}_fastqc.html", **samples),
        expand("bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples),
-       expand("metaplots/{method}-{condition}-{replicate}", **samples)
+       expand("metaplots/{method}-{condition}-{replicate}", **samples),
        expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
        expand("tracks/{method}-{condition}-{replicate}.wig", **samples),
        "tracks/annotation.bb"
