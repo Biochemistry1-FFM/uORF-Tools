@@ -21,7 +21,7 @@ rule fastqc:
     output:
         "fastqc/{method}-{condition}-{replicate}_fastqc.html"
     conda:
-        "envs/fastqc.yaml"
+        "../envs/fastqc.yaml"
     threads: 6
     shell:
         "mkdir -p fastqc; fastqc -o fastqc -t {threads} {input}"
