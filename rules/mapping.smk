@@ -12,11 +12,11 @@ rule genomeIndex:
     shell:
         "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
 
-ruleorder: map > maplink
+#ruleorder: map > maplink
 
 rule map:
     input:
-        fastq="norRNA/{method}-{condition}-{replicate}.fastq",
+        fastq="norRNA/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate, d+}.fastq",
         index=rules.genomeIndex.output
     output:
         "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
@@ -30,15 +30,30 @@ rule map:
 
 rule maplink:
     input:
-        expand("bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples)
+        "bam/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate, d+}/Aligned.sortedByCoord.out.bam"
     output:
-        "bam/{method}-{condition}-{replicate}.bam"
+        "maplink/{method}-{condition}-{replicate}.bam"
     params:
-        cwd=os.getcwd()
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
     threads: 1
-    run:
-        for f in input:
-                str=f
-                outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
-                shell("ln -s {params.cwd}/{f} {params.cwd}/{outfile}")
+    shell:
+        "mkdir -p maplink; ln -s {params.inlink} {params.outlink}"
 
+#rule maplink:
+#    input:
+#      expand("bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples)
+#    output:
+#      "maplink/{method}-{condition}-{replicate}.bam"
+#    wildcard_constraints:
+#        method="\[a-zA-Z]+",
+#        condition="\[a-zA-Z]+",
+#        replicate="\d+"
+#    params:
+#        cwd=os.getcwd()
+#    threads: 1
+#    run:
+#        for f in input:
+#                str=f
+#                outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
+#                shell("mkdir -p maplink; ln -s {params.cwd}/{f} {params.cwd}/{outfile}")

@@ -1,11 +1,12 @@
 def getfastq(wildcards):
+    print(wildcards)
     return samples.loc[(wildcards.method, wildcards.condition, wildcards.replicate), ["fastqFile"]].dropna()
 
 rule trim:
     input:
         reads=getfastq
     output:
-        "trimmed/{method}-{condition}-{replicate}.fastq"
+        "trimmed/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,d+}.fastq"
     params:
         ada=lambda wildcards, output: ("" if not ADAPTERS else (" -a " + ADAPTERS)),
         prefix=lambda wildcards, input: (os.path.splitext(os.path.splitext(os.path.basename(input.reads[0]))[0])[0])
@@ -17,7 +18,7 @@ rule trim:
 
 rule fastqc:
     input:
-        rules.trim.output
+        "trimmed/{method}-{condition}-{replicate}.fastq"
     output:
         "fastqc/{method}-{condition}-{replicate}_fastqc.html"
     conda:

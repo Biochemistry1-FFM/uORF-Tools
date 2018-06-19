@@ -12,15 +12,17 @@ rule ribotaperAnnotation:
 
 rule ribotaperMetaplot:
     input:
-        map="bam/{methods}-{condition}-{replicate}.bam",
+        map="maplink/{method}-{condition}-{replicate}.bam",
         annotation=rules.ribotaperAnnotation.output
     output:
-        "metaplots/{methods}-{condition}-{replicate}"
+        "metaplots/{method}-{condition}-{replicate}.plot"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
+    params:
+        prefix=lambda wildcards, output: (os.path.splitext(output[0]))
     shell:
-        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input.map} {input.annotation} {output}"
+        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input.map} {input.annotation} {output}; mv {params.prefix} {output}"
 
 rule genomeSamToolsIndex:
     input:
@@ -36,9 +38,9 @@ rule genomeSamToolsIndex:
 
 rule psiteOffset:
     input:
-        mplot="metaplots/RIBO-{condition}-{replicate}"
+        mplot="metaplots/{method, RIBO}-{condition}-{replicate}.plot"
     output:
-        "offsets/{condition}-{replicate}.offset"
+        "offsets/{method}-{condition}-{replicate}.offset"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
@@ -48,8 +50,8 @@ rule psiteOffset:
 
 rule ribotaper:
     input:
-        fp=expand("bam/RIBO-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples), 
-        total=expand("bam/RNA-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples),
+        fp=expand("maplink/RIBO-{condition}-{replicate}.bam", **samples), 
+        total=expand("maplink/RNA-{condition}-{replicate}.bam", **samples),
         offset=expand("offsets/RIBO-{condition}-{replicate}.offset", **samples),
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output

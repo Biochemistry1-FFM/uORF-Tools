@@ -45,10 +45,12 @@ rule rrnaindex:
 
 rule rrnafilter:
     input:
-        rules.trim.output,
+        "trimmed/{method}-{condition}-{replicate}.fastq",
         rules.rrnaindex.output
     output:
         "norRNA/{method}-{condition}-{replicate}.fastq"
+    wildcard_constraints:
+        method="\[a-zA-Z]+" 
     conda:
         "../envs/sortmerna.yaml"
     params:
