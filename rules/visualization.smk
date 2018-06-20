@@ -15,29 +15,29 @@ rule bamindex:
         rules.maplink.output,
         rules.genomeSize.output
     output:
-        "bam/{method}-{condition}-{replicate}.bam.bai"
+        "maplink/{method}-{condition}-{replicate}.bam.bai"
     conda:
         "../envs/samtools.yaml"
     threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0]))[0])
     shell:
-        "samtools index -@ {threads} bam/{params.prefix}"
+        "samtools index -@ {threads} maplink/{params.prefix}"
 
 rule wig:
     input:
-        rules.map.output,
-        rules.genomeSize.output,
-        rules.bamindex.output
+        bam=rules.maplink.output,
+        genomeSize=rules.genomeSize.output,
+        bamIndex=rules.bamindex.output
     output:
         "tracks/{method}-{condition}-{replicate}.wig"
     conda:
         "../envs/wig.yaml"
     threads: 1
     params:
-        prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0]))[0])
+        prefix=lambda wildcards, output: (os.path.splitext(output[0])[0])
     shell:
-        "mkdir -p tracks; bam2wig.py -i bam/{params.prefix}.bam -s {input[1]} -o tracks/{params.prefix}"
+        "mkdir -p tracks; bam2wig.py -i {input.bam} -s {input.genomeSize} -o {params.prefix}"
 
 rule annotationBed:
     input:
