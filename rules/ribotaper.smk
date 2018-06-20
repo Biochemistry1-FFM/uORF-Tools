@@ -50,18 +50,17 @@ rule psiteOffset:
 
 rule ribotaper:
     input:
-        fp=rules.ribomaplink.output
-        total=rules.rnamaplink.output
-        offset=expand("offsets/RIBO/{condition}-{replicate}.offset", **samples),
+        fp="maplink/RIBO/{condition}-{replicate}.bam",
+        total="maplink/RNA/{condition}-{replicate}.bam",
+        offset="offsets/RIBO/{condition}-{replicate}.offset",
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
-        "ribotaper/{condition}-{replicate}/ORFs_max_filt",
-        "ribotaper/{condition}-{replicate}/Final_ORF_results.pdf"
+        "ribotaper/{condition, [a-zA-Z]+}-{replicate,\d+}/ORFs_max_filt",
     conda:
         "../envs/ribotaper.yaml"
     threads: 6
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p {params.prefix}; offset={{$}}(<{input.offset}) cd {params.prefix}; Ribotaper.sh ../../{input.fp[0]} ../../{input.total[0]} ../../ribotaper/ribotaper_annotation/ {{$offset}} {threads}"
+        "mkdir -p {params.prefix}; offset={{$}}(<{input.offset}) cd {params.prefix}; Ribotaper.sh ../../{input.fp} ../../{input.total} ../../ribotaper/ribotaper_annotation/ {{$offset}} {threads}"

@@ -32,7 +32,7 @@ rule maplink:
     input:
         "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     output:
-        "maplink/{method,\[a-zA-Z]+}-{condition,\[a-zA-Z]+}-{replicate,\d+}.bam"
+        "maplink/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
     params:
         inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
         outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
@@ -44,7 +44,7 @@ rule ribomaplink:
     input:
         "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     output:
-        "maplink/{method, RIBO}/{condition,\[a-zA-Z]+}-{replicate,\d+}.bam"
+        "maplink/{method, RIBO}/{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
     params:
         inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
         outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
@@ -56,7 +56,7 @@ rule rnamaplink:
     input:
         "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     output:
-        "maplink/{method, RNA}/{condition,\[a-zA-Z]+}-{replicate,\d+}.bam"
+        "maplink/{method, RNA}/{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
     params:
         inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
         outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))

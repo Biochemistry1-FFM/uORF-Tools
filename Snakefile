@@ -24,9 +24,10 @@ rule all:
    input:
        expand("fastqc/{method}-{condition}-{replicate}_fastqc.html", **samples),
        expand("metaplots/{method}-{condition}-{replicate}.plot", **samples),
+       expand("maplink/{method}/{condition}-{replicate}.bam", **samples),
+       expand("maplink/{method}-{condition}-{replicate}.bam", **samples),
        expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
        expand("tracks/{method}-{condition}-{replicate}.wig", **samples),
-       expand("offsets/RIBO-{condition}-{replicate}.offset", **samples),
        "tracks/annotation.bb"
 onsuccess:
     print("Done, no error")
