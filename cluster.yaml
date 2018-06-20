@@ -6,55 +6,55 @@ __default__:
   joinlogs : 'y'
   memory: "h_vmem=8G"
 
-retrieveGenome
+retrieveGenome:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=1G"
 
-retrieveAnnotation
+retrieveAnnotation:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=1G"
 
-ribotaperAnnotation
+ribotaperAnnotation:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-ribotaperMetaplot
+ribotaperMetaplot:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-genomeSamToolsIndex
+genomeSamToolsIndex:
   parallelenvironment : 'smp 20'
   memory: "h_vmem=3G"
 
-psiteOffset
+psiteOffset:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-rrnaretrieve
+rrnaretrieve:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=1G"
 
-rrnaindex
+rrnaindex:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-rrnafilter
+rrnafilter:
   parallelenvironment : 'smp 20'
   memory: "h_vmem=3G"
 
-trim
+trim:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-fastqc
+fastqc:
   parallelenvironment : 'smp 6'
   memory: "h_vmem=3G"
 
-genomeIndex
+genomeIndex:
   parallelenvironment : 'smp 20'
   memory: "h_vmem=3G"
 
-map
+map:
   parallelenvironment : 'smp 20'
   memory: "h_vmem=3G"
 
@@ -66,35 +66,35 @@ ribotaper:
   parallelenvironment : 'smp 5'
   memory: "h_vmem=15G"
 
-ribotaperMerge
+ribotaperMerge:
   parallelenvironment : 'smp 6'
   memory: "h_vmem=3G"
 
-longestTranscript
+longestTranscript:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=8G"
 
-normalizedCounts
+normalizedCounts:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-genomeSize
+genomeSize:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=1G"
 
-bamindex
+bamindex:
   parallelenvironment : 'smp 20'
   memory: "h_vmem=3G"
 
-wig
+wig:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-annotationBed
+annotationBed:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-annotationBigBed
+annotationBigBed:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
