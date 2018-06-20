@@ -16,10 +16,10 @@ rule genomeIndex:
 
 rule map:
     input:
-        fastq="norRNA/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate, d+}.fastq",
+        fastq="norRNA/{method}-{condition}-{replicate}.fastq",
         index=rules.genomeIndex.output
     output:
-        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
+        "bam/{method,\[a-zA-Z]+}-{condition,\[a-zA-Z]+}-{replicate,\d+}/Aligned.sortedByCoord.out.bam"
     conda:
         "../envs/star.yaml"
     threads: 20
@@ -30,12 +30,37 @@ rule map:
 
 rule maplink:
     input:
-        "bam/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate, d+}/Aligned.sortedByCoord.out.bam"
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     output:
-        "maplink/{method}-{condition}-{replicate}.bam"
+        "maplink/{method,\[a-zA-Z]+}-{condition,\[a-zA-Z]+}-{replicate,\d+}.bam"
     params:
         inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
         outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
     threads: 1
     shell:
         "mkdir -p maplink; ln -s {params.inlink} {params.outlink}"
+
+rule ribomaplink:
+    input:
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
+    output:
+        "maplink/{method, RIBO}/{condition,\[a-zA-Z]+}-{replicate,\d+}.bam"
+    params:
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
+    threads: 1
+    shell:
+        "mkdir -p maplink/RIBO/; ln -s {params.inlink} {params.outlink}"
+
+rule rnamaplink:
+    input:
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
+    output:
+        "maplink/{method, RNA}/{condition,\[a-zA-Z]+}-{replicate,\d+}.bam"
+    params:
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
+    threads: 1
+    shell:
+        "mkdir -p maplink/RNA/; ln -s {params.inlink} {params.outlink}"
+

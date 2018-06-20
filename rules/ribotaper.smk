@@ -15,7 +15,7 @@ rule ribotaperMetaplot:
         map="maplink/{method}-{condition}-{replicate}.bam",
         annotation=rules.ribotaperAnnotation.output
     output:
-        "metaplots/{method}-{condition}-{replicate}.plot"
+        "metaplots/{method,RIBO}-{condition}-{replicate}.plot"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
@@ -40,19 +40,19 @@ rule psiteOffset:
     input:
         mplot="metaplots/{method}-{condition}-{replicate}.plot"
     output:
-        "offsets/{method, RIBO}-{condition}-{replicate}.offset"
+        "offsets/{method, RIBO}/{condition}-{replicate}.offset"
     conda:
         "../envs/uorftools.yaml"
     threads: 1
     shell:
-        "mkdir -p offsets; uORF-Tools/scripts/calculate_p_site_offset.R -i {input.mplot} -o {output}"
+        "mkdir -p offsets/RIBO; uORF-Tools/scripts/calculate_p_site_offset.R -i {input.mplot} -o {output}"
 
 
 rule ribotaper:
     input:
-        fp=expand("maplink/RIBO-{condition}-{replicate}.bam", **samples), 
-        total=expand("maplink/RNA-{condition}-{replicate}.bam", **samples),
-        offset=expand("offsets/RIBO-{condition}-{replicate}.offset", **samples),
+        fp=rules.ribomaplink.output
+        total=rules.rnamaplink.output
+        offset=expand("offsets/RIBO/{condition}-{replicate}.offset", **samples),
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
