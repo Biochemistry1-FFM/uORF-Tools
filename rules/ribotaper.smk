@@ -20,9 +20,9 @@ rule ribotaperMetaplot:
         "../envs/ribotaper.yaml"
     threads: 1
     params:
-        prefix=lambda wildcards, output: (os.path.splitext(output[0]))
+        prefix=lambda wildcards, output: (os.path.splitext(os.path.basename(output[0]))[0])
     shell:
-        "mkdir -p ribotaper/metaplots; create_metaplots.bash {input.map} {input.annotation} {output}; mv {params.prefix} {output}"
+        "mkdir -p metaplots; mkdir -p ribotaper/metaplots/{params.prefix}; cd ribotaper/metaplots/{params.prefix}; create_metaplots.bash ../../../{input.map} ../../../{input.annotation} {params.prefix}; mv {params.prefix} ../../../{output}"
 
 rule genomeSamToolsIndex:
     input:
