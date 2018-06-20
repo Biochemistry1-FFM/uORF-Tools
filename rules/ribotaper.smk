@@ -38,14 +38,14 @@ rule genomeSamToolsIndex:
 
 rule psiteOffset:
     input:
-        mplot="metaplots/{method, RIBO}-{condition}-{replicate}.plot"
+        mplot="metaplots/{method, \RIBO}-{condition}-{replicate}.plot"
     output:
         "offsets/{method}-{condition}-{replicate}.offset"
     conda:
-        "../envs/ribotaper.yaml"
+        "../envs/uorftools.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/offsets; scripts/calculate_p_site_offset.R {input.mplot} {output}"
+        "mkdir -p ribotaper/offsets; uORF-Tools/scripts/calculate_p_site_offset.R -i {input.mplot} -o {output}"
 
 
 rule ribotaper:
