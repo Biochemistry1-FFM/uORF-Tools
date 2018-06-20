@@ -39,21 +39,3 @@ rule maplink:
     threads: 1
     shell:
         "mkdir -p maplink; ln -s {params.inlink} {params.outlink}"
-
-#rule maplink:
-#    input:
-#      expand("bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam", **samples)
-#    output:
-#      "maplink/{method}-{condition}-{replicate}.bam"
-#    wildcard_constraints:
-#        method="\[a-zA-Z]+",
-#        condition="\[a-zA-Z]+",
-#        replicate="\d+"
-#    params:
-#        cwd=os.getcwd()
-#    threads: 1
-#    run:
-#        for f in input:
-#                str=f
-#                outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
-#                shell("mkdir -p maplink; ln -s {params.cwd}/{f} {params.cwd}/{outfile}")

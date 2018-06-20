@@ -18,7 +18,7 @@ rule longestTranscript:
         "uORFs/longest_protein_coding_transcripts.gtf"
     conda:
         "envs/uorftools.yaml"
-    threads: 20
+    threads: 1
     shell:
         "mkdir -p uORFs; uORF-Tools/scripts/longest_orf_transcript.py -a {input} -o {output}"
 

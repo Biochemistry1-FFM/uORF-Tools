@@ -27,6 +27,7 @@ rule rrnaretrieve:
         HTTP.remote("https://github.com/biocore/sortmerna/raw/master/rRNA_databases/{rrnadb}.fasta",keep_local=True,allow_redirects=True)
     output:
         "rRNA_databases/{rrnadb}.fasta"
+    threads: 1
     run:
         outputName = os.path.basename(input[0])
         shell("mkdir -p rRNA_databases; mv {input} rRNA_databases/{outputName}")
@@ -40,17 +41,16 @@ rule rrnaindex:
         "../envs/sortmerna.yaml"
     params:
         dbstring = get_indexfiles()
+    threads: 1
     shell:
         "mkdir -p index/rRNA; indexdb_rna --ref {params.dbstring}"
 
 rule rrnafilter:
     input:
-        "trimmed/{method}-{condition}-{replicate}.fastq",
+        "trimmed/{method, [a-zA-Z]+}-{condition}-{replicate}.fastq",
         rules.rrnaindex.output
     output:
         "norRNA/{method}-{condition}-{replicate}.fastq"
-    wildcard_constraints:
-        method="\[a-zA-Z]+" 
     conda:
         "../envs/sortmerna.yaml"
     params:

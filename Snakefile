@@ -14,13 +14,19 @@ samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "cond
 samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])  # enforce str in index
 validate(samples, schema="schemas/samples.schema.yaml")
 
+#wildcard_constraints:
+#   method="\[a-zA-Z]+",
+#   condition="\[a-zA-Z]+",
+#   replicate="\d+"
+
+
 rule all:
    input:
        expand("fastqc/{method}-{condition}-{replicate}_fastqc.html", **samples),
        expand("metaplots/{method}-{condition}-{replicate}.plot", **samples),
        expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
        expand("tracks/{method}-{condition}-{replicate}.wig", **samples),
-       expand("offsets/{method}-{condition}-{replicate}.offset", **samples),
+       expand("offsets/RIBO-{condition}-{replicate}.offset", **samples),
        "tracks/annotation.bb"
 onsuccess:
     print("Done, no error")

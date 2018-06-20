@@ -31,21 +31,21 @@ rule genomeSamToolsIndex:
         "genomes/genome.fa.fai"
     conda:
         "../envs/samtools.yaml"
-    threads: 1
+    threads: 20
     params:
     shell:
-        "samtools faidx {rules.retrieveGenome.output}"
+        "samtools faidx -@ {threads} {rules.retrieveGenome.output}"
 
 rule psiteOffset:
     input:
-        mplot="metaplots/{method, \RIBO}-{condition}-{replicate}.plot"
+        mplot="metaplots/{method}-{condition}-{replicate}.plot"
     output:
-        "offsets/{method}-{condition}-{replicate}.offset"
+        "offsets/{method, RIBO}-{condition}-{replicate}.offset"
     conda:
         "../envs/uorftools.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/offsets; uORF-Tools/scripts/calculate_p_site_offset.R -i {input.mplot} -o {output}"
+        "mkdir -p offsets; uORF-Tools/scripts/calculate_p_site_offset.R -i {input.mplot} -o {output}"
 
 
 rule ribotaper:
