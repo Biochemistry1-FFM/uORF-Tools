@@ -6,7 +6,7 @@ rule trim:
     input:
         reads=getfastq
     output:
-        "trimmed/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,d+}.fastq"
+        "trimmed/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,\d+}.fastq"
     params:
         ada=lambda wildcards, output: ("" if not ADAPTERS else (" -a " + ADAPTERS)),
         prefix=lambda wildcards, input: (os.path.splitext(os.path.splitext(os.path.basename(input.reads[0]))[0])[0])

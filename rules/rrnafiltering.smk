@@ -47,7 +47,7 @@ rule rrnaindex:
 
 rule rrnafilter:
     input:
-        "trimmed/{method, [a-zA-Z]+}-{condition}-{replicate}.fastq",
+        "trimmed/{method}-{condition}-{replicate}.fastq",
         rules.rrnaindex.output
     output:
         "norRNA/{method}-{condition}-{replicate}.fastq"

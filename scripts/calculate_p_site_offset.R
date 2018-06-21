@@ -44,17 +44,18 @@ dists_all<-with(reads_simpl,aggregate(count,by=list(type_stst,length_per_exon,di
 colnames(dists_all)<-c("type","length","distance","counts")
 
 # select only start_codons and read lengths between 25-30
-starts <- dists_all[which(dists_all$type == "start_codon" & dists_all$length%in%c(25:30)),]
+starts <- dists_all[which(dists_all$type == "start_codon" & dists_all$length%in%c(25:57)),]
 
 # get only entries upstream of start site
 starts <- starts[which(starts$distance%in%c(-23:0)),]
 
 # split data fram by length
 list_starts <- split.data.frame(starts, f=starts[,"length"])
-
+print("List starts")
+print(list_starts)
 # get distance with max counts
 distance <- sapply(list_starts, function(x) x$distance[which(x$counts == max(x$counts))])
-
+print(distance)
 # create output data frame
 output <- as.data.frame(t(distance))
 

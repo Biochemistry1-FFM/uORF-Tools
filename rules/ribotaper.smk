@@ -15,7 +15,7 @@ rule ribotaperMetaplot:
         map="maplink/{method}-{condition}-{replicate}.bam",
         annotation=rules.ribotaperAnnotation.output
     output:
-        "metaplots/{method,RIBO}-{condition}-{replicate}.plot"
+        "metaplots/{method, RIBO}-{condition}-{replicate}.plot"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
