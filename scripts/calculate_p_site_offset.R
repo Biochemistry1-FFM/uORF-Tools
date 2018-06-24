@@ -54,13 +54,20 @@ list_starts <- split.data.frame(starts, f=starts[,"length"])
 print("List starts")
 print(list_starts)
 # get distance with max counts
-distance <- sapply(list_starts, function(x) x$distance[which(x$counts == max(x$counts))])
-print(distance)
+distance <- sapply(list_starts, function(x) x$distance[which(x$counts == max(x$counts))][1])
+#print(distance)
 # create output data frame
-output <- as.data.frame(t(distance))
-
+result <- as.data.frame(t(distance))
+lengths <- head((output[0,]),4)
+offsets <- head((output[1,]),4)
+lengthstring <- paste(as.character(lengths), collapse=",")
+offsetstring <-p aste(as.character(offsets), collapse=",")
+output <- paste(as.character(lengthstring, offsetstring), collapse=" ")
+print(output)
+#output2 = data.frame(lapply(output, as.character), stringsAsFactors=FALSE)
 # write output
-write.csv(output, options$offset_out_path, row.names = F, quote = F)
+#write.csv(output, options$offset_out_path, row.names = F, quote = F)
+write.table(output, options$offset_out_path, append = FALSE, sep = "", dec = "", row.names = FALSE, col.names = FALSE)
 
 
 
