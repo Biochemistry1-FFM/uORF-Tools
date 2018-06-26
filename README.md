@@ -24,9 +24,10 @@ Retrieve uORF-Tools:
          
 Copy the genome and the annotation file into the uORF-Tools folder and name them genome.fa and annotation.gtf.
 
-Create a folder fastq/ and copy your fastq files into the folder. Name the files according to a METHOD-CONDITION-SAMPLEID.fastq scheme (e.g. Total-ctrl-1.fastq)
+Create a folder fastq/ and copy your fastq files into the folder.
 
-Edit config.yaml and change methods, conditions, sampleids and adapters according to your experiment setup.
+Edit sample.tsv and enter the names of your fastq-files. Trim Galore will try to auto-detect the used adapter-sequences,
+if known add your adapter sequence to config.yaml.
 
 Run Snakemake locally:
 
