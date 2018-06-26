@@ -46,7 +46,15 @@ trim:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
 
-fastqc:
+fastqcraw:
+  parallelenvironment : 'smp 6'
+  memory: "h_vmem=3G"
+
+fastqctrimmed:
+  parallelenvironment : 'smp 6'
+  memory: "h_vmem=3G"
+
+fastqcrrnafilter:
   parallelenvironment : 'smp 6'
   memory: "h_vmem=3G"
 
@@ -59,6 +67,14 @@ map:
   memory: "h_vmem=3G"
 
 maplink:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=1G"
+
+ribomaplink:
+    parallelenvironment : 'smp 1'
+    memory: "h_vmem=1G"
+
+rnamaplink:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=1G"
 
@@ -97,4 +113,3 @@ annotationBed:
 annotationBigBed:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=30G"
-
