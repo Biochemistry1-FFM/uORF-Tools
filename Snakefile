@@ -23,8 +23,6 @@ validate(samples, schema="schemas/samples.schema.yaml")
 rule all:
    input:
        expand("fastqc/{method}-{condition}-{replicate}_fastqc.html", **samples),
-       expand("maplink/{method}/{condition}-{replicate}.bam", **samples),
-       expand("maplink/{method}-{condition}-{replicate}.bam", **samples),
        expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
        expand("tracks/{method}-{condition}-{replicate}.wig", **samples),
        "tracks/annotation.bb"

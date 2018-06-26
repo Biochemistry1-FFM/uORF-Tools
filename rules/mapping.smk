@@ -19,7 +19,7 @@ rule map:
         fastq="norRNA/{method}-{condition}-{replicate}.fastq",
         index=rules.genomeIndex.output
     output:
-        "bam/{method,\[a-zA-Z]+}-{condition,\[a-zA-Z]+}-{replicate,\d+}/Aligned.sortedByCoord.out.bam"
+        "bam/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}/Aligned.sortedByCoord.out.bam"
     conda:
         "../envs/star.yaml"
     threads: 20
