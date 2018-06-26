@@ -59,3 +59,15 @@ rule rrnafilter:
     threads: 20
     shell:
         "mkdir -p norRNA; mkdir -p norRNA/rRNA; sortmerna -a {threads} --ref {params.dbstring} --reads {input[0]} --num_alignments 1 --fastx --aligned norRNA/rRNA/reject --other {params.prefix} 2> /dev/null"
+
+rule fastqcrrnafilter:
+    input:
+        "norRNA/{method}-{condition}-{replicate}.fastq"
+    output:
+        "fastqcrrnafilter/{method}-{condition}-{replicate}_rrnafilter.html"
+    conda:
+        "../envs/fastqc.yaml"
+    threads: 6
+    shell:
+        "mkdir -p fastqc; fastqc -o rrnafilter -t {threads} {input}"
+
