@@ -1,7 +1,5 @@
 #Taxonomy of the samples to be processed, possible are Eukarya, Bacteria, Archea
 taxonomy: "Eukarya"
 #Adapter sequence used
-adapter: "AGATCGGAAGAGCACACGTCT"
-methods: ["FP", "Total"]
-conditions: ["ctrl", "treat"]
-sampleids: ["1-2"]
+adapter: ""
+samples: "uORF-Tools/samples.tsv"

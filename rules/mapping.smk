@@ -12,14 +12,14 @@ rule genomeIndex:
     shell:
         "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
 
-ruleorder: map > maplink
+#ruleorder: map > maplink
 
 rule map:
     input:
-        fastq="norRNA/{method}-{condition}-{sampleid}.fastq",
+        fastq="norRNA/{method}-{condition}-{replicate}.fastq",
         index=rules.genomeIndex.output
     output:
-        "bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam"
+        "bam/{method,\[a-zA-Z]+}-{condition,\[a-zA-Z]+}-{replicate,\d+}/Aligned.sortedByCoord.out.bam"
     conda:
         "../envs/star.yaml"
     threads: 20
@@ -30,15 +30,37 @@ rule map:
 
 rule maplink:
     input:
-      expand("bam/{method}-{condition}-{sampleid}/Aligned.sortedByCoord.out.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     output:
-      expand("bam/{method}-{condition}-{sampleid}.bam", method=config["methods"], condition=config["conditions"], sampleid=config["sampleids"])
+        "maplink/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
     params:
-        cwd=os.getcwd()
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
     threads: 1
-    run:
-        for f in input:
-                str=f
-                outfile=str.replace("/Aligned.sortedByCoord.out.bam", ".bam")
-                shell("ln -s {params.cwd}/{f} {params.cwd}/{outfile}")
+    shell:
+        "mkdir -p maplink; ln -s {params.inlink} {params.outlink}"
+
+rule ribomaplink:
+    input:
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
+    output:
+        "maplink/{method, RIBO}/{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
+    params:
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
+    threads: 1
+    shell:
+        "mkdir -p maplink/RIBO/; ln -s {params.inlink} {params.outlink}"
+
+rule rnamaplink:
+    input:
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
+    output:
+        "maplink/{method, RNA}/{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
+    params:
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
+    threads: 1
+    shell:
+        "mkdir -p maplink/RNA/; ln -s {params.inlink} {params.outlink}"
 

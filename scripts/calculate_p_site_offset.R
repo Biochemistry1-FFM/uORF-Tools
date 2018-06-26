@@ -1,16 +1,22 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
+
+library(optparse)
+
+option_list = list(
+  make_option(c("-i", "--metaplot_file_path"), type = "character", default = NULL,
+              help = "Path to metaplot file", metavar = "character"),
+  make_option(c("-o", "--offset_out_path"), type = "character", default = NULL,
+              help = "Path for writing output offset file", metavar = "character")
+);
+
+option_parser = OptionParser(option_list = option_list);
+options = parse_args(option_parser)
+
 
 ###script calculating P-site offset for ribotaper pipeline, takes as arguments ONE file created from create_metaplots.bash (table containing downsized bam-file info, in this case named RIBO-THAP-rep1)
 
-print(paste("--- calculating P-site offset","---",date(),sep=" "))
-
-args <- commandArgs(trailingOnly = TRUE)
-
-# hardcoded file path, needs to be fixed
-args <- c("../RIBO-THAP-rep1")
-
 # read in table created by create_metaplots.bash
-reads<-read.table(args[1],stringsAsFactors=F,header=F,sep="\t",comment.char="")
+reads<-read.table(options$metaplot_file_path,stringsAsFactors=F,header=F,sep="\t",comment.char="")
 
 # change colnames
 colnames(reads)<-c("chr","start","end","read_id","map_quality","strand",".1",".2",".3","spanning_exons","length_per_exon","length_introns","chr_stst","start_stst","end_stst","type_stst","gene_id_stst","strand_stst")
@@ -38,21 +44,25 @@ dists_all<-with(reads_simpl,aggregate(count,by=list(type_stst,length_per_exon,di
 colnames(dists_all)<-c("type","length","distance","counts")
 
 # select only start_codons and read lengths between 25-30
-starts <- dists_all[which(dists_all$type == "start_codon" & dists_all$length%in%c(25:30)),]
+starts <- dists_all[which(dists_all$type == "start_codon" & dists_all$length%in%c(25:57)),]
 
 # get only entries upstream of start site
 starts <- starts[which(starts$distance%in%c(-23:0)),]
 
 # split data fram by length
 list_starts <- split.data.frame(starts, f=starts[,"length"])
-
 # get distance with max counts
-distance <- sapply(list_starts, function(x) x$distance[which(x$counts == max(x$counts))])
-
+distance <- sapply(list_starts, function(x) x$distance[which(x$counts == max(x$counts))][1])
 # create output data frame
-output <- as.data.frame(t(distance))
+result <- as.data.frame(t(distance))
+lengths <- names(result)[1:4]
+lengths <- na.omit(lengths)
+offsets <- result[1,1:4]
+offsets <- na.omit(offsets)
+lengthstring <- paste(as.character(lengths), collapse=",")
+offsetstring <-paste(as.character(offsets), collapse=",")
+output <- paste(lengthstring, offsetstring, sep=" ")
 
 # write output
-write.csv(output, "../offsets", row.names = F, quote = F)
-
+cat(output, file=options$offset_out_path, append=FALSE)
 

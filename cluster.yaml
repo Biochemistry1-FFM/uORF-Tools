@@ -1,12 +1,100 @@
 __default__:
   jobname: "{rule}"
-  qname: 'all.q'
   parallelenvironment : 'smp 8'
-  logoutputdir : "$PWD/log"
-  erroroutputdir : "$PWD/log"
+  logoutputdir : "$PWD/logs"
+  erroroutputdir : "$PWD/logs"
   joinlogs : 'y'
   memory: "h_vmem=8G"
+
+retrieveGenome:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=1G"
+
+retrieveAnnotation:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=1G"
+
+ribotaperAnnotation:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+ribotaperMetaplot:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+genomeSamToolsIndex:
+  parallelenvironment : 'smp 20'
+  memory: "h_vmem=3G"
+
+psiteOffset:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+rrnaretrieve:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=1G"
+
+rrnaindex:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+rrnafilter:
+  parallelenvironment : 'smp 20'
+  memory: "h_vmem=3G"
+
+trim:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+fastqc:
+  parallelenvironment : 'smp 6'
+  memory: "h_vmem=3G"
+
+genomeIndex:
+  parallelenvironment : 'smp 20'
+  memory: "h_vmem=3G"
+
+map:
+  parallelenvironment : 'smp 20'
+  memory: "h_vmem=3G"
+
+maplink:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=1G"
 
 ribotaper:
   parallelenvironment : 'smp 5'
   memory: "h_vmem=15G"
+
+ribotaperMerge:
+  parallelenvironment : 'smp 6'
+  memory: "h_vmem=3G"
+
+longestTranscript:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=8G"
+
+normalizedCounts:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+genomeSize:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=1G"
+
+bamindex:
+  parallelenvironment : 'smp 20'
+  memory: "h_vmem=3G"
+
+wig:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+annotationBed:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
+annotationBigBed:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=30G"
+
