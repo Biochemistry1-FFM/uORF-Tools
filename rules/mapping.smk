@@ -9,8 +9,11 @@ rule genomeIndex:
     conda:
         "../envs/star.yaml"
     threads: 20
+    params:
+        indexpath=lambda wildcards: ("" if not INDEXPATH else (INDEXPATH))
     shell:
-        "mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
+        "if [ -d {indexpath} ]; then ln -s {indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}"; fi
+        #"mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
 
 #ruleorder: map > maplink
 
@@ -63,4 +66,3 @@ rule rnamaplink:
     threads: 1
     shell:
         "mkdir -p maplink/RNA/; ln -s {params.inlink} {params.outlink}"
-

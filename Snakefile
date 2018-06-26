@@ -5,6 +5,7 @@ from snakemake.utils import validate, min_version
 min_version("5.1.2")
 
 ADAPTERS=config["adapter"]
+INDEXPATH=config["genomeindexpath"]
 
 onstart:
    if not os.path.exists("logs"):
@@ -45,4 +46,3 @@ include: "rules/ribotaper.smk"
 include: "rules/uORF-Tools.smk"
 #Visualization
 include: "rules/visualization.smk"
-
