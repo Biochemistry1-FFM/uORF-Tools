@@ -12,8 +12,7 @@ rule genomeIndex:
     params:
         indexpath=lambda wildcards: ("" if not INDEXPATH else (INDEXPATH))
     shell:
-        "if [ -d {indexpath} ]; then ln -s {indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100"; fi
-        #"mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
+        "if [ -d {indexpath} ]; then ln -s {indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100; fi"
 
 #ruleorder: map > maplink
 
