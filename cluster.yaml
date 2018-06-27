@@ -23,8 +23,8 @@ ribotaperMetaplot:
   memory: "h_vmem=30G"
 
 genomeSamToolsIndex:
-  parallelenvironment : 'smp 20'
-  memory: "h_vmem=3G"
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=16G"
 
 psiteOffset:
   parallelenvironment : 'smp 1'

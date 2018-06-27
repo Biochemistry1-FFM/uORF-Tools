@@ -31,10 +31,10 @@ rule genomeSamToolsIndex:
         "genomes/genome.fa.fai"
     conda:
         "../envs/samtools.yaml"
-    threads: 20
+    threads: 1
     params:
     shell:
-        "samtools faidx -@ {threads} {rules.retrieveGenome.output}"
+        "samtools faidx {rules.retrieveGenome.output}"
 
 rule psiteOffset:
     input:
