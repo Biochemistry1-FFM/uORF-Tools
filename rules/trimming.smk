@@ -18,14 +18,15 @@ rule trim:
 
 rule fastqcraw:
     input:
-        reads=getfastq
+        reads=getfastq,
+        prefix=lambda wildcards, input: (os.path.splitext(os.path.splitext(os.path.basename(input.reads[0]))[0])[0])
     output:
         "fastqc/raw/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,\d+}_fastqc.html"
     conda:
         "../envs/fastqc.yaml"
     threads: 6
     shell:
-        "mkdir -p fastqc/raw; fastqc -o fastqc/raw -t {threads} {input}"
+        "mkdir -p fastqc/raw; fastqc -o fastqc/raw -t {threads} {input}; mv fastqc/raw/{params.prefix}_fastqc.html {output}"
 
 rule fastqctrimmed:
     input:
