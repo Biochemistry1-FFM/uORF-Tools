@@ -18,9 +18,9 @@ rule trim:
 
 rule fastqcraw:
     input:
-        "fastq/{method}-{condition}-{replicate}.fastq"
+        reads=getfastq
     output:
-        "fastqc/raw/{method}-{condition}-{replicate}_fastqc.html"
+        "fastqc/raw/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,\d+}.html"
     conda:
         "../envs/fastqc.yaml"
     threads: 6
