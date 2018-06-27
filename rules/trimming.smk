@@ -18,7 +18,7 @@ rule trim:
 
 rule fastqcraw:
     input:
-        "trimmed/{method}-{condition}-{replicate}.fastq"
+        "fastq/{method}-{condition}-{replicate}.fastq"
     output:
         "fastqc/raw/{method}-{condition}-{replicate}_fastqc.html"
     conda:
