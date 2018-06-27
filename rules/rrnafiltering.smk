@@ -64,7 +64,7 @@ rule fastqcrrnafilter:
     input:
         "norRNA/{method}-{condition}-{replicate}.fastq"
     output:
-        "fastqc/rrnafilter/{method}-{condition}-{replicate}_rrnafilter.html"
+        "fastqc/rrnafilter/{method}-{condition}-{replicate}_fastqc.html"
     conda:
         "../envs/fastqc.yaml"
     threads: 6
