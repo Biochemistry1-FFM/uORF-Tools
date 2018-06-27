@@ -14,7 +14,7 @@ rule genomeIndex:
     log:
         "logs/genomeIndex.log"
     shell:
-        "if [ -d {params.indexpath} ]; then ln -s {params.indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100 2> {log}; fi"
+        "if [ -d {params.indexpath} ]; then mkdir -p index; ln -s {params.indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100 2> {log}; fi"
 
 #ruleorder: map > maplink
 
