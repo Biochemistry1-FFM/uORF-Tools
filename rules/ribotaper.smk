@@ -60,7 +60,9 @@ rule ribotaper:
     conda:
         "../envs/ribotaper.yaml"
     threads: 6
+    log:
+        "logs/{condition, [a-zA-Z]+}-{replicate,\d+}_ribotaper.log"
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p {params.prefix}; export offset=`cat {input.offset}`; cd {params.prefix}; Ribotaper.sh ../../{input.fp} ../../{input.total} ../../ribotaper/ribotaper_annotation/ {{$offset}} {threads}"
+        "mkdir -p {params.prefix}; export offset=`cat {input.offset}`; cd {params.prefix}; Ribotaper.sh ../../{input.fp} ../../{input.total} ../../ribotaper/ribotaper_annotation/ \$offset {threads} 2> {log}"
