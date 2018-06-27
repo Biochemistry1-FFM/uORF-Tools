@@ -69,5 +69,5 @@ rule fastqcrrnafilter:
         "../envs/fastqc.yaml"
     threads: 6
     shell:
-        "mkdir -p fastqc; fastqc -o rrnafilter -t {threads} {input}"
+        "mkdir -p fastqcrnafilter; fastqc -o rrnafilter -t {threads} {input}"
 
