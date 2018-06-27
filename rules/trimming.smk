@@ -20,20 +20,20 @@ rule fastqcraw:
     input:
         "trimmed/{method}-{condition}-{replicate}.fastq"
     output:
-        "fastqcraw/{method}-{condition}-{replicate}_raw.html"
+        "fastqc/raw/{method}-{condition}-{replicate}_raw.html"
     conda:
         "../envs/fastqc.yaml"
     threads: 6
     shell:
-        "mkdir -p fastqcraw; fastqc -o raw -t {threads} {input}"
+        "mkdir -p fastqc/raw; fastqc -o fastqc/raw -t {threads} {input}"
 
 rule fastqctrimmed:
     input:
         "trimmed/{method}-{condition}-{replicate}.fastq"
     output:
-        "fastqctrimmed/{method}-{condition}-{replicate}_trimmed.html"
+        "fastqc/trimmed/{method}-{condition}-{replicate}_trimmed.html"
     conda:
         "../envs/fastqc.yaml"
     threads: 6
     shell:
-        "mkdir -p fastqctrimmed; fastqc -o trimmed -t {threads} {input}"
+        "mkdir -p fastqc/trimmed; fastqc -o fastqc/trimmed -t {threads} {input}"

@@ -23,9 +23,9 @@ validate(samples, schema="schemas/samples.schema.yaml")
 
 rule all:
    input:
-       expand("fastqcraw/{method}-{condition}-{replicate}_raw.html", **samples),
-       expand("fastqctrimmed/{method}-{condition}-{replicate}_trimmed.html", **samples),
-       expand("fastqcrrnafilter/{method}-{condition}-{replicate}_rrnafilter.html", **samples),
+       expand("fastqc/raw/{method}-{condition}-{replicate}_raw.html", **samples),
+       expand("fastqc/trimmed/{method}-{condition}-{replicate}_trimmed.html", **samples),
+       expand("fastqc/rrnafilter/{method}-{condition}-{replicate}_rrnafilter.html", **samples),
        expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
        expand("tracks/{method}-{condition}-{replicate}.wig", **samples),
        "tracks/annotation.bb"
