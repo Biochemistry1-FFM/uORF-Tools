@@ -15,12 +15,6 @@ samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "cond
 samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])  # enforce str in index
 validate(samples, schema="schemas/samples.schema.yaml")
 
-#wildcard_constraints:
-#   method="\[a-zA-Z]+",
-#   condition="\[a-zA-Z]+",
-#   replicate="\d+"
-
-
 rule all:
    input:
        expand("fastqc/raw/{method}-{condition}-{replicate}_fastqc.html", **samples),
