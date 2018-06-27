@@ -12,7 +12,7 @@ rule genomeIndex:
     params:
         indexpath=lambda wildcards: ("" if not INDEXPATH else (INDEXPATH))
     shell:
-        "if [ -d {indexpath} ]; then ln -s {indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}"; fi
+        "if [ -d {indexpath} ]; then ln -s {indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100"; fi
         #"mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
 
 #ruleorder: map > maplink
@@ -29,7 +29,7 @@ rule map:
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input.fastq} --outFileNamePrefix {params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
+        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input.fastq} --outFileNamePrefix {params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType Extend5pOfRead1 --runThreadN {threads}"
 
 rule maplink:
     input:
