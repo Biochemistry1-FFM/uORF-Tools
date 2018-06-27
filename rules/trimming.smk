@@ -20,7 +20,7 @@ rule fastqcraw:
     input:
         reads=getfastq
     output:
-        "fastqc/raw/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,\d+}.html"
+        "fastqc/raw/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,\d+}_fastqc.html"
     conda:
         "../envs/fastqc.yaml"
     threads: 6
