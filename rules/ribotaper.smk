@@ -1,14 +1,26 @@
+rule setccds:
+    input:
+        annotation="annotation/annotation.gtf"
+    output:
+        "annotation/ccdsstate"
+    conda:
+        "../envs/uorftools.yaml"
+    threads: 1
+    shell:
+        "mkdir -p annotation; if grep -q ccdsid \"{input.annotation}\"; then echo \"true\" > {output}; else echo \"false\" > {output}; fi"
+
 rule ribotaperAnnotation:
     input:
         annotation=rules.retrieveAnnotation.output,
-        genome=rules.retrieveGenome.output
+        genome=rules.retrieveGenome.output,
+        ccdsstate=rules.setccds.output
     output:
         "ribotaper/ribotaper_annotation/start_stops_FAR.bed"
     conda:
         "../envs/ribotaper.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/ribotaper_annotation; create_annotations_files.bash {input.annotation} {input.genome} true false ribotaper/ribotaper_annotation"
+        "mkdir -p ribotaper/ribotaper_annotation; export ccdsstate=`cat {input.ccdsstate}`; create_annotations_files.bash {input.annotation} {input.genome} {input.ccdsstate} false ribotaper/ribotaper_annotation"
 
 rule ribotaperMetaplot:
     input:
@@ -46,7 +58,6 @@ rule psiteOffset:
     threads: 1
     shell:
         "mkdir -p offsets/RIBO; uORF-Tools/scripts/calculate_p_site_offset.R -i {input.mplot} -o {output}"
-
 
 rule ribotaper:
     input:
