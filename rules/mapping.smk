@@ -10,7 +10,7 @@ rule genomeIndex:
         "../envs/star.yaml"
     threads: 20
     params:
-        indexpath=lambda wildcards: ("" if not INDEXPATH else (INDEXPATH))
+        indexpath=lambda wildcards: ("NOTSET" if not INDEXPATH else (INDEXPATH))
     log:
         "logs/genomeIndex.log"
     shell:
