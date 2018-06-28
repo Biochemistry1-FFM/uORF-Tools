@@ -20,7 +20,7 @@ rule ribotaperAnnotation:
         "../envs/ribotaper.yaml"
     threads: 1
     shell:
-        "mkdir -p ribotaper/ribotaper_annotation; export ccdsstate=`cat {input.ccdsstate}`; create_annotations_files.bash {input.annotation} {input.genome} {input.ccdsstate} false ribotaper/ribotaper_annotation"
+        "mkdir -p ribotaper/ribotaper_annotation; export ccdsstate=`cat {input.ccdsstate}`; create_annotations_files.bash {input.annotation} {input.genome} $ccdsstate false ribotaper/ribotaper_annotation"
 
 rule ribotaperMetaplot:
     input:
