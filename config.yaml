@@ -3,4 +3,4 @@ taxonomy: "Eukarya"
 #Adapter sequence used
 adapter: ""
 samples: "uORF-Tools/samples.tsv"
-genomeindexpath: ""
+genomeindexpath: "/scratch/bi03/egg/yeastgenomeStar"
