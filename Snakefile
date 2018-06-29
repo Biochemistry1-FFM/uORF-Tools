@@ -2,7 +2,7 @@ import os
 import re
 import pandas as pd
 from snakemake.utils import validate, min_version
-min_version("5.1.2")
+min_version("5.1.4")
 
 ADAPTERS=config["adapter"]
 INDEXPATH=config["genomeindexpath"]
@@ -12,18 +12,18 @@ onstart:
     os.makedirs("logs")
 
 samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
-samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])  # enforce str in index
+samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
 validate(samples, schema="schemas/samples.schema.yaml")
 
 report: "report/workflow.rst"
 
 rule all:
    input:
-       expand("fastqc/raw/{method}-{condition}-{replicate}_fastqc.html", **samples),
-       expand("fastqc/trimmed/{method}-{condition}-{replicate}_fastqc.html", **samples),
-       expand("fastqc/rrnafilter/{method}-{condition}-{replicate}_fastqc.html", **samples),
+       expand("fastqc/raw/{method}-{condition}-{replicate}-raw.html", **samples),
+       expand("fastqc/trimmed/{method}-{condition}-{replicate}-trimmed.html", **samples),
+       expand("fastqc/norRNA/{method}-{condition}-{replicate}-norRNA.html", **samples),
        expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
-       expand("tracks/{method}-{condition}-{replicate}.wig", **samples),
+       expand("tracks/{method}-{condition}-{replicate}.bw", **samples),
        "tracks/annotation.bb"
 onsuccess:
     print("Done, no error")

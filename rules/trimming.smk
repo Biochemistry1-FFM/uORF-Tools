@@ -19,7 +19,7 @@ rule fastqcraw:
     input:
         reads=getfastq,
     output:
-        "fastqc/raw/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,\d+}_fastqc.html"
+        report("fastqc/raw/{method,[a-zA-Z]+}-{condition,[a-zA-Z]+}-{replicate,\d+}-raw.html", caption="../report/fastqcraw.rst", category="Input quality control")
     conda:
         "../envs/fastqc.yaml"
     params:
@@ -30,11 +30,13 @@ rule fastqcraw:
 
 rule fastqctrimmed:
     input:
-        "trimmed/{method}-{condition}-{replicate}.fastq"
+        reads="trimmed/{method}-{condition}-{replicate}.fastq"
     output:
-        "fastqc/trimmed/{method}-{condition}-{replicate}_fastqc.html"
+        report("fastqc/trimmed/{method}-{condition}-{replicate}-trimmed.html", caption="../report/fastqctrimmed.rst", category="Trimming")
     conda:
         "../envs/fastqc.yaml"
     threads: 6
+    params:
+        prefix=lambda wildcards, input: (os.path.splitext(os.path.basename(input.reads[0]))[0])
     shell:
-        "mkdir -p fastqc/trimmed; fastqc -o fastqc/trimmed -t {threads} {input}"
+        "mkdir -p fastqc/trimmed; fastqc -o fastqc/trimmed -t {threads} {input}; mv fastqc/trimmed/{params.prefix}_fastqc.html {output}"

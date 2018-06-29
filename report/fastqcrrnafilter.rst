@@ -1,1 +1,0 @@
-FastQC result
