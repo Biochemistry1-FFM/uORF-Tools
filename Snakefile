@@ -15,7 +15,7 @@ samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "cond
 samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])  # enforce str in index
 validate(samples, schema="schemas/samples.schema.yaml")
 
-report: "report/workflow.rstreport: "report/workflow.rst"
+report: "report/workflow.rst"
 
 rule all:
    input:
