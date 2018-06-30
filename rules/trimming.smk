@@ -37,6 +37,6 @@ rule fastqctrimmed:
         "../envs/fastqc.yaml"
     threads: 6
     params:
-        prefix=lambda wildcards, input: (os.path.splitext(os.path.basename(input.reads[0]))[0])
+        prefix=lambda wildcards, input: (os.path.splitext(os.path.basename(input.reads))[0])
     shell:
         "mkdir -p fastqc/trimmed; fastqc -o fastqc/trimmed -t {threads} {input}; mv fastqc/trimmed/{params.prefix}_fastqc.html {output}"

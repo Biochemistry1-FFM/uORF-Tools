@@ -69,7 +69,7 @@ rule fastqcrrnafilter:
         "../envs/fastqc.yaml"
     threads: 6
     params:
-        prefix=lambda wildcards, input: (os.path.splitext(os.path.basename(input.reads[0]))[0])
+        prefix=lambda wildcards, input: (os.path.splitext(os.path.basename(input.reads))[0])
     shell:
         "mkdir -p fastqc/norRNA; fastqc -o fastqc/norRNA -t {threads} {input}; mv fastqc/rrnafilter/{params.prefix}_fastqc.html {output}"
 
