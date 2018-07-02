@@ -22,7 +22,7 @@ rule all:
        expand("fastqc/raw/{method}-{condition}-{replicate}-raw.html", **samples),
        expand("fastqc/trimmed/{method}-{condition}-{replicate}-trimmed.html", **samples),
        expand("fastqc/norRNA/{method}-{condition}-{replicate}-norRNA.html", **samples),
-       expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
+       expand("ribotaper/{condition}-{replicate}-newORFs.tsv", **samples),
        expand("tracks/{method}-{condition}-{replicate}.bw", **samples),
        "tracks/annotation.bb"
 onsuccess:

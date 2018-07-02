@@ -1,6 +1,6 @@
 rule ribotaperMerge:
     input:
-        ctrl=expand("ribotaper/ctrl-{replicate}/ORFs_max_filt", **samples), treat=expand("ribotaper/treat_{replicate}/ORFs_max_filt", **samples),
+        ctrl=expand("ribotaper/ctrl-{replicate}-newORFs.tsv", **samples), treat=expand("ribotaper/treat-{replicate}-newORFs.tsv", **samples),
     output:
         "ribotaper/{replicate}/Merged_uORF_results.csv"
     conda:
