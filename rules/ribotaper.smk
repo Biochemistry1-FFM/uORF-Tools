@@ -52,7 +52,7 @@ rule psiteOffset:
     input:
         mplot="metaplots/{method}-{condition}-{replicate}.plot"
     output:
-        "offsets/{method, RIBO}/{condition}-{replicate}.offset"
+        report("offsets/{method, RIBO}/{condition}-{replicate}.offset", caption="../report/offset.rst", category="Ribotaper")
     conda:
         "../envs/uorftools.yaml"
     threads: 1
@@ -67,7 +67,7 @@ rule ribotaper:
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
-        "ribotaper/{condition, [a-zA-Z]+}-{replicate,\d+}/ORFs_max_filt",
+        report("ribotaper/{condition, [a-zA-Z]+}-{replicate,\d+}/ORFs_max_filt", caption="../report/ribotaper.rst", category="Ribotaper")
     conda:
         "../envs/ribotaper.yaml"
     threads: 6
