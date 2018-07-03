@@ -1,0 +1,82 @@
+__default__:
+  jobname: "{rule}"
+  qname: "long"
+  resources : 'nodes=1:ppn=8:mem=20G'
+  logoutputdir : "$PWD/logs"
+  erroroutputdir : "$PWD/logs"
+
+retrieveGenome:
+  resources : 'nodes=1:ppn=1:mem=1G'
+  qname: "short"
+
+retrieveAnnotation:
+  resources : 'nodes=1:ppn=1:mem=1G'
+  qname: "short"
+
+ribotaperAnnotation:
+  resources : 'nodes=1:ppn=1:mem=30G'
+  qname: "short"
+
+ribotaperMetaplot:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+genomeSamToolsIndex:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+psiteOffset:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+rrnaretrieve:
+  resources : 'nodes=1:ppn=1:mem=1G'
+  qname: "short"
+
+rrnaindex:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+rrnafilter:
+  resources : 'nodes=1:ppn=20:mem=60G'
+
+trim:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+fastqc:
+  resources : 'nodes=1:ppn=6:mem=18G'
+  qname: "short"
+
+genomeIndex:
+  resources : 'nodes=1:ppn=20:mem=60G'
+
+map:
+  resources : 'nodes=1:ppn=20:mem=60G'
+
+maplink:
+  resources : 'nodes=1:ppn=1:mem=1G'
+  qname: "tiny"
+
+ribotaper:
+  resources : 'nodes=1:ppn=5:mem=75G'
+
+ribotaperMerge:
+  resources : 'nodes=1:ppn=6:mem=18G'
+
+longestTranscript:
+  resources : 'nodes=1:ppn=1:mem=8G'
+
+normalizedCounts:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+genomeSize:
+  resources : 'nodes=1:ppn=1:mem=1G'
+
+bamindex:
+  resources : 'nodes=1:ppn=20:mem=60G'
+
+wig:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+annotationBed:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
+annotationBigBed:
+  resources : 'nodes=1:ppn=1:mem=30G'
+
