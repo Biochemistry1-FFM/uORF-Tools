@@ -67,13 +67,14 @@ rule ribotaper:
         annotation=rules.ribotaperAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output
     output:
-        report("ribotaper/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotaper.rst", category="Ribotaper")
+        raw="ribotaper/{condition, [a-zA-Z]+}-{replicate,\d+}/ORFs_max_filt",
+        report=report("ribotaper/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotaper.rst", category="Ribotaper")
     conda:
         "../envs/ribotaper.yaml"
     threads: 6
     log:
         "logs/{condition, [a-zA-Z]+}-{replicate,\d+}_ribotaper.log"
     params:
-        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
+        prefix=lambda wildcards, output: (os.path.dirname(output.raw))
     shell:
-        "mkdir -p {params.prefix}; export offset=`cat {input.offset}`; cd {params.prefix}; Ribotaper.sh ../../{input.fp} ../../{input.total} ../../ribotaper/ribotaper_annotation/ $offset {threads} 2> ../../{log}; mv ORFs_max_filt ../../{output}"
+        "mkdir -p {params.prefix}; export offset=`cat {input.offset}`; cd {params.prefix}; Ribotaper.sh ../../{input.fp} ../../{input.total} ../../ribotaper/ribotaper_annotation/ $offset {threads} 2> ../../{log}; mv ORFs_max_filt ../../{output.report}"
