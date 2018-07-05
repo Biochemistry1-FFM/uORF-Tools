@@ -23,14 +23,14 @@ rule map:
         fastq="norRNA/{method}-{condition}-{replicate}.fastq",
         index=rules.genomeIndex.output
     output:
-        "bam/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}/Aligned.sortedByCoord.out.bam"
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     conda:
         "../envs/star.yaml"
     threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     log:
-        "logs/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}_star.log"
+        "logs/{method}-{condition}-{replicate}_star.log"
     shell:
         "mkdir -p bam; STAR --genomeDir genomeStarIndex --readFilesIn {input.fastq} --outFileNamePrefix {params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType Extend5pOfRead1 --runThreadN {threads} 2> {log}"
 
@@ -38,7 +38,7 @@ rule maplink:
     input:
         "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     output:
-        "maplink/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
+        "maplink/{method}-{condition}-{replicate}.bam"
     params:
         inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
         outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
