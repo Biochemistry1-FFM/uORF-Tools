@@ -25,6 +25,7 @@ rule all:
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
        "ribotaper/Merged_uORF_results.csv",
        "tracks/annotation.bb"
+       "uORFs/sfactors_lprot.csv"
 
 onsuccess:
     print("Done, no error")
