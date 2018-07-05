@@ -6,10 +6,8 @@ rule ribotaperMerge:
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 6
-#    params:
-#        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "uORF-Tools/scripts/ribotaper_merge_incl_length.py {input} --output_csv_filepath ribotaper/Merged_uORF_results.csv"
+        "uORF-Tools/scripts/ribotaper_merge_incl_length.py {input} --max_length 400 --output_csv_filepath ribotaper/Merged_uORF_results.csv"
 
 rule longestTranscript:
     input:
