@@ -24,7 +24,7 @@ rule all:
        expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples()),
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
        "ribotaper/Merged_uORF_results.csv",
-       "tracks/annotation.bb"
+       "tracks/annotation.bb",
        "uORFs/sfactors_lprot.csv"
 
 onsuccess:

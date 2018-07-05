@@ -23,11 +23,11 @@ rule longestTranscript:
 rule sizeFactors:
     input:
         rules.longestTranscript.output,
-        rules.maplink.output
+        expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples())
     output:
         "uORFs/sfactors_lprot.csv"
     conda:
         "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b maplink -a {input[0]} -s uORFs/sfactors_lprot.csv;)
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b maplink -a {input[0]} -s uORFs/sfactors_lprot.csv;")
 
