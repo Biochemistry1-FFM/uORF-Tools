@@ -20,17 +20,15 @@ rule longestTranscript:
     shell:
         "mkdir -p uORFs; uORF-Tools/scripts/longest_orf_transcript.py -a {input} -o {output}"
 
-rule normalizedCounts:
+rule sizeFactors:
     input:
         rules.longestTranscript.output,
         rules.maplink.output
     output:
         "uORFs/sfactors_lprot_FP.csv",
         "uORFs/sfactors_lprot_Total.csv",
-        "uORFs/ncounts_lprot_FP.csv",
-        "uORFs/ncounts_lprot_Total.csv"
     conda:
         "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b maplink/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv")
 
