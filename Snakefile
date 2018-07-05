@@ -14,17 +14,18 @@ onstart:
 samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
 samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
 validate(samples, schema="schemas/samples.schema.yaml")
-
 report: "report/workflow.rst"
 
 rule all:
    input:
-       expand("fastqc/raw/{method}-{condition}-{replicate}-raw.html", **samples),
-       expand("fastqc/trimmed/{method}-{condition}-{replicate}-trimmed.html", **samples),
-       expand("fastqc/norRNA/{method}-{condition}-{replicate}-norRNA.html", **samples),
-       expand("ribotaper/{condition}-{replicate}-newORFs.tsv", **samples),
-       expand("tracks/{method}-{condition}-{replicate}.bw", **samples),
+       expand("fastqc/raw/{sample.method}-{sample.condition}-{sample.replicate}-raw.html", sample=samples.itertuples()),
+       expand("fastqc/trimmed/{sample.method}-{sample.condition}-{sample.replicate}-trimmed.html", sample=samples.itertuples()),
+       expand("fastqc/norRNA/{sample.method}-{sample.condition}-{sample.replicate}-norRNA.html", sample=samples.itertuples()),
+       expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples()),
+       expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
+       "ribotaper/Merged_uORF_results.csv",
        "tracks/annotation.bb"
+
 onsuccess:
     print("Done, no error")
 
