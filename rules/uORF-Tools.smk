@@ -29,5 +29,5 @@ rule sizeFactors:
     conda:
         "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b maplink -a {input[0]} -s uORFs/sfactors_lprot.csv;")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_size_factors.R -r -t uORF-Tools/samples.tsv -b maplink/ -a {input[0]} -s uORFs/sfactors_lprot.csv;")
 

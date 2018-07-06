@@ -12,6 +12,8 @@ option_list = list(
               help = "Path to directory containing .bam files", metavar = "character"),
   make_option(c("-a", "--annotation_file_path"), type = "character", default = NULL,
               help = "Path to .gtf file with annotation", metavar = "character"),
+  make_option(c("-t", "--sample_file_path"), type = "character", default = NULL,
+              help = "Path to sample.tsv", metavar = "character"),
   make_option(c("-s", "--size_out_path"), type = "character", default = NULL,
               help = "Path for writing output size file", metavar = "character"),
   make_option(c("-r", "--restrict_fragments"), action="store_true", default = FALSE,
@@ -76,7 +78,7 @@ gene.counts <- ddply(gene.counts,"gene.id",numcolwise(sum))
 rownames(gene.counts) <- gene.counts$gene.id
 gene.counts$gene.id <- NULL
 
-sampleSheet <- read.csv(file="samples.tsv" ,header=FALSE, sep="\t", stringsAsFactors=FALSE)
+sampleSheet <- read.csv(file=options$sample_file_path ,header=FALSE, sep="\t", stringsAsFactors=FALSE)
 
 print(sampleSheet)
 
@@ -89,8 +91,10 @@ sampleName <- function(x, output) {
  return(sname)
 }
 
-sampleNames <- sapply(sampleTable, sampleName)
+sampleNames <- sapply(sampleSheet, sampleName)
+print(sampleNames)
 sample.files <- paste(sampleNames, ".bam", sep="")
+print(sample.files)
 conditions <- sampleName[,3]
 sampleTable <- data.frame(row.names = sample.names, fileName = sample.files, condition = conditions)
 
