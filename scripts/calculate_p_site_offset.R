@@ -18,8 +18,6 @@ options = parse_args(option_parser)
 
 # read in table created by create_metaplots.bash
 reads<-read.table(options$metaplot_file_path,stringsAsFactors=F,header=F,sep="\t",comment.char="")
-reads <- read.table("/shared/RIBO-THAP-rep1", stringsAsFactors=F,header=F,sep="\t",comment.char="")
-
 
 # change colnames
 colnames(reads)<-c("chr","start","end","read_id","map_quality","strand",".1",".2",".3","spanning_exons","length_per_exon","length_introns","chr_stst","start_stst","end_stst","type_stst","gene_id_stst","strand_stst")
