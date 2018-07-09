@@ -78,7 +78,7 @@ gene.counts <- ddply(gene.counts,"gene.id",numcolwise(sum))
 rownames(gene.counts) <- gene.counts$gene.id
 gene.counts$gene.id <- NULL
 
-sampleSheet <- read.csv(file=options$sample_file_path ,header=FALSE, sep="\t", stringsAsFactors=FALSE)
+sampleSheet <- read.csv(file=options$sample_file_path ,header=TRUE, sep="\t", stringsAsFactors=FALSE)
 
 print(sampleSheet)
 
@@ -91,12 +91,13 @@ sampleName <- function(x, output) {
  return(sname)
 }
 
-sampleNames <- sapply(sampleSheet, sampleName)
+sampleNames <- apply(sampleSheet,1,sampleName)
 print(sampleNames)
 sample.files <- paste(sampleNames, ".bam", sep="")
 print(sample.files)
-conditions <- sampleName[,3]
-sampleTable <- data.frame(row.names = sample.names, fileName = sample.files, condition = conditions)
+conditions <- sampleSheet[,3]
+print(conditions)
+sampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
 
 colnames(gene.counts) <- rownames(sampleTable)
 
