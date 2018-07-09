@@ -2,12 +2,13 @@ rule ribotaperMerge:
     input:
         expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples())
     output:
-        "ribotaper/Merged_uORF_results.csv"
+        "ribotaper/Merged_uORF_results.csv",
+        "ribotaper/Merged_uORF_results.bed"
     conda:
         "../envs/uorftoolspython.yaml"
-    threads: 6
+    threads: 1
     shell:
-        "uORF-Tools/scripts/ribotaper_merge_incl_length.py {input} --max_length 400 --output_csv_filepath ribotaper/Merged_uORF_results.csv"
+        "mkdir -p uORFs; uORF-Tools/scripts/ribotaper_merge_incl_length.py {input} --max_length 400 --output_csv_filepath uORFs/Merged_uORF_results.csv --output_bed_filepath uORFs/Merged_uORF_results.bed"
 
 rule longestTranscript:
     input:
