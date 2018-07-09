@@ -95,7 +95,7 @@ sampleNames <- apply(sampleSheet,1,sampleName)
 print(sampleNames)
 sample.files <- paste(sampleNames, ".bam", sep="")
 print(sample.files)
-conditions <- sampleSheet[,3]
+conditions <- sampleSheet[,2]
 print(conditions)
 sampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
 
@@ -105,8 +105,8 @@ colnames(gene.counts) <- rownames(sampleTable)
 dds <- DESeqDataSetFromMatrix(countData = gene.counts, colData = sampleTable, design = ~ condition)
 
 # differential analysis
-dds <- DESeq(dds)
-res <- results(dds)
+#dds <- DESeq(dds)
+#res <- results(dds)
 
 # sizeFactors and normalized counts
 size.factors <- sizeFactors(dds)
