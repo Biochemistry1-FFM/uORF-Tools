@@ -13,6 +13,7 @@ The resulting data frame is stored as csv file
 import pandas as pd
 import re
 import argparse
+import numpy as np
 
 
 # function to read in ribotaper output files ORFs_max_filt
@@ -94,6 +95,23 @@ def create_output(args):
             df_final = df_final[df_final['ORF_length'] <= int(args.min_length)]
     return df_final
 
+def set_uORFids(args):
+        tid_dict = {}
+        uORFids = []
+        for index, row in args.iterrows():
+            print(index)
+            print(row.transcript_id)
+            if row.transcript_id in tid_dict:
+                tindex=tid_dict[row.transcript_id]
+                tid_dict[row.transcript_id]=tindex + 1
+            else:
+                tindex = 1
+                tid_dict[row.transcript_id] = tindex
+            uORFid = row.transcript_id + '.' + str(tindex)
+            uORFids.append(uORFid)
+        m = np.asarray(uORFids)
+        args["uORFids"]=m
+        return(args)
 
 def main():
     # store commandline args
@@ -108,11 +126,14 @@ def main():
                         length')
     args = parser.parse_args()
     # make sure that min_length and max_length are given
-    output = create_output(args)
+    uorfsframe = create_output(args)
     # get some general info on output
     #print(output.describe(include='all'))
     # write output to csv file
-    output.to_csv(args.output_csv_filepath)
+    uorfsframe.to_csv(args.output_csv_filepath)
+    uORFsdf=set_uORFids(uorfsframe)
+    
+    print(uORFsdf)
 
 
 if __name__ == '__main__':
