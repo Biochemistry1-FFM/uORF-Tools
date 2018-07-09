@@ -3,3 +3,4 @@ channels:
  - conda-forge
 dependencies:
  - ribotaper
+ - r-3.3.2

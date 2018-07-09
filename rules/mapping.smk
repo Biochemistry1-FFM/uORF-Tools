@@ -3,39 +3,42 @@ rule genomeIndex:
         rules.retrieveGenome.output,
         rules.retrieveAnnotation.output
     output:
-        "index/genomeStar/chrLength.txt",
-        "index/genomeStar/chrName.txt",
-        "index/genomeStar/genomeParameters.txt"
+        "genomeStarIndex",
+        #"genomeStarIndex/chrName.txt",
+        #"genomeStarIndex/genomeParameters.txt"
     conda:
         "../envs/star.yaml"
     threads: 20
     params:
-        indexpath=lambda wildcards: ("" if not INDEXPATH else (INDEXPATH))
+        indexpath=lambda wildcards: ("NOTSET" if not INDEXPATH else (INDEXPATH))
+    log:
+        "logs/genomeIndex.log"
     shell:
-        "if [ -d {indexpath} ]; then ln -s {indexpath} index/genomeStar; else mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}"; fi
-        #"mkdir -p index/genomeStar; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir index/genomeStar --genomeFastaFiles {input[0]}" #--sjdbGTFfile {input[1]} --sjdbOverhang 100"
-
-#ruleorder: map > maplink
+        #"ln -T -s {params.indexpath} genomeStarIndex"
+        #"if [ -d {params.indexpath} ]; then ln -T -s {params.indexpath} genomeStarIndex; echo \"Index linked\"; else echo \"Computing STAR index\"; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir genomeStarIndex --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100 2> {log}; fi"
+        "if [ -d {params.indexpath} ]; then ln -T -s {params.indexpath} genomeStarIndex; echo \"Index linked\"; else mkdir -p genomeStarIndex; echo \"Computing STAR index\"; STAR --runThreadN {threads} --runMode genomeGenerate --genomeDir genomeStarIndex --genomeFastaFiles {input[0]} --sjdbGTFfile {input[1]} --sjdbOverhang 100 2> {log}; fi"
 
 rule map:
     input:
         fastq="norRNA/{method}-{condition}-{replicate}.fastq",
         index=rules.genomeIndex.output
     output:
-        "bam/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}/Aligned.sortedByCoord.out.bam"
+        "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     conda:
         "../envs/star.yaml"
     threads: 20
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output[0]))
+    log:
+        "logs/{method}-{condition}-{replicate}_star.log"
     shell:
-        "mkdir -p bam; STAR --genomeDir index/genomeStar --readFilesIn {input.fastq} --outFileNamePrefix {params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType EndToEnd --runThreadN {threads}"
+        "mkdir -p bam; STAR --genomeDir genomeStarIndex --readFilesIn {input.fastq} --outFileNamePrefix {params.prefix}/ --outSAMtype BAM SortedByCoordinate --outSAMattributes All --outFilterMultimapNmax 1 --alignEndsType Extend5pOfRead1 --runThreadN {threads} 2> {log}"
 
 rule maplink:
     input:
         "bam/{method}-{condition}-{replicate}/Aligned.sortedByCoord.out.bam"
     output:
-        "maplink/{method, [a-zA-Z]+}-{condition, [a-zA-Z]+}-{replicate,\d+}.bam"
+        "maplink/{method}-{condition}-{replicate}.bam"
     params:
         inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
         outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))

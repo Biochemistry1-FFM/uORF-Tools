@@ -30,7 +30,7 @@ rule wig:
         genomeSize=rules.genomeSize.output,
         bamIndex=rules.bamindex.output
     output:
-        "tracks/{method}-{condition}-{replicate}.wig"
+        report("tracks/{method}-{condition}-{replicate}.bw", caption="../report/wig.rst", category="Genome Browser")
     conda:
         "../envs/wig.yaml"
     threads: 1
@@ -55,7 +55,7 @@ rule annotationBigBed:
         rules.annotationBed.output,
         rules.genomeSize.output
     output:
-        "tracks/annotation.bb"
+        report("tracks/annotation.bb", caption="../report/annotationbed.rst", category="Genome Browser")        
     conda:
         "../envs/bed.yaml"
     threads: 1

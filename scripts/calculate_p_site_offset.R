@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 
 library(optparse)
+library(plyr)
 
 option_list = list(
   make_option(c("-i", "--metaplot_file_path"), type = "character", default = NULL,
@@ -43,24 +44,34 @@ dists_all<-with(reads_simpl,aggregate(count,by=list(type_stst,length_per_exon,di
 # change colnames
 colnames(dists_all)<-c("type","length","distance","counts")
 
-# select only start_codons and read lengths between 25-30
-starts <- dists_all[which(dists_all$type == "start_codon" & dists_all$length%in%c(25:57)),]
+# select only start_codons 
+starts <- dists_all[which(dists_all$type == "start_codon"),]
 
 # get only entries upstream of start site
-starts <- starts[which(starts$distance%in%c(-23:0)),]
+starts <- starts[which(starts$distance%in%c(min(starts$distance):0)),]
 
 # split data fram by length
 list_starts <- split.data.frame(starts, f=starts[,"length"])
+
+# get length with max counts
+length_max <- sort(sapply(list_starts, function(x) sum(x$counts)), decreasing = T)[c(1:5)]
+
+# keep only 5 lengths with max counts
+sel <- names(list_starts)%in%names(length_max)
+list_max <- list_starts[which(sel)]
+
 # get distance with max counts
-distance <- sapply(list_starts, function(x) x$distance[which(x$counts == max(x$counts))][1])
+distance <- sapply(list_max, function(x) x$distance[which(x$counts == max(x$counts))][1])
+
 # create output data frame
 result <- as.data.frame(t(distance))
-lengths <- names(result)[1:4]
+result <- na.omit(result)
+
+lengths <- names(result)
 lengths <- na.omit(lengths)
-offsets <- result[1,1:4]
-offsets <- na.omit(offsets)
+
 lengthstring <- paste(as.character(lengths), collapse=",")
-offsetstring <-paste(as.character(offsets), collapse=",")
+offsetstring <-paste(as.character(result), collapse=",")
 output <- paste(lengthstring, offsetstring, sep=" ")
 
 # write output

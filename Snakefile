@@ -2,7 +2,7 @@ import os
 import re
 import pandas as pd
 from snakemake.utils import validate, min_version
-min_version("5.1.2")
+min_version("5.1.4")
 
 ADAPTERS=config["adapter"]
 INDEXPATH=config["genomeindexpath"]
@@ -12,23 +12,21 @@ onstart:
     os.makedirs("logs")
 
 samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
-samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])  # enforce str in index
+samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
 validate(samples, schema="schemas/samples.schema.yaml")
-
-#wildcard_constraints:
-#   method="\[a-zA-Z]+",
-#   condition="\[a-zA-Z]+",
-#   replicate="\d+"
-
+report: "report/workflow.rst"
 
 rule all:
    input:
-       expand("fastqcraw/{method}-{condition}-{replicate}_raw.html", **samples),
-       expand("fastqctrimmed/{method}-{condition}-{replicate}_trimmed.html", **samples),
-       expand("fastqcrrnafilter/{method}-{condition}-{replicate}_rrnafilter.html", **samples),
-       expand("ribotaper/{condition}-{replicate}/ORFs_max_filt", **samples),
-       expand("tracks/{method}-{condition}-{replicate}.wig", **samples),
-       "tracks/annotation.bb"
+       expand("fastqc/raw/{sample.method}-{sample.condition}-{sample.replicate}-raw.html", sample=samples.itertuples()),
+       expand("fastqc/trimmed/{sample.method}-{sample.condition}-{sample.replicate}-trimmed.html", sample=samples.itertuples()),
+       expand("fastqc/norRNA/{sample.method}-{sample.condition}-{sample.replicate}-norRNA.html", sample=samples.itertuples()),
+       expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples()),
+       expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
+       "ribotaper/Merged_uORF_results.csv",
+       "tracks/annotation.bb",
+       "uORFs/sfactors_lprot.csv"
+
 onsuccess:
     print("Done, no error")
 

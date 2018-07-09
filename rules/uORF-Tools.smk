@@ -1,15 +1,13 @@
 rule ribotaperMerge:
     input:
-        ctrl=expand("ribotaper/ctrl-{replicate}/ORFs_max_filt", **samples), treat=expand("ribotaper/treat_{replicate}/ORFs_max_filt", **samples),
+        expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples())
     output:
-        "ribotaper/{replicate}/Merged_uORF_results.csv"
+        "ribotaper/Merged_uORF_results.csv"
     conda:
-        "envs/uorftoolspython.yaml"
+        "../envs/uorftoolspython.yaml"
     threads: 6
-    params:
-        prefix=lambda wildcards, output: (os.path.dirname(output[0]))
     shell:
-        "mkdir -p {params.prefix}; uORF-Tools/scripts/ribotaper_merge_incl_length.py {input.ctrl} {input.treat} --output_csv_filepath {params.prefix}/Merged_uORF_results.csv"
+        "uORF-Tools/scripts/ribotaper_merge_incl_length.py {input} --max_length 400 --output_csv_filepath ribotaper/Merged_uORF_results.csv"
 
 rule longestTranscript:
     input:
@@ -17,22 +15,19 @@ rule longestTranscript:
     output:
         "uORFs/longest_protein_coding_transcripts.gtf"
     conda:
-        "envs/uorftools.yaml"
+        "../envs/uorftools.yaml"
     threads: 1
     shell:
         "mkdir -p uORFs; uORF-Tools/scripts/longest_orf_transcript.py -a {input} -o {output}"
 
-rule normalizedCounts:
+rule sizeFactors:
     input:
         rules.longestTranscript.output,
-        rules.maplink.output
+        expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples())
     output:
-        "uORFs/sfactors_lprot_FP.csv",
-        "uORFs/sfactors_lprot_Total.csv",
-        "uORFs/ncounts_lprot_FP.csv",
-        "uORFs/ncounts_lprot_Total.csv"
+        "uORFs/sfactors_lprot.csv"
     conda:
-        "envs/uorftools.yaml"
+        "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_FP.csv -n uORFs/ncounts_lprot_FP.csv -t FP;  uORF-Tools/scripts/generate_normalized_counts_longest_protein.R -r -b bam/ -a {input[0]} -s uORFs/sfactors_lprot_Total.csv -n uORFs/ncounts_lprot_Total.csv -t Total")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_size_factors.R -r -t uORF-Tools/samples.tsv -b maplink/ -a {input[0]} -s uORFs/sfactors_lprot.csv;")
 

@@ -62,12 +62,14 @@ rule rrnafilter:
 
 rule fastqcrrnafilter:
     input:
-        "norRNA/{method}-{condition}-{replicate}.fastq"
+        reads="norRNA/{method}-{condition}-{replicate}.fastq"
     output:
-        "fastqcrrnafilter/{method}-{condition}-{replicate}_rrnafilter.html"
+        report("fastqc/norRNA/{method}-{condition}-{replicate}-norRNA.html", caption="../report/fastqcnorRNA.rst", category="Removing hits mapping to rRNA") 
     conda:
         "../envs/fastqc.yaml"
     threads: 6
+    params:
+        prefix=lambda wildcards, input: (os.path.splitext(os.path.basename(input.reads))[0])
     shell:
-        "mkdir -p fastqc; fastqc -o rrnafilter -t {threads} {input}"
+        "mkdir -p fastqc/norRNA; fastqc -o fastqc/norRNA -t {threads} {input}; mv fastqc/norRNA/{params.prefix}_fastqc.html {output}"
 
