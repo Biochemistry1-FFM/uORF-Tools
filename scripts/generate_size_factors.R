@@ -31,17 +31,14 @@ if (is.null(options$bam_directory_path)){
 
 # import longest protein coding transcripts
 gencode <- import.gff(options$annotation_file_path)
-gencode <- import.gff("/shared/Project2/uORFs/longest_protein_coding_transcripts.gtf")
 
 # create empty data frame
 gene.counts <- data.frame(gene.id = gencode$transcript_id)
 
 # get sample files
 sample.files <- paste(options$bam_directory_path, list.files(options$bam_directory_path, pattern = "\\.bam$"), sep = "")
-sample.files <- paste("/shared/Project2/maplink/", list.files("/shared/Project2/maplink/", pattern ="\\.bam$"), sep = "")
-sample.files <- sample.files[c(1,5,9,13)]
 
-
+# generate counts table
 for (i in sample.files) {
 
   # get sample name
@@ -70,7 +67,6 @@ gene.counts$gene.id <- NULL
 
 # get sample sheet
 sampleSheet <- read.csv(file=options$sample_file_path ,header=TRUE, sep="\t", stringsAsFactors=FALSE)
-sampleSheet <- read.csv(file="/shared/Project2/uORF-Tools/samples.tsv" ,header=TRUE, sep="\t", stringsAsFactors=FALSE)
 
 #col names and row names 
 sampleName <- function(x, output) {
@@ -81,15 +77,11 @@ sampleName <- function(x, output) {
  return(sname)
 }
 
+# generate sampleTable
 sampleNames <- apply(sampleSheet,1,sampleName)
-print(sampleNames)
 sample.files <- paste(sampleNames, ".bam", sep="")
-print(sample.files)
 conditions <- sampleSheet[,2]
-print(conditions)
 sampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
-
-sampleTable <- sampleTable[c(1,5,9,13),]
 
 colnames(gene.counts) <- rownames(sampleTable)
 
