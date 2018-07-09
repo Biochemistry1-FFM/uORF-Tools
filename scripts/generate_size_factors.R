@@ -28,37 +28,27 @@ if (is.null(options$bam_directory_path)){
   stop("Please supply arguments (-b, -a, -s, -n), see --help \n", call.=FALSE)
 }
 
-#rm(list = ls(all.names = TRUE))
-#setwd('~/mcf7-ribo/data/seqs/bam_files_anica/')
-#use cwd instead
 
 # import longest protein coding transcripts
-#gencode <- import.gff("/shared/Homo_sapiens/NCBI/GRCh38/Annotation/Genes.gencode/gencode.v27.longest_protein_coding_transcript.gtf")
 gencode <- import.gff(options$annotation_file_path)
-
-
-# define bam file folder
-#bam.folder <- '~/mcf7-ribo/data/seqs/bam_files_anica/'
+gencode <- import.gff("/shared/Project2/uORFs/longest_protein_coding_transcripts.gtf")
 
 # create empty data frame
 gene.counts <- data.frame(gene.id = gencode$transcript_id)
 
 # get sample files
 sample.files <- paste(options$bam_directory_path, list.files(options$bam_directory_path, pattern = "\\.bam$"), sep = "")
+sample.files <- paste("/shared/Project2/maplink/", list.files("/shared/Project2/maplink/", pattern ="\\.bam$"), sep = "")
+sample.files <- sample.files[c(1,5,9,13)]
 
-# exclue samples from experiment no. 1, keep re-sequencing experiment i.e. 1-2 (for now)
-#sample.files <- sample.files[c(1,3,4,5,6,8,9,10)]
 
 for (i in sample.files) {
 
   # get sample name
-  name.i <- file_path_sans_ext(i)
+  name.i <- as.character(i)
 
   # import reads
   reads <- readGAlignments(i)
-
-  # get read lengths
-  widths <- qwidth(reads)
 
   # convert to granges
   reads <- granges(reads)
@@ -78,9 +68,9 @@ gene.counts <- ddply(gene.counts,"gene.id",numcolwise(sum))
 rownames(gene.counts) <- gene.counts$gene.id
 gene.counts$gene.id <- NULL
 
+# get sample sheet
 sampleSheet <- read.csv(file=options$sample_file_path ,header=TRUE, sep="\t", stringsAsFactors=FALSE)
-
-print(sampleSheet)
+sampleSheet <- read.csv(file="/shared/Project2/uORF-Tools/samples.tsv" ,header=TRUE, sep="\t", stringsAsFactors=FALSE)
 
 #col names and row names 
 sampleName <- function(x, output) {
@@ -99,17 +89,15 @@ conditions <- sampleSheet[,2]
 print(conditions)
 sampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
 
+sampleTable <- sampleTable[c(1,5,9,13),]
+
 colnames(gene.counts) <- rownames(sampleTable)
 
 # create DESeq data set
 dds <- DESeqDataSetFromMatrix(countData = gene.counts, colData = sampleTable, design = ~ condition)
 
-# differential analysis
-#dds <- DESeq(dds)
-#res <- results(dds)
-
 # sizeFactors and normalized counts
-size.factors <- sizeFactors(dds)
+size.factors <- estimateSizeFactors(dds)$sizeFactor
 
 # save normalized counts and size factors
 write.csv(size.factors, options$size_out_path)
