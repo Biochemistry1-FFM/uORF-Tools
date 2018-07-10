@@ -6,7 +6,7 @@ library(GenomicAlignments)
 library(DESeq2)
 library(plyr)
 library(rtracklayer)
-library(tools)
+
 option_list = list(
   make_option(c("-b", "--bam_directory_path"), type = "character", default = NULL,
               help = "Path to directory containing .bam files", metavar = "character"),
@@ -69,7 +69,7 @@ gene.counts$gene.id <- NULL
 sampleSheet <- read.csv(file=options$sample_file_path ,header=TRUE, sep="\t", stringsAsFactors=FALSE)
 
 #col names and row names 
-sampleName <- function(x, output) {
+sampleName <- function(x) {
  method <- x[1]
  condition <- x[2]
  replicate <- x[3]

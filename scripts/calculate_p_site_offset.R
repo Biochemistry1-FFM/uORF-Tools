@@ -1,7 +1,6 @@
 #!/usr/bin/env Rscript
 
 library(optparse)
-library(plyr)
 
 option_list = list(
   make_option(c("-i", "--metaplot_file_path"), type = "character", default = NULL,
