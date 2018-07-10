@@ -1,11 +1,6 @@
 #!/usr/bin/env Rscript
 
 library(optparse)
-library(GenomicRanges)
-library(GenomicAlignments)
-library(DESeq2)
-library(plyr)
-library(rtracklayer)
 
 option_list = list(
   make_option(c("-b", "--bam_directory_path"), type = "character", default = NULL,
@@ -15,9 +10,7 @@ option_list = list(
   make_option(c("-t", "--sample_file_path"), type = "character", default = NULL,
               help = "Path to sample.tsv", metavar = "character"),
   make_option(c("-s", "--size_out_path"), type = "character", default = NULL,
-              help = "Path for writing output size file", metavar = "character"),
-  make_option(c("-r", "--restrict_fragments"), action="store_true", default = FALSE,
-              help = "Restricts fragment length between 25-35nt")
+              help = "Path for writing output size file", metavar = "character")
 );
 
 option_parser = OptionParser(option_list = option_list);
@@ -25,9 +18,15 @@ options = parse_args(option_parser);
 
 if (is.null(options$bam_directory_path)){
   print_help(option_parser)
-  stop("Please supply arguments (-b, -a, -s, -n), see --help \n", call.=FALSE)
+  stop("Please supply arguments (-b, -a, -t, -s), see --help \n", call.=FALSE)
 }
 
+
+library(GenomicRanges)
+library(GenomicAlignments)
+library(DESeq2)
+library(plyr)
+library(rtracklayer)
 
 # import longest protein coding transcripts
 gencode <- import.gff(options$annotation_file_path)
@@ -88,8 +87,8 @@ colnames(gene.counts) <- rownames(sampleTable)
 # create DESeq data set
 dds <- DESeqDataSetFromMatrix(countData = gene.counts, colData = sampleTable, design = ~ condition)
 
-# sizeFactors and normalized counts
+# sizeFactors 
 size.factors <- estimateSizeFactors(dds)$sizeFactor
 
-# save normalized counts and size factors
-write.csv(size.factors, options$size_out_path)
+# save size factors
+write.csv(size.factors, options$size_out_path, quote = F)

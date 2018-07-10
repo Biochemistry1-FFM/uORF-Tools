@@ -12,6 +12,11 @@ option_list = list(
 option_parser = OptionParser(option_list = option_list);
 options = parse_args(option_parser)
 
+if (is.null(options$metaplot_file_path)){
+  print_help(option_parser)
+  stop("Please supply arguments (-i, -o), see --help \n", call.=FALSE)
+}
+
 
 ###script calculating P-site offset for ribotaper pipeline, takes as arguments ONE file created from create_metaplots.bash (table containing downsized bam-file info, in this case named RIBO-THAP-rep1)
 
