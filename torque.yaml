@@ -1,82 +1,82 @@
 __default__:
   jobname: "{rule}"
   qname: "long"
-  resources : 'nodes=1:ppn=8:mem=20G'
+  resources : 'nodes=1:ppn=8'
   logoutputdir : "$PWD/logs"
   erroroutputdir : "$PWD/logs"
 
 retrieveGenome:
-  resources : 'nodes=1:ppn=1:mem=1G'
+  resources : 'nodes=1:ppn=1'
   qname: "short"
 
 retrieveAnnotation:
-  resources : 'nodes=1:ppn=1:mem=1G'
+  resources : 'nodes=1:ppn=1'
   qname: "short"
 
 ribotaperAnnotation:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
   qname: "short"
 
 ribotaperMetaplot:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 genomeSamToolsIndex:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 psiteOffset:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 rrnaretrieve:
-  resources : 'nodes=1:ppn=1:mem=1G'
+  resources : 'nodes=1:ppn=1'
   qname: "short"
 
 rrnaindex:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 rrnafilter:
-  resources : 'nodes=1:ppn=20:mem=60G'
+  resources : 'nodes=1:ppn=20'
 
 trim:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 fastqc:
-  resources : 'nodes=1:ppn=6:mem=18G'
+  resources : 'nodes=1:ppn=6'
   qname: "short"
 
 genomeIndex:
-  resources : 'nodes=1:ppn=20:mem=60G'
+  resources : 'nodes=1:ppn=20'
 
 map:
-  resources : 'nodes=1:ppn=20:mem=60G'
+  resources : 'nodes=1:ppn=20'
 
 maplink:
-  resources : 'nodes=1:ppn=1:mem=1G'
+  resources : 'nodes=1:ppn=1'
   qname: "tiny"
 
 ribotaper:
-  resources : 'nodes=1:ppn=5:mem=75G'
+  resources : 'nodes=1:ppn=5'
 
 ribotaperMerge:
-  resources : 'nodes=1:ppn=6:mem=18G'
+  resources : 'nodes=1:ppn=6'
 
 longestTranscript:
-  resources : 'nodes=1:ppn=1:mem=8G'
+  resources : 'nodes=1:ppn=1'
 
 normalizedCounts:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 genomeSize:
-  resources : 'nodes=1:ppn=1:mem=1G'
+  resources : 'nodes=1:ppn=1'
 
 bamindex:
-  resources : 'nodes=1:ppn=20:mem=60G'
+  resources : 'nodes=1:ppn=20'
 
 wig:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 annotationBed:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
 annotationBigBed:
-  resources : 'nodes=1:ppn=1:mem=30G'
+  resources : 'nodes=1:ppn=1'
 
