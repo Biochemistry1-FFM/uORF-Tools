@@ -8,7 +8,7 @@ rule ribotaperMerge:
         "../envs/uorftoolspython.yaml"
     threads: 1
     shell:
-        "mkdir -p uORFs; uORF-Tools/scripts/ribotaper_merge_incl_length.py {input} --max_length 400 --output_csv_filepath uORFs/Merged_uORF_results.csv --output_bed_filepath uORFs/Merged_uORF_results.bed"
+        "mkdir -p uORFs; uORF-Tools/scripts/ribotaper_merge_incl_length.py {input} --min_length 1 --max_length 400 --output_csv_filepath uORFs/Merged_uORF_results.csv --output_bed_filepath uORFs/Merged_uORF_results.bed"
 
 rule longestTranscript:
     input:
