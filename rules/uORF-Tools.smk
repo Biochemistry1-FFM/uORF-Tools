@@ -2,8 +2,8 @@ rule ribotaperMerge:
     input:
         expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples())
     output:
-        "ribotaper/Merged_uORF_results.csv",
-        "ribotaper/Merged_uORF_results.bed"
+        "uORFs/Merged_uORF_results.bed",
+        "uORFs/Merged_uORF_results.csv"
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
