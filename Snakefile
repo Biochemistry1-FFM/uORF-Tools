@@ -23,7 +23,7 @@ rule all:
        expand("fastqc/norRNA/{sample.method}-{sample.condition}-{sample.replicate}-norRNA.html", sample=samples.itertuples()),
        expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples()),
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
-       "ribotaper/Merged_uORF_results.csv",
+       "uORFs/Merged_uORF_results.csv",
        "tracks/annotation.bb",
        "uORFs/sfactors_lprot.csv"
 
