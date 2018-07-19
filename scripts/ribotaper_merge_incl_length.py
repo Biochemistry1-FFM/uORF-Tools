@@ -69,7 +69,7 @@ def create_output(args):
     # Create data frame from all input files
     for name in args.ribotaper_files:
         df_sub = drop_cols(name)
-        df_final = df_final.append(df_sub)
+        df_final = df_final.append(df_sub, sort=True)
 
         # Cleaning up data frame
         df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
@@ -86,7 +86,7 @@ def create_output(args):
             df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
 
         if args.max_length is not None:
-            df_final = df_final[df_final['ORF_length'] <= int(args.min_length)]
+            df_final = df_final[df_final['ORF_length'] <= int(args.max_length)]
     return df_final
 
 def set_uORFids(args):
@@ -108,7 +108,6 @@ def set_uORFids(args):
 def make_uORFs_bed(args):
     uORFsString = ""
     for index, row in args.iterrows():
-
         uORFString=row.chromosome + "\t" + row.start + "\t" + row.stop + "\t" + row.uORFids + "\t0\t" + row.strand + "\n"
         uORFsString= uORFsString + uORFString
     return(uORFsString)

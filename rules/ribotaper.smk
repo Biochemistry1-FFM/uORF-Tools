@@ -77,4 +77,4 @@ rule ribotaper:
     params:
         prefix=lambda wildcards, output: (os.path.dirname(output.raw))
     shell:
-        "mkdir -p {params.prefix}; export offset=`cat {input.offset}`; cd {params.prefix}; Ribotaper.sh ../../{input.fp} ../../{input.total} ../../ribotaper/ribotaper_annotation/ $offset {threads} 2> ../../{log}; cp ORFs_max_filt ../../{output.report}"
+        "mkdir -p {params.prefix}; export offset=`cat {input.offset}`; cd {params.prefix}; Ribotaper.sh ../../{input.fp} ../../{input.total} ../../ribotaper/ribotaper_annotation/ $offset {threads} 2> ../../{log}|| touch ORFs_max_filt rib_err; cp ORFs_max_filt ../../{output.report}"
