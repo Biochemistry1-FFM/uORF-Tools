@@ -8,7 +8,7 @@ import pandas as pd
 import re
 import argparse
 import numpy as np
-
+import os
 
 # function to read in ribotaper output files ORFs_max_filt
 def create_table(name):
@@ -68,25 +68,26 @@ def create_output(args):
 
     # Create data frame from all input files
     for name in args.ribotaper_files:
-        df_sub = drop_cols(name)
-        df_final = df_final.append(df_sub, sort=True)
+        if os.stat(name).st_size == 0:
+            df_sub = drop_cols(name)
+            df_final = df_final.append(df_sub, sort=True)
 
-        # Cleaning up data frame
-        df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
-        df_final.reset_index(inplace=True)
-        df_final.drop(["index"], axis=1, inplace=True)
+            # Cleaning up data frame
+            df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
+            df_final.reset_index(inplace=True)
+            df_final.drop(["index"], axis=1, inplace=True)
 
-        # add chromosome, start, and stop positions as columns to data frames
-        df_final["chromosome"] = chrom_name(df_final["ORF_id_gen"])
-        df_final["start"] = start(df_final["ORF_id_gen"])
-        df_final["stop"] = stop(df_final["ORF_id_gen"])
+            # add chromosome, start, and stop positions as columns to data frames
+            df_final["chromosome"] = chrom_name(df_final["ORF_id_gen"])
+            df_final["start"] = start(df_final["ORF_id_gen"])
+            df_final["stop"] = stop(df_final["ORF_id_gen"])
 
-        # Filter min and max uORF lengths
-        if args.min_length is not None:
-            df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
+            # Filter min and max uORF lengths
+            if args.min_length is not None:
+                df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
 
-        if args.max_length is not None:
-            df_final = df_final[df_final['ORF_length'] <= int(args.max_length)]
+            if args.max_length is not None:
+                df_final = df_final[df_final['ORF_length'] <= int(args.max_length)]
     return df_final
 
 def set_uORFids(args):
