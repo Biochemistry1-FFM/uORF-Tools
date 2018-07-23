@@ -65,11 +65,11 @@ def stop(column):
 def create_output(args):
     # create empty data frame to append to later
     df_final = pd.DataFrame(columns=["ORF_id_gen","ORF_length","chromosome","gene_id","gene_symbol","start","stop","strand","transcript_id"])
-
     # Create data frame from all input files
     for name in args.ribotaper_files:
         #for nonempty files
         if os.stat(name).st_size != 0:
+            print(name)
             #read file into dataframe and drop columns not of interest
             df_sub = drop_cols(name)
             # rename columns to chromosome, start, and stop
@@ -91,35 +91,45 @@ def create_output(args):
                      oorf_length = int(row.stop) - int(row.start)
                      intersect = orf_set.intersection(oorf_set)
                      #intersecting entry found, store it
-                     if intersect:
-                         intersection_switch = True
-                         intersecting_row = new_row
-                         intersecting_gene_length = oorf_length
-                         intersecting_gene_index = index
+                     if row.chromosome == new_row.chromosome:
+                         if intersect:
+                             intersection_switch = True
+                             intersecting_row = new_row
+                             intersecting_gene_length = oorf_length
+                             intersecting_gene_index = index
 
                  #If not intersecting add row to the existing dataframe        
                  if not intersection_switch:
-                     current_index = 1 
                      if len(df_final) != 0:
-                       current_index = len(df_final)
-                     df_final.loc[current_index] = new_row
+                        current_index = len(df_final)
+                        #print(current_index)
+                        #print(new_row)
+                        df_final.loc[current_index] = new_row
+                     else:
+                         current_index = 0 
+                         df_final.loc[current_index] = new_row
                  else:
                      #if the gene is intersecting and longer than the already stored orf it is replaced
                      if orf_length > intersecting_gene_length:
+                         #print("intersected")
+                         #print(intersecting_gene_index)
+                         #print(intersecting_row)
                          df_final.loc[intersecting_gene_index] = intersecting_row
 
-                 # Cleaning up data frame
-                 df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
-                 df_final.reset_index(inplace=True)
-                 df_final.drop(["index"], axis=1, inplace=True)
+            # Cleaning up data frame
+            df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
+            df_final.reset_index(inplace=True)
+            df_final.drop(["index"], axis=1, inplace=True)
 
 
-                 # Filter min and max uORF lengths
-                 if args.min_length is not None:
-                     df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
+            # Filter min and max uORF lengths
+            if args.min_length is not None:
+                print("Length filterset to min: " + args.min_length)
+                df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
 
-                 if args.max_length is not None:
-                     df_final = df_final[df_final['ORF_length'] <= int(args.max_length)]
+            if args.max_length is not None:
+                print("Length filterset to max: " + args.max_length)
+                df_final = df_final[df_final['ORF_length'] <= int(args.max_length)]
     return df_final
 
 def set_uORFids(args):
@@ -169,7 +179,7 @@ def main():
     uORFsbed=make_uORFs_bed(uORFsdf)
     f = open(args.output_bed_filepath, 'wt', encoding='utf-8')
     f.write(uORFsbed)
-
+    
 
 if __name__ == '__main__':
     main()
