@@ -13,13 +13,6 @@ retrieveAnnotation:
   resources : 'nodes=1:ppn=1'
   qname: "short"
 
-ribotaperAnnotation:
-  resources : 'nodes=1:ppn=1'
-  qname: "short"
-
-ribotaperMetaplot:
-  resources : 'nodes=1:ppn=1'
-
 genomeSamToolsIndex:
   resources : 'nodes=1:ppn=1'
 
@@ -53,11 +46,8 @@ maplink:
   resources : 'nodes=1:ppn=1'
   qname: "tiny"
 
-ribotaper:
-  resources : 'nodes=1:ppn=5'
-
-ribotaperMerge:
-  resources : 'nodes=1:ppn=6'
+ribotish:
+  resources : 'nodes=1:ppn=1'
 
 longestTranscript:
   resources : 'nodes=1:ppn=1'

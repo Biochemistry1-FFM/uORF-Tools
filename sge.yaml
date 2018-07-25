@@ -14,13 +14,9 @@ retrieveAnnotation:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=1G"
 
-ribotaperAnnotation:
+ribotish:
   parallelenvironment : 'smp 1'
-  memory: "h_vmem=30G"
-
-ribotaperMetaplot:
-  parallelenvironment : 'smp 1'
-  memory: "h_vmem=30G"
+  memory: "h_vmem=20G"
 
 genomeSamToolsIndex:
   parallelenvironment : 'smp 1'
@@ -78,13 +74,9 @@ rnamaplink:
   parallelenvironment : 'smp 1'
   memory: "h_vmem=1G"
 
-ribotaper:
-  parallelenvironment : 'smp 5'
-  memory: "h_vmem=15G"
-
-ribotaperMerge:
-  parallelenvironment : 'smp 6'
-  memory: "h_vmem=3G"
+riboMerge:
+  parallelenvironment : 'smp 1'
+  memory: "h_vmem=20G"
 
 longestTranscript:
   parallelenvironment : 'smp 1'
