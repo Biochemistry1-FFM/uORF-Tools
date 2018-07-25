@@ -1,6 +1,6 @@
 rule riboMerge:
     input:
-        expand("ribotaper/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples())
+        expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples())
     output:
         "uORFs/Merged_uORF_results.bed",
         "uORFs/Merged_uORF_results.csv"

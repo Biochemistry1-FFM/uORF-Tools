@@ -17,7 +17,7 @@ rule ribotish:
         samindex=rules.genomeSamToolsIndex.output,
 	bamindex=rules.genomeSize.output
     output:
-        report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotaper.rst", category="Ribotish")
+        report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotish.rst", category="Ribotish")
     conda:
         "../envs/ribotish.yaml"
     threads: 1
