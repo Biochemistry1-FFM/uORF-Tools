@@ -1,3 +1,14 @@
+rule genomeSamToolsIndex:
+    input:
+        rules.retrieveGenome.output
+    output:
+        "genomes/genome.fa.fai"
+    conda:
+        "../envs/samtools.yaml"
+    threads: 1
+    shell:
+        "samtools faidx {rules.retrieveGenome.output}"
+
 rule genomeSize:
     input:
         rules.genomeSamToolsIndex.output

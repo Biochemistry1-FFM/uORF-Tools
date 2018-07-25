@@ -39,9 +39,9 @@ include: "rules/trimming.smk"
 include: "rules/rrnafiltering.smk"
 #mapping
 include: "rules/mapping.smk"
+#Visualization
+include: "rules/visualization.smk"
 #ribotish
 include: "rules/ribotish.smk"
 #uORF-tools
 include: "rules/uORF-Tools.smk"
-#Visualization
-include: "rules/visualization.smk"
