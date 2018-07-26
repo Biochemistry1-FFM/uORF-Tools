@@ -1,10 +1,24 @@
+rule ribobamindexlink:
+    input:
+        "maplink/{method}-{condition}-{replicate}.bam.bai"
+    output:
+        "maplink/{method, RIBO}/{condition, [a-zA-Z]+}-{replicate,\d+}.bam.bai"
+    params:
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
+    threads: 1
+    shell:
+        "mkdir -p maplink/RIBO/; ln -s {params.inlink} {params.outlink}"
+
+
 rule ribotishQuality:
     input:
         fp="maplink/RIBO/{condition}-{replicate}.bam",
         genome=rules.retrieveGenome.output,
         annotation=rules.retrieveAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output,
-	bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
+        bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai"
+	#bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
     output:
         reportpdf=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.pdf", caption="../report/ribotishquality.rst", category="Ribotish"),
         reporttxt=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.txt", caption="../report/ribotishquality.rst", category="Ribotish")
@@ -22,7 +36,8 @@ rule ribotish:
         genome=rules.retrieveGenome.output,
         annotation=rules.retrieveAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output,
-        bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
+        bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai"
+        #bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
     output:
         report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotish.rst", category="Ribotish")
     conda:
