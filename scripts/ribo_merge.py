@@ -60,7 +60,7 @@ def start(column):
 def stop(column):
     stop = []
     for i in column:
-        match = re.findall(":([0-9]+)-", i)
+        match = re.findall("-([0-9]+):", i)
         for a in match:
             stopstring = str(int(a))
             stop.append(stopstring)
