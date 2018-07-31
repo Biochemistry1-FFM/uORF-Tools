@@ -48,10 +48,10 @@ def chrom_name(column):
 # function to get start position
 def start(column):
     start = []
-    for i,j in column.itertuples(index=False):
+    for i in column.itertuples(index=False):
         match = re.findall(":([0-9]+)-", i)
         for a in match:
-            startstring = str(int(a)+j)
+            startstring = str(int(a+1))
             start.append(startstring)
     return start
 
@@ -59,10 +59,10 @@ def start(column):
 # function to get stop position
 def stop(column):
     stop = []
-    for i,k in column.itertuples(index=False):
+    for i in column.itertuples(index=False):
         match = re.findall(":([0-9]+)-", i)
         for a in match:
-            stopstring = str(int(a)+k)
+            stopstring = str(int(a))
             stop.append(stopstring)
     return stop
 
@@ -88,10 +88,10 @@ def create_output(args):
             #read file into dataframe and drop columns not of interest
             df_sub = drop_cols(name)
             # rename columns to chromosome, start, and stop
-            df_sub["chromosome"] = chrom_name(df_sub["ORF_id_gen"])
-            df_sub["start"] = start(df_sub[["ORF_id_gen","relstart"]])
-            df_sub["stop"] = stop(df_sub[["ORF_id_gen","relstop"]])
             df_sub["strand"] = strand(df_sub["ORF_id_gen"])
+            df_sub["chromosome"] = chrom_name(df_sub["ORF_id_gen"])
+            df_sub["start"] = start(df_sub[["ORF_id_gen"]])
+            df_sub["stop"] = stop(df_sub[["ORF_id_gen"]])
             df_dropped = df_sub[["chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"]]
             for new_index, new_row in df_dropped.iterrows():
                  #check if entry with overlapping coordinates already exists
@@ -99,46 +99,46 @@ def create_output(args):
                  orf_set = set(orf_range)
                  orf_length = int(new_row.stop) - int(new_row.start)
                  intersection_switch = False
-                 intersecting_row = ""
-                 intersecting_gene_length = 0
-                 intersecting_gene_index = 0
-                 #if len(df_final) != 0:
-                 #    current_index = len(df_final)
-                 #    df_final.loc[current_index] = new_row
-                 #else:
-                 #    current_index = 0
-                 #    df_final.loc[current_index] = new_row
-                 for index, row in df_final.iterrows():
-                    oorf_range = range((int(row.start)), (int(row.stop)))
-                    oorf_set = set(oorf_range)
-                    oorf_length = int(row.stop) - int(row.start)
-                    intersect = orf_set.intersection(oorf_set)
-                    #intersecting entry found, store it
-                    if row.chromosome == new_row.chromosome:
-                          if intersect:
-                             intersection_switch = True
-                             intersecting_row = new_row
-                             intersecting_gene_length = oorf_length
-                             intersecting_gene_index = index
-
-                 #If not intersecting add row to the existing dataframe
-                 if not intersection_switch:
-                      if len(df_final) != 0:
-                        current_index = len(df_final)
-                        df_final.loc[current_index] = new_row
-                      else:
-                         current_index = 0
-                         df_final.loc[current_index] = new_row
+                 #intersecting_row = ""
+                 #intersecting_gene_length = 0
+                 #intersecting_gene_index = 0
+                 if len(df_final) != 0:
+                     current_index = len(df_final)
+                    df_final.loc[current_index] = new_row
                  else:
+                    current_index = 0
+                    df_final.loc[current_index] = new_row
+                 #for index, row in df_final.iterrows():
+                 #  oorf_range = range((int(row.start)), (int(row.stop)))
+                #    oorf_set = set(oorf_range)
+                #    oorf_length = int(row.stop) - int(row.start)
+                #    intersect = orf_set.intersection(oorf_set)
+                #    #intersecting entry found, store it
+                #    if row.chromosome == new_row.chromosome:
+                #          if intersect:
+                #             intersection_switch = True
+                #             intersecting_row = new_row
+                #             intersecting_gene_length = oorf_length
+                #             intersecting_gene_index = index
+#
+                 #If not intersecting add row to the existing dataframe
+                 #if not intersection_switch:
+                 #      if len(df_final) != 0:
+                #        current_index = len(df_final)
+                #        df_final.loc[current_index] = new_row
+                #      else:
+                #         current_index = 0
+                #         df_final.loc[current_index] = new_row
+                 #else:
                      #if the gene is intersecting and longer than the already stored orf it is replaced
-                     if orf_length > intersecting_gene_length:
+                #     if orf_length > intersecting_gene_length:
                          #print("intersected")
                          #print(intersecting_gene_index)
                          #print(intersecting_row)
-                         df_final.loc[intersecting_gene_index] = intersecting_row
+                #         df_final.loc[intersecting_gene_index] = intersecting_row
 
             # Cleaning up data frame
-            #df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
+            df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
             df_final.reset_index(inplace=True)
             df_final.drop(["index"], axis=1, inplace=True)
 
