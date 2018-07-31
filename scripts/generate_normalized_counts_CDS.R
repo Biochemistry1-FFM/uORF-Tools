@@ -30,7 +30,7 @@ library(plyr)
 library(rtracklayer)
 
 # import longest protein coding transcripts
-gencode <- import.gff(options$annotation_file_path)
+gencode <- import.gtf(options$annotation_file_path)
 
 # keep only cds
 sel <- gencode$type == "CDS"
