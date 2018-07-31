@@ -26,7 +26,9 @@ rule all:
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
        "uORFs/Merged_uORF_results.csv",
        "tracks/annotation.bb",
-       "uORFs/sfactors_lprot.csv"
+       "uORFs/sfactors_lprot.csv",
+       "uORFs/xtail_uORFs.csv",
+       "uORFs/xtail_cds.csv" 
 
 onsuccess:
     print("Done, no error")

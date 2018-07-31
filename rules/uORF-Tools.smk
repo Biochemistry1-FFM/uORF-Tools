@@ -32,3 +32,47 @@ rule sizeFactors:
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_size_factors.R -t uORF-Tools/samples.tsv -b maplink/ -a {input[0]} -s uORFs/sfactors_lprot.csv;")
 
+rule cdsNormalizedCounts:
+    input:
+        bam=rules.maplink.output,
+        annotation="uORFs/Merged_uORF_results.bed",
+        sizefactor="uORFs/sfactors_lprot.csv"
+    output:
+        "uORFs/norm_CDS_reads.csv"
+    conda:
+        "../envs/xtail.yaml"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_CDS.R -b maplink -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output};")
+
+rule uORFNormalizedCounts:
+    input:
+        bam=rules.maplink.output,
+        annotation="uORFs/longest_protein_coding_transcripts.gtf",
+        sizefactor="uORFs/sfactors_lprot.csv"
+    output:
+        "uORFs/norm_uORFs_reads.csv"
+    conda:
+        "../envs/xtail.yaml"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_CDS.R -b maplink -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output};")
+
+rule cdsxtail:
+    input:
+        "uORFs/norm_CDS_reads.csv"
+    output:
+        "uORFs/xtail_cds.csv"
+    conda:
+        "../envs/xtail.yaml"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -b maplink/ -r {input} -x {output};")
+
+rule uORFsxtail:
+    input:
+        "uORFs/norm_uORFs_reads.csv" 
+    output:
+        "uORFs/xtail_uORFs.csv"
+    conda:
+        "../envs/xtail.yaml"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -b maplink/ -r {input} -x {output};")
+
