@@ -51,7 +51,7 @@ def start(column):
     for i in column:
         match = re.findall(":([0-9]+)-", i)
         for a in match:
-            startstring = str(int(a+1))
+            startstring = str(int(a)+1)
             start.append(startstring)
     return start
 
@@ -90,8 +90,8 @@ def create_output(args):
             # rename columns to chromosome, start, and stop
             df_sub["strand"] = strand(df_sub["ORF_id_gen"])
             df_sub["chromosome"] = chrom_name(df_sub["ORF_id_gen"])
-            df_sub["start"] = start(df_sub[["ORF_id_gen"]])
-            df_sub["stop"] = stop(df_sub[["ORF_id_gen"]])
+            df_sub["start"] = start(df_sub["ORF_id_gen"])
+            df_sub["stop"] = stop(df_sub["ORF_id_gen"])
             
             df_dropped = df_sub[["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"]]
             for new_index, new_row in df_dropped.iterrows():
