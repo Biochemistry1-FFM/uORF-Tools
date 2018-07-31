@@ -159,12 +159,13 @@ def set_uORFids(args):
         uORFids = []
         for index, row in args.iterrows():
             if row.transcript_id in tid_dict:
-                tid_dict[row.transcript_id]=tindex + 1
-                tindex=tid_dict[row.transcript_id]
+                current_tindex=tid_dict[row.transcript_id]
+                next_tindex=current_tindex + 1 
+                tid_dict[row.transcript_id]=next_tindex
             else:
-                tindex = 1
-                tid_dict[row.transcript_id] = tindex
-            uORFid = row.transcript_id + '.' + str(tindex)
+                next_tindex = 1
+                tid_dict[row.transcript_id] = next_tindex
+            uORFid = row.transcript_id + '.' + str(next_tindex)
             uORFids.append(uORFid)
         m = np.asarray(uORFids)
         args["uORFids"]=m
