@@ -56,8 +56,6 @@ for (i in sample.files) {
   
 }
 
-# temp fix for duplicates
-gene.counts <- gene.counts[which(!duplicated(gene.counts$ORF.id)),]
 
 # change row names and drop column gene.id
 rownames(gene.counts) <- gene.counts$ORF.id
