@@ -21,7 +21,7 @@ def create_table(name):
 # function to select only uORFs
 def keep_uORFs(df):
     df = create_table(df)
-    df_uORFs = df[(df["TisType"] == "5'UTR") | (df["TisType"] == "5'UTR:CDSFrameOverlap")| (df["TisType"] == "5'UTR:Known")]
+    df_uORFs = df[(df["TisType"] == "5'UTR") | (df["TisType"] == "5'UTR:CDSFrameOverlap")]
     return df_uORFs
 
 #Gid	Tid	Symbol	GeneType	GenomePos	StartCodon	Start	Stop	TisType	TISGroup	TISCounts	TISPvalue	RiboPvalue	RiboPStatus	FisherPvalue	TISQvalue	FrameQvalue	FisherQvalue	AALen
@@ -29,8 +29,8 @@ def keep_uORFs(df):
 def drop_cols(df_uORFs):
     df_uORFs = keep_uORFs(df_uORFs)
     #df_dropped = df_uORFs[["Gid", "GenType", "StartCodon", "TISCounts", "TISPvalue", "RiboPvalue", "RiboPStatus", "FisherPvalue", "TISQvalue", "FrameQvalue", "FisherQvalue", "AALen"]]
-    df_dropped = df_uORFs[["GenomePos", "AALen", "Gid", "Symbol", "Start", "Stop", "Tid"]]
-    df_dropped.columns = ["ORF_id_gen", "ORF_length", "gene_id", "gene_symbol", "relstart", "relstop", "transcript_id"]
+    df_dropped = df_uORFs[["GenomePos", "AALen", "Gid", "Symbol", "Tid"]]
+    df_dropped.columns = ["ORF_id_gen", "ORF_length", "gene_id", "gene_symbol", "transcript_id"]
     return df_dropped
 
 #Tid	Symbol	GenomePos	StartCodon	Start	Stop	TisType	TISGroup	TISCounts
@@ -48,7 +48,7 @@ def chrom_name(column):
 # function to get start position
 def start(column):
     start = []
-    for i in column.itertuples(index=False):
+    for i in column:
         match = re.findall(":([0-9]+)-", i)
         for a in match:
             startstring = str(int(a+1))
@@ -59,7 +59,7 @@ def start(column):
 # function to get stop position
 def stop(column):
     stop = []
-    for i in column.itertuples(index=False):
+    for i in column:
         match = re.findall(":([0-9]+)-", i)
         for a in match:
             stopstring = str(int(a))
@@ -79,7 +79,7 @@ def strand(column):
 def create_output(args):
     #rearrange column
 
-    df_final = pd.DataFrame(columns=["chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"])
+    df_final = pd.DataFrame(columns=["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"])
     # Create data frame from all input files
     for name in args.ribotish_files:
         #for nonempty files
@@ -92,7 +92,8 @@ def create_output(args):
             df_sub["chromosome"] = chrom_name(df_sub["ORF_id_gen"])
             df_sub["start"] = start(df_sub[["ORF_id_gen"]])
             df_sub["stop"] = stop(df_sub[["ORF_id_gen"]])
-            df_dropped = df_sub[["chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"]]
+            
+            df_dropped = df_sub[["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"]]
             for new_index, new_row in df_dropped.iterrows():
                  #check if entry with overlapping coordinates already exists
                  orf_range = range((int(new_row.start)), (int(new_row.stop)))
@@ -104,10 +105,10 @@ def create_output(args):
                  #intersecting_gene_index = 0
                  if len(df_final) != 0:
                      current_index = len(df_final)
-                    df_final.loc[current_index] = new_row
+                     df_final.loc[current_index] = new_row
                  else:
-                    current_index = 0
-                    df_final.loc[current_index] = new_row
+                     current_index = 0
+                     df_final.loc[current_index] = new_row
                  #for index, row in df_final.iterrows():
                  #  oorf_range = range((int(row.start)), (int(row.stop)))
                 #    oorf_set = set(oorf_range)
