@@ -4,3 +4,4 @@ channels:
 dependencies:
  - xtail 
  - r-optparse
+ - libgfortran-ng

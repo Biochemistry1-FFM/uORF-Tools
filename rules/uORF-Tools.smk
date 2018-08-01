@@ -46,8 +46,8 @@ rule cdsNormalizedCounts:
 
 rule uORFNormalizedCounts:
     input:
-        bam=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
-        annotation="uORFs/longest_protein_coding_transcripts.gtf",
+        bag=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+        annotation="uORFs/Merged_uORF_results.bed",
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
         "uORFs/norm_uORFs_reads.csv"
