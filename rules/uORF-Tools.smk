@@ -54,7 +54,7 @@ rule uORFNormalizedCounts:
     conda:
         "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_CDS.R -b maplink/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output};")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_uORFs.R -b maplink/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output};")
 
 rule cdsxtail:
     input:
