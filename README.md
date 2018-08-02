@@ -13,21 +13,25 @@ uORF-Tools can be installed with all dependencies via [conda](https://conda.io/d
          source activate uORF-Tools
 
 ### <u>Basic usage</u>
-Using the workflow requires a genome sequence (fasta), an annotation file (gtf) and the sequencing results files (fastq).
-We recommend retrieving both the genome and the annotation files from [Ensembl Genomes](http://ensemblgenomes.org/).
-The retrieval of input files and running the workflow locally and on a server cluster via a queuing system is
-demonstrated using an example from [ENA](https://www.ebi.ac.uk/ena)
 
-Retrieve uORF-Tools:
+The retrieval of input files and running the workflow locally and on a server cluster via a queuing system is
+working as follows. Create a project directory and change into it:
+
+         mkdir project
+         cd project
+
+Retrieve the uORF-Tools from GitHub:
 
          git clone git@github.com:anibunny12/uORF-Tools.git
-         
-Copy the genome and the annotation file into the uORF-Tools folder and name them genome.fa and annotation.gtf.
+
+The workflow requires a genome sequence (fasta), an annotation file (gtf) and the sequencing results files (fastq).
+We recommend retrieving both the genome and the annotation files for mouse and human from [Gencode](www.gencodegenes.org/releases/current.html) and for other species from [Ensembl Genomes](http://ensemblgenomes.org/).
+Copy the genome and the annotation file into the project folder, decompress then and name them genome.fa and annotation.gtf.
 
 Create a folder fastq/ and copy your fastq files into the folder.
 
-Edit sample.tsv and enter the names of your fastq-files. Trim Galore will try to auto-detect the used adapter-sequences,
-if known add your adapter sequence to config.yaml.
+Edit sample.tsv and enter the names of your fastq-files.
+Trim Galore will try to auto-detect the used adapter-sequences, if known add your adapter sequence to config.yaml.
 
 Run Snakemake locally:
 
