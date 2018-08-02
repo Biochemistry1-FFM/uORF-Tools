@@ -60,7 +60,6 @@ Edit cluster.yaml according to your queuing system and cluster hardware. The fol
 
        snakemake --use-conda -s Snakefile --configfile config.yaml --directory ${PWD} -j 20 --cluster-config uORF-Tools/cluster.yaml --cluster "qsub -N {cluster.jobname} -cwd -q {cluster.qname} -pe {cluster.parallelenvironment} -l {cluster.memory} -o {cluster.logoutputdir} -e {cluster.erroroutputdir} -j {cluster.joinlogs} -M egg@informatik.uni-freiburg.de" --latency-wait 60 
 
-
-
+Once the workflow has finished you can request a automatically generated report.html file with the following command:
          
-
+         snakemake --report report.html
