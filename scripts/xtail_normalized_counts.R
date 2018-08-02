@@ -38,7 +38,7 @@ condition <- sampleSheet$condition[which(sampleSheet$method == "RIBO")]
 test_results <- xtail(RNA, RIBO, condition, normalize = FALSE)
 
 # turn results into table
-test_tab <- resultsTable(test_results)
+test_tab <- resultsTable(test_results, log2FCs = TRUE)
 
 # write results into file
 write.csv(test_tab, options$xtail_result_path, quote = F)
