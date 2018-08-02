@@ -28,10 +28,27 @@ The workflow requires a genome sequence (fasta), an annotation file (gtf) and th
 We recommend retrieving both the genome and the annotation files for mouse and human from [Gencode](www.gencodegenes.org/releases/current.html) and for other species from [Ensembl Genomes](http://ensemblgenomes.org/).
 Copy the genome and the annotation file into the project folder, decompress then and name them genome.fa and annotation.gtf.
 
-Create a folder fastq/ and copy your fastq files into the folder.
+Create a folder fastq and copy your compressed fastq.gz files into the fastq folder.
 
-Edit sample.tsv and enter the names of your fastq-files.
-Trim Galore will try to auto-detect the used adapter-sequences, if known add your adapter sequence to config.yaml.
+Please copy the template of the sample sheet and the config file into the project folder.
+
+         cp uORF-Tools/templates/config.yaml .
+         cp uORF-Tools/templates/samples.tsv .
+       
+Customize The config.yaml with the used adapter sequence and optionally with the path to a precomputed
+STAR genome index. For correct removal of reads mapping to ribosomal genes please specify the taxonomic group of
+the used organism (Eukarya, Bacteria, Archea).
+Now edit the sample sheet corresponding to your project, using one line per sequencing result, stating the used
+method (RIBO for ribosome profiling, RNA for RNA-seq), the applied condition (e.g. A, B, CTRL, TREAT), the replicate (e.g. 1, 2,..) and the filename. Following is an example:
+
+|method|	condition |replicate|	fastqFile                 |
+|------|-----------|---------|--------------------------------|
+|RIBO  |	A         |        1|"fastq/FP-treat-1-2.fastq.gz"   |
+|RIBO  |	B         |        1|"fastq/FP-ctrl-1-2.fastq.gz"    |
+|RNA   |	A         |        1|"fastq/Total-treat-1-2.fastq.gz"|
+|RNA   |	B         |        1|"fastq/Total-ctrl-1-2.fastq.gz" |
+
+Now you can start you workflow.
 
 Run Snakemake locally:
 
