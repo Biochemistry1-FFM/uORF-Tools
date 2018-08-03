@@ -66,7 +66,7 @@ rule cdsxtail:
     conda:
         "../envs/xtail.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output.table} -f {output.fcplot} -p {output.rplot};")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input.table} -x {output.table} -f {output.fcplot} -p {output.rplot};")
 
 rule uORFsxtail:
     input:
@@ -78,7 +78,7 @@ rule uORFsxtail:
     conda:
         "../envs/xtail.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output} -f {output.fcplot} -p {output.rplot};")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input.table} -x {output.table} -f {output.fcplot} -p {output.rplot};")
 
 rule final_table:
     input:
