@@ -60,21 +60,25 @@ rule cdsxtail:
     input:
         "uORFs/norm_CDS_reads.csv"
     output:
-        "uORFs/xtail_cds.csv"
+        table="uORFs/xtail_cds.csv",
+        fcplot="uORFs/xtail_cds_fc.pdf",
+        rplot="uORFs/xtail_cds_r.pdf"
     conda:
         "../envs/xtail.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output};")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output.table} -f {output.fcplot} -p {output.rplot};")
 
 rule uORFsxtail:
     input:
         "uORFs/norm_uORFs_reads.csv" 
     output:
-        "uORFs/xtail_uORFs.csv"
+        table="uORFs/xtail_uORFs.csv",
+        fcplot="uORFs/xtail_uORFs_fc.pdf",
+        rplot="uORFs/xtail_uORFs_r.pdf"
     conda:
         "../envs/xtail.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output};")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output} -f {output.fcplot} -p {output.rplot};")
 
 rule final_table:
     input:
