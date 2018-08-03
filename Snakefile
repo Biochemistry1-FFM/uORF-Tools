@@ -28,7 +28,8 @@ rule all:
        "tracks/annotation.bb",
        "uORFs/sfactors_lprot.csv",
        "uORFs/xtail_uORFs.csv",
-       "uORFs/xtail_cds.csv" 
+       "uORFs/xtail_cds.csv",
+       "uORFs/uORF_regulation.tsv" 
 
 onsuccess:
     print("Done, no error")

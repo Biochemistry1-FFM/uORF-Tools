@@ -82,7 +82,7 @@ rule final_table:
 	xtailCDS=rules.cdsxtail.output,
 	annotation="uORFs/Merged_uORF_results.csv"
     output:
-        "uORFs/uORF_regulation.csv"
+        "uORFs/uORF_regulation.tsv"
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
