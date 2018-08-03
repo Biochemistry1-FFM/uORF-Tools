@@ -24,11 +24,11 @@ rule ribotishQuality:
         reporttxt=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.txt", caption="../report/ribotishquality.rst", category="Ribotish")
     conda:
         "../envs/ribotish.yaml"
-    threads: 1
+    threads: 10
     log:
         "logs/{condition, [a-zA-Z]+}-{replicate,\d+}_ribotishquality.log"
     shell:
-        "mkdir -p ribotish; ribotish quality -b {input.fp} -g {input.annotation} -o {output.reporttxt} -f {output.reportpdf} 2> {log}"
+        "mkdir -p ribotish; ribotish quality -p {threads} -b {input.fp} -g {input.annotation} -o {output.reporttxt} -f {output.reportpdf} 2> {log}"
 
 rule ribotish:
     input:
@@ -42,8 +42,8 @@ rule ribotish:
         report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotish.rst", category="Ribotish")
     conda:
         "../envs/ribotish.yaml"
-    threads: 1
+    threads: 10
     log:
         "logs/{condition, [a-zA-Z]+}-{replicate,\d+}_ribotish.log"
     shell:
-        "mkdir -p ribotish; ribotish predict --longest -b {input.fp} -g {input.annotation} -f {input.genome} -o {output.report} 2> {log}"
+        "mkdir -p ribotish; ribotish predict --longest -p {threads} -b {input.fp} -g {input.annotation} -f {input.genome} -o {output.report} 2> {log}"
