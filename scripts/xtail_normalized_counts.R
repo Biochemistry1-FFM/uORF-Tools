@@ -48,10 +48,10 @@ test_tab <- resultsTable(test_results, log2FCs = TRUE)
 write.csv(test_tab, options$xtail_result_path, quote = F)
 
 #plot results
-pdf(file=options$xtail_fcplot_path)
+pdf(file=options$xtail_fcplot_path, paper = "a4r", height = 10, width = 13)
 plotFCs(test_results)
 dev.off()
-pdf(file=options$xtail_rplot_path)
+pdf(file=options$xtail_rplot_path, paper = "a4r", height = 10, width = 13)
 plotRs(test_results)
 dev.off()
 
