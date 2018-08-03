@@ -8,7 +8,11 @@ option_list = list(
   make_option(c("-t", "--sample_file_path"), type = "character", default = NULL,
               help = "Path to sample.tsv", metavar = "character"),
   make_option(c("-x", "--xtail_result_path"), type = "character", default = "NULL",
-              help = "Path for writing xtail result file", metavar = "character")
+              help = "Path for writing xtail result file", metavar = "character"),
+  make_option(c("-f", "--xtail_fcplot_path"), type = "character", default = "NULL",
+              help = "Path for writing xtail fc plot file", metavar = "character"),
+  make_option(c("-p", "--xtail_rplot_path"), type = "character", default = "NULL",
+              help = "Path for writing xtail rplot file", metavar = "character")
 );
 
 option_parser = OptionParser(option_list = option_list);
@@ -42,4 +46,10 @@ test_tab <- resultsTable(test_results, log2FCs = TRUE)
 
 # write results into file
 write.csv(test_tab, options$xtail_result_path, quote = F)
+
+#plot results
+plotFCs(test_results)
+dev.print(pdf, options$xtail_fcplot_path)
+plotRs(test_results)
+dev.print(pdf, options$xtail_rplot_path)
 
