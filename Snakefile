@@ -44,7 +44,7 @@ include: "rules/rrnafiltering.smk"
 include: "rules/mapping.smk"
 #Visualization
 include: "rules/visualization.smk"
-#ribotish
+#Ribotish
 include: "rules/ribotish.smk"
 #uORF-tools
 include: "rules/uORF-Tools.smk"

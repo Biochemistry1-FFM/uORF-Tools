@@ -60,9 +60,9 @@ rule cdsxtail:
     input:
         "uORFs/norm_CDS_reads.csv"
     output:
-        table="uORFs/xtail_cds.csv",
-        fcplot="uORFs/xtail_cds_fc.pdf",
-        rplot="uORFs/xtail_cds_r.pdf"
+        table=report("uORFs/xtail_cds.csv", caption="../report/xtail_cds_fc.rst", category="Coding Sequences"),
+        fcplot=report("uORFs/xtail_cds_fc.pdf", caption="../report/xtail_cds_fc.rst", category="Coding Sequences"),
+        rplot=report("uORFs/xtail_cds_r.pdf", caption="../report/xtail_cds_fc.rst", category="Coding sequences")
     conda:
         "../envs/xtail.yaml"
     threads: 1
@@ -72,9 +72,9 @@ rule uORFsxtail:
     input:
         "uORFs/norm_uORFs_reads.csv" 
     output:
-        table="uORFs/xtail_uORFs.csv",
-        fcplot="uORFs/xtail_uORFs_fc.pdf",
-        rplot="uORFs/xtail_uORFs_r.pdf"
+        table=report("uORFs/xtail_uORFs.csv", caption="../report/xtail_uORFs_fc.rst", category="uORFs"),
+        tfcplot=report("uORFs/xtail_uORFs_fc.pdf", caption="../report/xtail_uORFs_fc.rst", category="uORFs"),
+        rplot=report("uORFs/xtail_uORFs_r.pdf", caption="../report/xtail_uORFs_fc.rst", category="uORFs")
     conda:
         "../envs/xtail.yaml"
     threads: 1
@@ -82,12 +82,12 @@ rule uORFsxtail:
 
 rule final_table:
     input:
-        xtailuORFs=rules.uORFsxtail.output,
-	xtailCDS=rules.cdsxtail.output,
+        xtailuORFs=rules.uORFsxtail.output.table,
+	xtailCDS=rules.cdsxtail.output.table,
 	annotation="uORFs/Merged_uORF_results.csv"
     output:
-        "uORFs/uORF_regulation.tsv"
+        report("uORFs/uORF_regulation.tsv", caption="../report/regulation.rst", category="uORFs")
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --xtail_cds_file {input.xtailCDS} --xtail_uORF_file {input.xtailuORFs} --uORF_annotation {input.annotation} --output_csv_filepath uORFs/uORF_regulation.csv")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --xtail_cds_file {input.xtailCDS} --xtail_uORF_file {input.xtailuORFs} --uORF_annotation {input.annotation} --output_csv_filepath {output}")
