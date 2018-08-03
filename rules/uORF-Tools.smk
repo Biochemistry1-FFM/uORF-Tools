@@ -76,3 +76,14 @@ rule uORFsxtail:
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output};")
 
+rule final_table:
+    input:
+        xtailuORFs=rules.uORFsxtail.output,
+	xtailCDS=rules.cdsxtail.output,
+	annotation="uORFs/Merged_uORF_results.csv"
+    output:
+        "uORFs/uORF_regulation.csv"
+    conda:
+        "../envs/uorftoolspython.yaml"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --xtail_cds_file {input.xtailCDS} --xtail_uORF_file {input.xtailuORFs} --uORF_annotation {input.annotation} --output_csv_filepath uORFs/uORF_regulation.csv")
