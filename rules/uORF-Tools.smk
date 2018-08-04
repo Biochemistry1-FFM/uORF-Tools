@@ -7,8 +7,10 @@ rule riboMerge:
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
+    params:
+        annotationpath=lambda wildcards: ("NOTSET" if not UORFANNOTATIONPATH else (UORFANNOTATIONPATH))
     shell:
-        "mkdir -p uORFs; uORF-Tools/scripts/ribo_merge.py {input} --min_length 1 --max_length 400 --output_csv_filepath uORFs/Merged_uORF_results.csv --output_bed_filepath uORFs/Merged_uORF_results.bed"
+        "if [ -d {params.indexpath} ]; then mkdir -p uORFs; ln -T -s {params.annotationpath} uORFs/Merged_uORF_results.csv; uORF-Tools/scripts/ribo_merge.py --input_csv_filepath {input} --output_bed_filepath uORFs/Merged_uORF_results.bed; else mkdir -p uORFs; uORF-Tools/scripts/ribo_merge.py {input} --min_length 1 --max_length 400 --output_csv_filepath uORFs/Merged_uORF_results.csv --output_bed_filepath uORFs/Merged_uORF_results.bed; fi"
 
 rule longestTranscript:
     input:
@@ -70,7 +72,7 @@ rule cdsxtail:
 
 rule uORFsxtail:
     input:
-        "uORFs/norm_uORFs_reads.csv" 
+        "uORFs/norm_uORFs_reads.csv"
     output:
         table=report("uORFs/xtail_uORFs.csv", caption="../report/xtail_uORFs_fc.rst", category="uORFs"),
         tfcplot="uORFs/xtail_uORFs_fc.pdf",

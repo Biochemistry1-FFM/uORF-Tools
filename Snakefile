@@ -6,6 +6,7 @@ min_version("5.2.1")
 
 ADAPTERS=config["adapter"]
 INDEXPATH=config["genomeindexpath"]
+UORFANNOTATIONPATH=config["uorfannotationpath"]
 
 
 onstart:
@@ -34,7 +35,7 @@ rule all:
        "report/xtail_cds_fc.jpg",
        "report/xtail_cds_r.jpg",
        "report/xtail_cds_fc.jpg",
-       "report/xtail_cds_r.jpg" 
+       "report/xtail_cds_r.jpg"
 
 onsuccess:
     print("Done, no error")
