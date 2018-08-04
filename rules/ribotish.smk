@@ -10,7 +10,6 @@ rule ribobamindexlink:
     shell:
         "mkdir -p maplink/RIBO/; ln -s {params.inlink} {params.outlink}"
 
-
 rule ribotishQuality:
     input:
         fp="maplink/RIBO/{condition}-{replicate}.bam",
@@ -20,7 +19,7 @@ rule ribotishQuality:
         bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai"
 	#bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
     output:
-        reportpdf=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.pdf", caption="../report/ribotishquality.rst", category="Ribotish"),
+        reportpdf="ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.pdf",
         reporttxt=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.txt", caption="../report/ribotishquality.rst", category="Ribotish")
     conda:
         "../envs/ribotish.yaml"

@@ -35,7 +35,7 @@ rule sizeFactors:
 rule cdsNormalizedCounts:
     input:
         bam=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
-        annotation="uORFs/longest_protein_coding_transcripts.gtf",
+        annotation=rules.longestTranscript.output,
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
         "uORFs/norm_CDS_reads.csv"
@@ -60,9 +60,9 @@ rule cdsxtail:
     input:
         "uORFs/norm_CDS_reads.csv"
     output:
-        table=report("uORFs/xtail_cds.csv", caption="../report/xtail_cds_fc.rst", category="Coding Sequences"),
-        fcplot=report("uORFs/xtail_cds_fc.pdf", caption="../report/xtail_cds_fc.rst", category="Coding Sequences"),
-        rplot=report("uORFs/xtail_cds_r.pdf", caption="../report/xtail_cds_fc.rst", category="Coding sequences")
+        table=report("uORFs/xtail_cds.csv", caption="../report/xtail_cds_fc.rst", category="CDS"),
+        fcplot="uORFs/xtail_cds_fc.pdf",
+        rplot="uORFs/xtail_cds_r.pdf"
     conda:
         "../envs/xtail.yaml"
     threads: 1
@@ -73,8 +73,8 @@ rule uORFsxtail:
         "uORFs/norm_uORFs_reads.csv" 
     output:
         table=report("uORFs/xtail_uORFs.csv", caption="../report/xtail_uORFs_fc.rst", category="uORFs"),
-        tfcplot=report("uORFs/xtail_uORFs_fc.pdf", caption="../report/xtail_uORFs_fc.rst", category="uORFs"),
-        rplot=report("uORFs/xtail_uORFs_r.pdf", caption="../report/xtail_uORFs_fc.rst", category="uORFs")
+        tfcplot="uORFs/xtail_uORFs_fc.pdf",
+        rplot="uORFs/xtail_uORFs_r.pdf"
     conda:
         "../envs/xtail.yaml"
     threads: 1
