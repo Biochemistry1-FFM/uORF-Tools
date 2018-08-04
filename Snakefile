@@ -7,9 +7,10 @@ min_version("5.2.1")
 ADAPTERS=config["adapter"]
 INDEXPATH=config["genomeindexpath"]
 
+
 onstart:
    if not os.path.exists("logs"):
-       os.makedirs("logs")
+     os.makedirs("logs")
 
 samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
 samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
@@ -22,7 +23,7 @@ rule all:
        expand("fastqc/trimmed/{sample.method}-{sample.condition}-{sample.replicate}-trimmed.html", sample=samples.itertuples()),
        expand("fastqc/norRNA/{sample.method}-{sample.condition}-{sample.replicate}-norRNA.html", sample=samples.itertuples()),
        expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples()),
-       expand("ribotish/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
+       expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
        "uORFs/Merged_uORF_results.csv",
        "tracks/annotation.bb",
@@ -30,10 +31,10 @@ rule all:
        "uORFs/xtail_uORFs.csv",
        "uORFs/xtail_cds.csv",
        "uORFs/uORF_regulation.tsv",
-       "uORFs/xtail_cds_fc.jpg",
-       "uORFs/xtail_cds_r.jpg",
-       "uORFs/xtail_cds_fc.jpg",
-       "uORFs/xtail_cds_r.jpg" 
+       "report/xtail_cds_fc.jpg",
+       "report/xtail_cds_r.jpg",
+       "report/xtail_cds_fc.jpg",
+       "report/xtail_cds_r.jpg" 
 
 onsuccess:
     print("Done, no error")
