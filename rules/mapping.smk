@@ -3,7 +3,7 @@ rule genomeIndex:
         rules.retrieveGenome.output,
         rules.retrieveAnnotation.output
     output:
-        "genomeStarIndex",
+        directory("genomeStarIndex")
         #"genomeStarIndex/chrName.txt",
         #"genomeStarIndex/genomeParameters.txt"
     conda:
