@@ -5,6 +5,7 @@
 import argparse
 import pandas as pd
 import subprocess
+import os.path
 
 # Create column names for data frame
 def getName(row):
@@ -76,7 +77,7 @@ def main():
     parser.add_argument("--project_folder", help='Path to uORF-Tools project folder')
     parser.add_argument("--output_tsv_filepath", help='Path to write results table')
     args = parser.parse_args()
-    df = createTable(args.sample_tsv, args.project_folder)
+    df = createTable(args.sample_tsv, os.path.join(args.project_folder, ''))
     df.to_csv(args.output_tsv_filepath, sep = "\t")
 
 
