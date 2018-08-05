@@ -96,7 +96,7 @@ rule final_table:
 
 rule summary_results:
     input:
-        uORFs/uORF_regulation.tsv
+        "uORFs/uORF_regulation.tsv"
     output:
         report("uORFs/summary_results.tsv", caption="../report/summary.rst", category="uORFs")
     conda:
