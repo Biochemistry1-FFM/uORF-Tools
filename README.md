@@ -35,7 +35,7 @@ Please copy the template of the sample sheet and the config file into the projec
          cp uORF-Tools/templates/config.yaml .
          cp uORF-Tools/templates/samples.tsv .
        
-Customize The config.yaml with the used adapter sequence and optionally with the path to a precomputed
+Customize the config.yaml with the used adapter sequence and optionally with the path to a precomputed
 STAR genome index. For correct removal of reads mapping to ribosomal genes please specify the taxonomic group of
 the used organism (Eukarya, Bacteria, Archea).
 Now edit the sample sheet corresponding to your project, using one line per sequencing result, stating the used
