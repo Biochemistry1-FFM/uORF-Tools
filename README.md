@@ -30,10 +30,10 @@ Copy the genome and the annotation file into the project folder, decompress then
 
 Create a folder fastq and copy your compressed fastq.gz files into the fastq folder.
 
-Please copy the template of the sample sheet and the config file into the project folder.
+Please copy the template of the sample sheet and the config file into the uORF-Tools folder.
 
-         cp uORF-Tools/templates/config.yaml .
-         cp uORF-Tools/templates/samples.tsv .
+         cp uORF-Tools/templates/config.yaml uORF-Tools/
+         cp uORF-Tools/templates/samples.tsv uORF-Tools/
        
 Customize the config.yaml with the used adapter sequence and optionally with the path to a precomputed
 STAR genome index. For correct removal of reads mapping to ribosomal genes please specify the taxonomic group of
@@ -43,22 +43,22 @@ method (RIBO for ribosome profiling, RNA for RNA-seq), the applied condition (e.
 
 |method|	condition |replicate|	fastqFile                 |
 |------|-----------|---------|--------------------------------|
-|RIBO  |	A         |        1|"fastq/FP-treat-1-2.fastq.gz"   |
-|RIBO  |	B         |        1|"fastq/FP-ctrl-1-2.fastq.gz"    |
-|RNA   |	A         |        1|"fastq/Total-treat-1-2.fastq.gz"|
-|RNA   |	B         |        1|"fastq/Total-ctrl-1-2.fastq.gz" |
+|RIBO  |	A         |        1|"fastq/FP-ctrl-1-2.fastq.gz"    |
+|RIBO  |	B         |        1|"fastq/FP-treat-1-2.fastq.gz"   |
+|RNA   |	A         |        1|"fastq/Total-ctrl-1-2.fastq.gz" |
+|RNA   |	B         |        1|"fastq/Total-treat-1-2.fastq.gz"|
 
 Now you can start your workflow.
 
 Run Snakemake locally:
 
-         snakemake --use-conda -s Snakefile --configfile config.yaml --directory ${PWD} -j 20 --latency-wait 60 
+         snakemake --use-conda -s Snakefile --configfile uORF-Tools/config.yaml --directory ${PWD} -j 20 --latency-wait 60 
          
 
 Run Snakemake on the cluster:
 Edit cluster.yaml according to your queuing system and cluster hardware. The following example works for Grid Engine:
 
-       snakemake --use-conda -s Snakefile --configfile config.yaml --directory ${PWD} -j 20 --cluster-config uORF-Tools/cluster.yaml --cluster "qsub -N {cluster.jobname} -cwd -q {cluster.qname} -pe {cluster.parallelenvironment} -l {cluster.memory} -o {cluster.logoutputdir} -e {cluster.erroroutputdir} -j {cluster.joinlogs} -M egg@informatik.uni-freiburg.de" --latency-wait 60 
+       snakemake --use-conda -s Snakefile --configfile uORF-Tools/config.yaml --directory ${PWD} -j 20 --cluster-config uORF-Tools/cluster.yaml --cluster "qsub -N {cluster.jobname} -cwd -q {cluster.qname} -pe {cluster.parallelenvironment} -l {cluster.memory} -o {cluster.logoutputdir} -e {cluster.erroroutputdir} -j {cluster.joinlogs} -M egg@informatik.uni-freiburg.de" --latency-wait 60 
 
 Once the workflow has finished you can request a automatically generated report.html file with the following command:
          
