@@ -48,7 +48,7 @@ method (RIBO for ribosome profiling, RNA for RNA-seq), the applied condition (e.
 |RNA   |	A         |        1|"fastq/Total-treat-1-2.fastq.gz"|
 |RNA   |	B         |        1|"fastq/Total-ctrl-1-2.fastq.gz" |
 
-Now you can start you workflow.
+Now you can start your workflow.
 
 Run Snakemake locally:
 
