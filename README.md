@@ -2,7 +2,7 @@
 uORF-Tools are a workflow and a collection of tools for the analysis of 'Upstream Open Reading Frames' (short uORFs).
 The workflow is based on the workflow management system snakemake and handles installation of all dependencies,
 as well as all processings steps. The source code of uORF-Tools is open source and available under the  License.
-Installation and basic usage is described below, for more detailed examples please refer to the included [Userguide](Supplement.pdf)
+Installation and basic usage is described below, for more detailed examples please refer to the [Userguide](https://uorf-tools.readthedocs.io/en/latest/index.html)
 
 ### <u>Installation via bioconda</u>
 
