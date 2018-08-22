@@ -1,4 +1,4 @@
-# uORF-Tools
+# uORF-Tools [![ReadTheDocs](https://readthedocs.org/projects/uORF-Tools/badge/?version=latest)](https://readthedocs.org/projects/pip/badge/?version=latest&style=plastic)
 uORF-Tools are a workflow and a collection of tools for the analysis of 'Upstream Open Reading Frames' (short uORFs).
 The workflow is based on the workflow management system snakemake and handles installation of all dependencies,
 as well as all processings steps. The source code of uORF-Tools is open source and available under the  License.
