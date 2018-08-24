@@ -2,15 +2,15 @@ rule riboMerge:
     input:
         expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv", sample=samples.itertuples())
     output:
-        "uORFs/Merged_uORF_results.bed",
-        "uORFs/Merged_uORF_results.csv"
+        bed="uORFs/merged_uORFs.bed",
+        csv="uORFs/merged_uORFs.csv"
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
     params:
         annotationpath=lambda wildcards: ("NOTSET" if not UORFANNOTATIONPATH else (UORFANNOTATIONPATH))
     shell:
-        "if [ -d {params.annotationpath} ]; then mkdir -p uORFs; ln -T -s {params.annotationpath} uORFs/Merged_uORF_results.csv; uORF-Tools/scripts/ribo_merge.py --input_csv_filepath {input} --output_bed_filepath uORFs/Merged_uORF_results.bed; else mkdir -p uORFs; uORF-Tools/scripts/ribo_merge.py {input} --min_length 1 --max_length 400 --output_csv_filepath uORFs/Merged_uORF_results.csv --output_bed_filepath uORFs/Merged_uORF_results.bed; fi"
+        "if [ -d {params.annotationpath} ]; then mkdir -p uORFs; ln -T -s {params.annotationpath} {output.csv}; uORF-Tools/scripts/ribo_merge.py --input_csv_filepath {input} --output_bed_filepath {output.bed}; else mkdir -p uORFs; uORF-Tools/scripts/ribo_merge.py {input} --min_length 1 --max_length 400 --output_csv_filepath {output.csv} --output_bed_filepath {output.bed}; fi"
 
 rule longestTranscript:
     input:
@@ -49,7 +49,7 @@ rule cdsNormalizedCounts:
 rule uORFNormalizedCounts:
     input:
         bag=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
-        annotation="uORFs/Merged_uORF_results.bed",
+        annotation="uORFs/merged_uORFs.bed",
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
         "uORFs/norm_uORFs_reads.csv"
@@ -86,9 +86,9 @@ rule final_table:
     input:
         xtailuORFs=rules.uORFsxtail.output.table,
 	xtailCDS=rules.cdsxtail.output.table,
-	annotation="uORFs/Merged_uORF_results.csv"
+	annotation="uORFs/merged_uORFs.csv"
     output:
-        report("uORFs/uORF_regulation.tsv", caption="../report/regulation.rst", category="uORFs")
+        report("uORFs/uORFs_regulation.tsv", caption="../report/regulation.rst", category="uORFs")
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
@@ -96,7 +96,7 @@ rule final_table:
 
 rule summary_results:
     input:
-        "uORFs/uORF_regulation.tsv"
+        "uORFs/uORFs_regulation.tsv"
     output:
         report("uORFs/summary_results.tsv", caption="../report/summary.rst", category="uORFs")
     conda:
