@@ -28,7 +28,7 @@ rule ribotishQuality:
     log:
         "logs/{condition, [a-zA-Z]+}-{replicate,\d+}_ribotishquality.log"
     shell:
-        "mkdir -p ribotish; ribotish quality -p {threads} -b {input.fp} -g {input.annotation} -o {output.reporttxt} -f {output.reportpdf} -r 2> {log}"
+        "mkdir -p ribotish; ribotish quality -p {threads} -b {input.fp} -g {input.annotation} -o {output.reporttxt} -f {output.reportpdf} 2> {log}"
 
 rule ribotish:
     input:
