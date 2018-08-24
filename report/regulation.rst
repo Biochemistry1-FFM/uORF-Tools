@@ -18,9 +18,13 @@ Result table for upstream open reading frames containing nine columns.
 
 - direction: describes potential regulation of main ORF by uORF by association their change of translational efficiency
 
-  - homodirectional: translational efficiency of both ORFs together is up- or downregulated
+  - up: translational efficiency of both uORF and main ORF is upregulated
+  
+  - down: translational efficency of both uORF and main ORF is downregulated
 
-  - inverse: translational efficiency of uORF increases, translational efficiency of main ORF decreases
+  - left: translational efficiency of uORF increases, translational efficiency of main ORF decreases
+
+  - right: translational efficiency of uORF decreases, translation efficiency of main ORF increases
   
 - ORF_id_gen: genomic coordinates of the potential uORF
 

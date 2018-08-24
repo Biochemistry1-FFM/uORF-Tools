@@ -33,10 +33,10 @@ def merge(uORFs, cds):
 
 # determine "direction of regulation"
 def label(row):
-	if row["log2FC_TE_final_uORF"] < 0 and row["log2FC_TE_final_CDS"] < 0: return("homodirectional")
-	elif row["log2FC_TE_final_uORF"] > 0 and row["log2FC_TE_final_CDS"] > 0: return("homodirectional")
-	elif row["log2FC_TE_final_uORF"] > 0 and row["log2FC_TE_final_CDS"] < 0: return("inverse")
-	elif row["log2FC_TE_final_uORF"] < 0 and row["log2FC_TE_final_CDS"] > 0: return("inverse")
+	if row["log2FC_TE_final_uORF"] < 0 and row["log2FC_TE_final_CDS"] < 0: return("down")
+	elif row["log2FC_TE_final_uORF"] > 0 and row["log2FC_TE_final_CDS"] > 0: return("up")
+	elif row["log2FC_TE_final_uORF"] > 0 and row["log2FC_TE_final_CDS"] < 0: return("left")
+	elif row["log2FC_TE_final_uORF"] < 0 and row["log2FC_TE_final_CDS"] > 0: return("right")
 	else:
 		return(None)
 
