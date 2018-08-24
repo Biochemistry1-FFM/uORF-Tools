@@ -94,11 +94,11 @@ rule final_table:
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --xtail_cds_file {input.xtailCDS} --xtail_uORF_file {input.xtailuORFs} --uORF_annotation {input.annotation} --output_csv_filepath {output}")
 
-rule summary_results:
+rule processing_summary:
     input:
         "uORFs/uORFs_regulation.tsv"
     output:
-        report("uORFs/summary_results.tsv", caption="../report/summary.rst", category="uORFs")
+        report("uORFs/processing_summary.tsv", caption="../report/summary.rst", category="uORFs")
     conda:
         "../envs/uorftoolspython.yaml"
     params:

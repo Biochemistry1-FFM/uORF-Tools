@@ -36,7 +36,7 @@ rule all:
        "report/xtail_cds_r.jpg",
        "report/xtail_cds_fc.jpg",
        "report/xtail_cds_r.jpg",
-       "uORFs/summary_results.tsv"
+       "uORFs/processing_summary.tsv"
 
 onsuccess:
     print("Done, no error")
