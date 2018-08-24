@@ -20,7 +20,8 @@ rule ribotishQuality:
 	#bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
     output:
         reportpdf="ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.pdf",
-        reporttxt=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.txt", caption="../report/ribotishquality.rst", category="Ribotish")
+        reporttxt=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-qual.txt", caption="../report/ribotishquality.rst", category="Ribotish"),
+	offsetparameters="maplink/RIBO/{condition, [a-zA-Z]+}-{replicate,\d+}.bam.para.py"
     conda:
         "../envs/ribotish.yaml"
     threads: 10
@@ -35,8 +36,8 @@ rule ribotish:
         genome=rules.retrieveGenome.output,
         annotation=rules.retrieveAnnotation.output,
         samindex=rules.genomeSamToolsIndex.output,
-        bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai"
-        #bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
+        bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai",
+        offsetparameters="maplink/RIBO/{condition}-{replicate}.bam.para.py"
     output:
         report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotish.rst", category="Ribotish")
     conda:
@@ -45,4 +46,4 @@ rule ribotish:
     log:
         "logs/{condition, [a-zA-Z]+}-{replicate,\d+}_ribotish.log"
     shell:
-        "mkdir -p ribotish; ribotish predict --longest -p {threads} -b {input.fp} -g {input.annotation} -f {input.genome} -o {output.report} 2> {log}"
+        "mkdir -p ribotish; memusg ribotish predict --longest -p {threads} -b {input.fp} -g {input.annotation} -f {input.genome} -o {output.report} 2> {log}"

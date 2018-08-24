@@ -19,7 +19,7 @@ def create_table(name):
 # function to select only uORFs
 def keep_uORFs(df):
     df = create_table(df)
-    df_uORFs = df[(df["TisType"] == "5'UTR") | (df["TisType"] == "5'UTR:CDSFrameOverlap")]
+    df_uORFs = df[(df["TisType"] == "5'UTR")]
     return df_uORFs
 
 # function to keep only certain columns
