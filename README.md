@@ -26,7 +26,7 @@ Retrieve the uORF-Tools from GitHub:
 
 The workflow requires a genome sequence (fasta), an annotation file (gtf) and the sequencing results files (fastq).
 We recommend retrieving both the genome and the annotation files for mouse and human from [Gencode](https://www.gencodegenes.org/releases/current.html) and for other species from [Ensembl Genomes](http://ensemblgenomes.org/).
-Copy the genome and the annotation file into the project folder, decompress then and name them genome.fa and annotation.gtf.
+Copy the genome and the annotation file into the project folder, decompress them and name them genome.fa and annotation.gtf.
 
 Create a folder fastq and copy your compressed fastq.gz files into the fastq folder.
 
