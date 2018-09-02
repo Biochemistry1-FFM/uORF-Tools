@@ -39,7 +39,7 @@ rule ribotish:
         bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai",
         offsetparameters="maplink/RIBO/{condition}-{replicate}.bam.para.py"
     output:
-        report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv", caption="../report/ribotish.rst", category="Ribotish")
+        report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv_all.txt", caption="../report/ribotish.rst", category="Ribotish")
     conda:
         "../envs/ribotish.yaml"
     threads: 10
