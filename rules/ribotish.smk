@@ -39,11 +39,12 @@ rule ribotish:
         bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai",
         offsetparameters="maplink/RIBO/{condition}-{replicate}.bam.para.py"
     output:
-        report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv_all.txt", caption="../report/ribotish.rst", category="Ribotish")
+        report=report("ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv_all.txt", caption="../report/ribotish.rst", category="Ribotish"),
+        filtered="ribotish/{condition, [a-zA-Z]+}-{replicate,\d+}-newORFs.tsv"
     conda:
         "../envs/ribotish.yaml"
     threads: 10
     log:
         "logs/{condition, [a-zA-Z]+}-{replicate,\d+}_ribotish.log"
     shell:
-        "mkdir -p ribotish; if grep -q \"offdict = {{'m0': {{}}}}\" {input.offsetparameters}; then mv {input.offsetparameters} {input.offsetparameters}.unused; fi; ribotish predict --longest -p {threads} -b {input.fp} -g {input.annotation} -f {input.genome} -o {output.report} 2> {log}"
+        "mkdir -p ribotish; if grep -q \"offdict = {{'m0': {{}}}}\" {input.offsetparameters}; then mv {input.offsetparameters} {input.offsetparameters}.unused; fi; ribotish predict --longest -p {threads} -b {input.fp} -g {input.annotation} -f {input.genome} -o {output.filtered} 2> {log}"
