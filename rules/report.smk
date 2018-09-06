@@ -6,9 +6,9 @@ rule uORFreport:
         crplot="uORFs/xtail_cds_r.pdf"
     output:
         cfcplot=report("report/xtail_cds_fc.jpg", caption="../report/xtail_cds_fc.rst", category="CDS"),
-        crplot=report("report/xtail_cds_r.jpg", caption="../report/xtail_cds_fc.rst", category="CDS"),
+        crplot=report("report/xtail_cds_r.jpg", caption="../report/xtail_cds_r.rst", category="CDS"),
         ufcplot=report("report/xtail_uORFs_fc.jpg", caption="../report/xtail_uORFs_fc.rst", category="uORFs"),
-        urplot=report("report/xtail_uORFs_r.jpg", caption="../report/xtail_uORFs_fc.rst", category="uORFs")
+        urplot=report("report/xtail_uORFs_r.jpg", caption="../report/xtail_uORFs_r.rst", category="uORFs")
     conda:
         "../envs/imagemagick.yaml"
     threads: 1
