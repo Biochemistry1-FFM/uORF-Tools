@@ -1,4 +1,4 @@
-# uORF-Tools [![ReadTheDocs](https://readthedocs.org/projects/uORF-Tools/badge/?version=latest)](https://uorf-tools.readthedocs.io/en/latest/index.html) [![GitHub](https://img.shields.io/github/tag/anibunny12/uORF-Tools.svg)](https://github.com/anibunny12/uORF-Tools)
+# uORF-Tools [![ReadTheDocs](https://readthedocs.org/projects/uorf-tools/badge/?version=latest)](https://uorf-tools.readthedocs.io/en/v1.0.0/) [![GitHub](https://img.shields.io/github/tag/anibunny12/uORF-Tools.svg)](https://github.com/anibunny12/uORF-Tools)
 uORF-Tools are a workflow and a collection of tools for the analysis of 'Upstream Open Reading Frames' (short uORFs).
 The workflow is based on the workflow management system snakemake and handles installation of all dependencies,
 as well as all processings steps. The source code of uORF-Tools is open source and available under the  License.
