@@ -7,7 +7,7 @@ min_version("5.2.1")
 ADAPTERS=config["adapter"]
 INDEXPATH=config["genomeindexpath"]
 UORFANNOTATIONPATH=config["uorfannotationpath"]
-
+CODONS=config["alternativestartcodons"]
 
 onstart:
    if not os.path.exists("logs"):
