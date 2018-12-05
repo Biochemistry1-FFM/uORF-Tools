@@ -14,7 +14,7 @@ rule ribotishQuality:
     input:
         fp="maplink/RIBO/{condition}-{replicate}.bam",
         genome=rules.retrieveGenome.output,
-        annotation=rules.retrieveAnnotation.output,
+        annotation="uORFs/longest_protein_coding_transcripts.gtf",
         samindex=rules.genomeSamToolsIndex.output,
         bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai"
 	#bamindex=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam.bai", sample=samples.itertuples())
@@ -34,7 +34,7 @@ rule ribotish:
     input:
         fp="maplink/RIBO/{condition}-{replicate}.bam",
         genome=rules.retrieveGenome.output,
-        annotation=rules.retrieveAnnotation.output,
+        annotation="uORFs/longest_protein_coding_transcripts.gtf",
         samindex=rules.genomeSamToolsIndex.output,
         bamindex="maplink/RIBO/{condition}-{replicate}.bam.bai",
         offsetparameters="maplink/RIBO/{condition}-{replicate}.bam.para.py"
