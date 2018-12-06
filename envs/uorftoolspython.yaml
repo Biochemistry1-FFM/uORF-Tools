@@ -2,5 +2,5 @@ channels:
  - bioconda
  - conda-forge
 dependencies:
- - pandas
- - samtools
+ - pandas =0.23.4
+ - samtools =1.9
