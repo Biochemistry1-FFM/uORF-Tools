@@ -4,6 +4,7 @@ import pandas as pd
 from snakemake.utils import validate, min_version
 min_version("5.3.0")
 
+ADAPTERS=config["adapter"]
 INDEXPATH=config["genomeindexpath"]
 UORFANNOTATIONPATH=config["uorfannotationpath"]
 CODONS=config["alternativestartcodons"]
@@ -19,7 +20,9 @@ report: "report/workflow.rst"
 
 rule all:
    input:
-       expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+       expand("fastqc/raw/{sample.method}-{sample.condition}-{sample.replicate}-raw.html", sample=samples.itertuples()),
+       expand("fastqc/trimmed/{sample.method}-{sample.condition}-{sample.replicate}-trimmed.html", sample=samples.itertuples()),
+       expand("fastqc/norRNA/{sample.method}-{sample.condition}-{sample.replicate}-norRNA.html", sample=samples.itertuples()),
        expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
        expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
@@ -29,16 +32,28 @@ rule all:
        "uORFs/xtail_uORFs.csv",
        "uORFs/xtail_cds.csv",
        "uORFs/uORFs_regulation.tsv",
+       "report/xtail_cds_fc.jpg",
+       "report/xtail_cds_r.jpg",
+       "report/xtail_cds_fc.jpg",
+       "report/xtail_cds_r.jpg",
        "uORFs/processing_summary.tsv"
 
 onsuccess:
     print("Done, no error")
 
-#bootstrap
-include: "rules/bootstrap.smk"
+#Copying of user provided genome annotion
+include: "rules/preprocessing.smk"
+#Adaper removal and quality control
+include: "rules/trimming.smk"
+#removal of reads mapping to ribosomal rna genes
+include: "rules/rrnafiltering.smk"
+#mapping
+include: "rules/mapping.smk"
 #Visualization
 include: "rules/visualization.smk"
 #Ribotish
 include: "rules/ribotish.smk"
 #uORF-tools
 include: "rules/uORF-Tools.smk"
+#Report
+include: "rules/report.smk"

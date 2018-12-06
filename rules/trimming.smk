@@ -1,5 +1,5 @@
 def getfastq(wildcards):
-    return samples.loc[(wildcards.method, wildcards.condition, wildcards.replicate), ["fastqFile"]].dropna()
+    return samples.loc[(wildcards.method, wildcards.condition, wildcards.replicate), ["inputFile"]].dropna()
 
 rule trim:
     input:
