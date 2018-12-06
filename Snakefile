@@ -34,6 +34,8 @@ rule all:
 onsuccess:
     print("Done, no error")
 
+#preprocessing
+include: "rules/preprocessing.smk"
 #bootstrap
 include: "rules/bootstrap.smk"
 #Visualization
