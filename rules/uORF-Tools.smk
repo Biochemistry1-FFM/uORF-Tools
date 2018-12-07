@@ -25,14 +25,14 @@ rule longestTranscript:
 
 rule sizeFactors:
     input:
-        rules.longestTranscript.output,
-        expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples())
+        longestTranscript=rules.longestTranscript.output,
+        bams=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples())
     output:
         "uORFs/sfactors_lprot.csv"
     conda:
         "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_size_factors.R -t uORF-Tools/samples.tsv -b maplink/ -a {input[0]} -s uORFs/sfactors_lprot.csv;")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_size_factors.R -t uORF-Tools/samples.tsv -b maplink/ -a {input.longestTranscript} -s uORFs/sfactors_lprot.csv;")
 
 rule cdsNormalizedCounts:
     input:

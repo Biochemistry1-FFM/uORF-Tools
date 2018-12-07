@@ -11,15 +11,17 @@ CODONS=config["alternativestartcodons"]
 onstart:
    if not os.path.exists("logs"):
      os.makedirs("logs")
-
-samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
-samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
+print("KarlGustav")
+samples = pd.read_csv(config["samples"], sep="\t", dtype=str).set_index(["method", "condition", "replicate"], drop=False)
+with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    print(samples)
+#samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
 validate(samples, schema="schemas/samples.schema.yaml")
 report: "report/workflow.rst"
 
 rule all:
    input:
-       expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+       #expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
        expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
        expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
