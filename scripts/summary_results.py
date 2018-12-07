@@ -53,8 +53,8 @@ def createTable(sheet, folder):
 	sheet = pd.read_table(sheet)
 	names = sheet.apply(lambda row: getName(row), axis = 1)
 	df = pd.DataFrame(columns = names, index = ['No. of raw reads', 'No. of trimmed reads', '% loss', 'No. of reads w/o rRNA', '% loss', 'No. of mapped reads', '% loss', '% total loss'])
-	raw = [int(int(countRaw(i, folder).strip())/4) for i in sheet['fastqFile']]
-	df.iloc[0] = raw 
+	raw = [int(int(countRaw(i, folder).strip())/4) for i in sheet['inputFile']]
+	df.iloc[0] = raw
 	trimmedFiles = getFileNames(folder)
 	trimmed = [int(int(countTrimmed(i))/4) for i in trimmedFiles]
 	df.iloc[1] = trimmed
