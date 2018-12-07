@@ -11,7 +11,6 @@ CODONS=config["alternativestartcodons"]
 onstart:
    if not os.path.exists("logs"):
      os.makedirs("logs")
-print("KarlGustav")
 samples = pd.read_csv(config["samples"], sep="\t", dtype=str).set_index(["method", "condition", "replicate"], drop=False)
 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     print(samples)
@@ -21,17 +20,17 @@ report: "report/workflow.rst"
 
 rule all:
    input:
-       #expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
-       expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
-       expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
+       expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+       #expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
+       #expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
-       "uORFs/merged_uORFs.csv",
-       "tracks/annotation.bb",
-       "uORFs/sfactors_lprot.csv",
-       "uORFs/xtail_uORFs.csv",
-       "uORFs/xtail_cds.csv",
-       "uORFs/uORFs_regulation.tsv",
-       "uORFs/processing_summary.tsv"
+       #"uORFs/merged_uORFs.csv",
+       #"tracks/annotation.bb",
+       #"uORFs/sfactors_lprot.csv",
+       #"uORFs/xtail_uORFs.csv",
+       #"uORFs/xtail_cds.csv",
+       #"uORFs/uORFs_regulation.tsv",
+       #"uORFs/processing_summary.tsv"
 
 onsuccess:
     print("Done, no error")

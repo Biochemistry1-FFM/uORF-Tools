@@ -1,5 +1,5 @@
 def getbam(wildcards):
-    return samples.loc[(wildcards.method, wildcards.condition, wildcards.replicate), ["inputFile"]].dropna()
+    return tamples.loc[(wildcards.method, wildcards.condition, wildcards.replicate), ["inputFile"]].dropna()
 
 rule rawbamlink:
     input:
@@ -7,10 +7,11 @@ rule rawbamlink:
     output:
         "maplink/{method}-{condition}-{replicate}.bam"
     params:
-        prefix=lambda wildcards, input: (os.path.splitext(os.path.splitext(os.path.basename(input.bams[0]))[0])[0])
+        inlink=lambda wildcards, input:(os.getcwd() + "/" + (os.path.splitext(input.bams[0])[0]) + ".bam"),
+        outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
     threads: 1
     shell:
-        "mkdir -p maplink; cp bam/{params.prefix}.bam {output}"
+        "mkdir -p maplink; ln -s {params.inlink} {params.outlink}"
 
 rule ribomaplink:
     input:

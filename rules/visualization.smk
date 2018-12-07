@@ -23,7 +23,7 @@ rule genomeSize:
 
 rule bamindex:
     input:
-        "maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam",
+        "maplink/{method}-{condition}-{replicate}.bam",
         rules.genomeSize.output
     output:
         "maplink/{method}-{condition}-{replicate}.bam.bai"
@@ -37,7 +37,7 @@ rule bamindex:
 
 rule wig:
     input:
-        bam="maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam",
+        bam="maplink/{method}-{condition}-{replicate}.bam",
         genomeSize=rules.genomeSize.output,
         bamIndex=rules.bamindex.output
     output:

@@ -1,6 +1,6 @@
 rule riboMerge:
     input:
-        expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples())
+        expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=tamples.itertuples())
     output:
         bed="uORFs/merged_uORFs.bed",
         csv="uORFs/merged_uORFs.csv"
@@ -26,7 +26,7 @@ rule longestTranscript:
 rule sizeFactors:
     input:
         longestTranscript=rules.longestTranscript.output,
-        bams=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples())
+        bams=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=tamples.itertuples())
     output:
         "uORFs/sfactors_lprot.csv"
     conda:
@@ -36,7 +36,7 @@ rule sizeFactors:
 
 rule cdsNormalizedCounts:
     input:
-        bam=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+        bam=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=tamples.itertuples()),
         annotation=rules.longestTranscript.output,
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
@@ -48,7 +48,7 @@ rule cdsNormalizedCounts:
 
 rule uORFNormalizedCounts:
     input:
-        bag=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+        bag=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=tamples.itertuples()),
         annotation="uORFs/merged_uORFs.bed",
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
