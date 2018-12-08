@@ -21,16 +21,15 @@ report: "report/workflow.rst"
 rule all:
    input:
        expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
-       #expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
-       #expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
+       expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
-       #"uORFs/merged_uORFs.csv",
-       #"tracks/annotation.bb",
-       #"uORFs/sfactors_lprot.csv",
-       #"uORFs/xtail_uORFs.csv",
-       #"uORFs/xtail_cds.csv",
-       #"uORFs/uORFs_regulation.tsv",
-       #"uORFs/processing_summary.tsv"
+       "uORFs/merged_uORFs.csv",
+       "tracks/annotation.bb",
+       "uORFs/sfactors_lprot.csv",
+       "uORFs/xtail_uORFs.csv",
+       "uORFs/xtail_cds.csv",
+       "uORFs/uORFs_regulation.tsv",
+       "uORFs/processing_summary.tsv"
 
 onsuccess:
     print("Done, no error")

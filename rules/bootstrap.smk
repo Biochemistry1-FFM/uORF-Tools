@@ -1,5 +1,5 @@
 def getbam(wildcards):
-    return tamples.loc[(wildcards.method, wildcards.condition, wildcards.replicate), ["inputFile"]].dropna()
+    return samples.loc[(wildcards.method, wildcards.condition, wildcards.replicate), ["inputFile"]].dropna()
 
 rule rawbamlink:
     input:
