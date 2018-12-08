@@ -29,7 +29,6 @@ rule all:
        "uORFs/xtail_uORFs.csv",
        "uORFs/xtail_cds.csv",
        "uORFs/uORFs_regulation.tsv",
-       "uORFs/processing_summary.tsv"
 
 onsuccess:
     print("Done, no error")
