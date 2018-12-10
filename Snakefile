@@ -8,14 +8,21 @@ INDEXPATH=config["genomeindexpath"]
 UORFANNOTATIONPATH=config["uorfannotationpath"]
 CODONS=config["alternativestartcodons"]
 
-onstart:
-   if not os.path.exists("logs"):
-     os.makedirs("logs")
+def replicate_check(samples):
+    if("2" not in samples["replicate"]):
+        print("Warning: Please make sure your experiment contains replicates!")
+
 samples = pd.read_csv(config["samples"], sep="\t", dtype=str).set_index(["method", "condition", "replicate"], drop=False)
 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     print(samples)
 #samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
 validate(samples, schema="schemas/samples.schema.yaml")
+
+onstart:
+   if not os.path.exists("logs"):
+     os.makedirs("logs")
+   replicate_check(samples)
+
 report: "report/workflow.rst"
 
 rule all:
@@ -29,6 +36,10 @@ rule all:
        "uORFs/xtail_uORFs.csv",
        "uORFs/xtail_cds.csv",
        "uORFs/uORFs_regulation.tsv",
+       "uORFs/ribo_norm_CDS_reads.csv",
+       "uORFs/ribo_norm_CDS_reads.csv",
+       "uORFs/ribo_norm_uORFs_reads.csv",
+       "uORFs/ribo_raw_uORFs_reads.csv"
 
 onsuccess:
     print("Done, no error")
