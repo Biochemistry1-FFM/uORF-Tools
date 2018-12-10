@@ -65,7 +65,7 @@ rule cdsRiboCounts:
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
         norm="uORFs/ribo_norm_CDS_reads.csv",
-        raw="uORFs/ribo_norm_CDS_reads.csv"
+        raw="uORFs/ribo_raw_CDS_reads.csv"
     conda:
         "../envs/uorftools.yaml"
     threads: 1
