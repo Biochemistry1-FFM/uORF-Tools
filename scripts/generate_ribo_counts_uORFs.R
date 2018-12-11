@@ -38,7 +38,6 @@ gene.counts <- data.frame(ORF.id = uORFs$name)
 
 # get sample files
 sample.files <- paste(options$bam_directory_path, list.files(options$bam_directory_path, pattern = "\\.bam$"), sep = "")
-
 for (i in sample.files) {
 
   # get sample name
@@ -77,12 +76,13 @@ sampleName <- function(x) {
 
 # generate sampleTable
 sampleNames <- apply(sampleSheet,1,sampleName)
-sample.files <- paste(sampleNames, ".bam", sep="")
+#sample.files <- paste(sampleNames, ".bam", sep="")
 conditions <- sampleSheet[,2]
-sampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
+fullSampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
+sampleTable <- fullSampleTable[grep(("RIBO"), row.names(fullSampleTable)),]
+print(sampleTable)
 
 colnames(gene.counts) <- rownames(sampleTable)
-
 # create DESeq data set
 dds <- DESeqDataSetFromMatrix(countData = gene.counts,
                               colData = sampleTable,
@@ -90,9 +90,9 @@ dds <- DESeqDataSetFromMatrix(countData = gene.counts,
 
 
 # supply size factors from whole library on longest protein coding
-size.factors <- read.csv(options$size_in_path,row.names = 1, stringsAsFactors = FALSE)
-colnames(size.factors) <- "size"
-
+size.factors <- read.csv(options$size_in_path, stringsAsFactors = FALSE)
+colnames(size.factors) <- c("sample", "size")
+size.factors<-size.factors[grep(("RIBO"),size.factors$sample),]
 # apply size factors to dds object
 sizeFactors(dds) <- size.factors$size
 
@@ -100,7 +100,7 @@ sizeFactors(dds) <- size.factors$size
 raw.counts <- counts(dds, normalized = FALSE)
 
 # save normalized counts
-write.csv(norm.counts, options$raw_count_uorf_out_path, quote = F)
+write.csv(raw.counts, options$raw_count_uorf_out_path, quote = F)
 
 # get normalized counts
 norm.counts <- counts(dds, normalized = TRUE)

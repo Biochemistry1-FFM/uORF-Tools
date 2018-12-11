@@ -60,7 +60,7 @@ rule uORFNormalizedCounts:
 
 rule cdsRiboCounts:
     input:
-        bam=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+        bam=expand("maplink/RIBO/{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
         annotation=rules.longestTranscript.output,
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
@@ -69,11 +69,11 @@ rule cdsRiboCounts:
     conda:
         "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_ribo_counts_CDS.R -b maplink/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output.norm} -r {output.raw};")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_ribo_counts_CDS.R -b maplink/RIBO/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output.norm} -r {output.raw};")
 
 rule uORFRiboCounts:
     input:
-        bag=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
+        bam=expand("maplink/RIBO/{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
         annotation="uORFs/merged_uORFs.bed",
         sizefactor="uORFs/sfactors_lprot.csv"
     output:
@@ -82,7 +82,7 @@ rule uORFRiboCounts:
     conda:
         "../envs/uorftools.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_ribo_counts_uORFs.R -b maplink/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output.norm} -r {output.raw};")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_ribo_counts_uORFs.R -b maplink/RIBO/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output.norm} -r {output.raw};")
 
 rule cdsxtail:
     input:

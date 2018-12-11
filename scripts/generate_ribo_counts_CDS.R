@@ -84,10 +84,10 @@ sampleName <- function(x) {
 
 # generate sampleTable
 sampleNames <- apply(sampleSheet,1,sampleName)
-sample.files <- paste(sampleNames, ".bam", sep="")
+#sample.files <- paste(sampleNames, ".bam", sep="")
 conditions <- sampleSheet[,2]
-sampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
-
+fullSampleTable <- data.frame(row.names = sampleNames, fileName = sample.files, condition = conditions)
+sampleTable <- fullSampleTable[grep(("RIBO"), row.names(fullSampleTable)),]
 colnames(gene.counts) <- rownames(sampleTable)
 
 
@@ -99,8 +99,9 @@ dds <- DESeqDataSetFromMatrix(countData = gene.counts,
 
 # supply size factors from whole library on longest protein coding
 size.factors <- read.csv(options$size_in_path,row.names = 1, stringsAsFactors = FALSE)
-colnames(size.factors) <- "size"
-
+size.factors <- read.csv(options$size_in_path, stringsAsFactors = FALSE)
+colnames(size.factors) <- c("sample", "size")
+size.factors<-size.factors[grep(("RIBO"),size.factors$sample),]
 # apply size factors to dds object
 sizeFactors(dds) <- size.factors$size
 
