@@ -84,6 +84,18 @@ rule uORFRiboCounts:
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_ribo_counts_uORFs.R -b maplink/RIBO/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output.norm} -r {output.raw};")
 
+rule riboChanges:
+    input:
+        uorf="uORFs/ribo_norm_uORFs_reads.csv",
+        orf="uORFs/ribo_norm_CDS_reads.csv"
+    output:
+        frac="uORFs/ribo_change.csv"
+    conda:
+        "../envs/uorftoolspython.yaml"
+    threads: 1
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/ribo_changes.py --uORF_reads {input.uorf} --ORF_read {input.orf} --changes_output {output.frac};")
+
+
 rule cdsxtail:
     input:
         "uORFs/norm_CDS_reads.csv"
