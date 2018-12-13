@@ -25,8 +25,8 @@ def keep_uORFs(df):
 # function to keep only certain columns
 def drop_cols(df_uORFs):
     df_uORFs = keep_uORFs(df_uORFs)
-    df_dropped = df_uORFs[["GenomePos", "AALen", "Gid", "Symbol", "Tid"]]
-    df_dropped.columns = ["ORF_id_gen", "ORF_length", "gene_id", "gene_symbol", "transcript_id"]
+    df_dropped = df_uORFs[["GenomePos", "StartCodon", "AALen", "Gid", "Symbol", "Tid"]]
+    df_dropped.columns = ["ORF_id_gen", "start_codon", "ORF_length", "gene_id", "gene_symbol", "transcript_id"]
     return df_dropped
 
 #Tid	Symbol	GenomePos	StartCodon	Start	Stop	TisType	TISGroup	TISCounts
@@ -75,7 +75,7 @@ def strand(column):
 def create_output(args):
     #rearrange column
 
-    df_final = pd.DataFrame(columns=["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"])
+    df_final = pd.DataFrame(columns=["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","start_codon","ORF_length","transcript_id"])
     # Create data frame from all input files
     for name in args.ribotish_files:
         #for nonempty files
@@ -88,8 +88,7 @@ def create_output(args):
             df_sub["chromosome"] = chrom_name(df_sub["ORF_id_gen"])
             df_sub["start"] = start(df_sub["ORF_id_gen"])
             df_sub["stop"] = stop(df_sub["ORF_id_gen"])
-            
-            df_dropped = df_sub[["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","ORF_length","transcript_id"]]
+            df_dropped = df_sub[["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","start_codon","ORF_length","transcript_id"]]
             for new_index, new_row in df_dropped.iterrows():
                  #check if entry with overlapping coordinates already exists
                  orf_range = range((int(new_row.start)), (int(new_row.stop)))
@@ -125,7 +124,7 @@ def set_uORFids(args):
         for index, row in args.iterrows():
             if row.transcript_id in tid_dict:
                 current_tindex=tid_dict[row.transcript_id]
-                next_tindex=current_tindex + 1 
+                next_tindex=current_tindex + 1
                 tid_dict[row.transcript_id]=next_tindex
             else:
                 next_tindex = 1
