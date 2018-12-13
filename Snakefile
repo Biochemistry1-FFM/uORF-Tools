@@ -9,13 +9,15 @@ UORFANNOTATIONPATH=config["uorfannotationpath"]
 CODONS=config["alternativestartcodons"]
 
 samples = pd.read_csv(config["samples"], sep="\t", dtype=str).set_index(["method", "condition", "replicate"], drop=False)
+samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
+
 def replicate_check(samples):
-    if(2 not in samples["replicate"]):
+    if(samples['replicate'].nunique() < 2):
         print("Warning: Please make sure your experiment contains replicates!")
 
 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     print(samples)
-#samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
+
 validate(samples, schema="schemas/samples.schema.yaml")
 
 onstart:

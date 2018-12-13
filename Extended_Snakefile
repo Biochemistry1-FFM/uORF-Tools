@@ -9,13 +9,22 @@ INDEXPATH=config["genomeindexpath"]
 UORFANNOTATIONPATH=config["uorfannotationpath"]
 CODONS=config["alternativestartcodons"]
 
+samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
+samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
+
+def replicate_check(samples):
+    if(samples['replicate'].nunique() < 2):
+        print("Warning: Please make sure your experiment contains replicates!")
+
+with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    print(samples)
+validate(samples, schema="schemas/samples.schema.yaml")
+
 onstart:
    if not os.path.exists("logs"):
      os.makedirs("logs")
+   replicate_check(samples)
 
-samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
-samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
-validate(samples, schema="schemas/samples.schema.yaml")
 report: "report/workflow.rst"
 
 rule all:
