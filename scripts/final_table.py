@@ -100,7 +100,7 @@ def create_output(args):
 	df_merge = merge(uORFs, cds)
 	df_merge["direction"] = df_merge.apply(lambda row: label(row), axis = 1)
 	annot = pd.read_table(args.uORF_annotation, sep =",", index_col = 0)
-	annot.drop(columns = ["chromosome", "start", "stop", "strand", "gene_id", "strand" , "start_codon", "ORF_length", "transcript_id"], axis = 1, inplace = True)
+	annot.drop(columns = ["chromosome", "start", "stop", "strand", "gene_id", "strand" , "ORF_length", "transcript_id"], axis = 1, inplace = True)
 	df_merge = pd.merge(df_merge, annot, how = "left", left_on = "uORF_id", right_on = "uORFids")
 	df_merge.drop(columns = ["uORFids"], axis = 1, inplace = True)
 	return(df_merge)
