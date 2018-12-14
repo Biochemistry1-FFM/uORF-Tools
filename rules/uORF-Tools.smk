@@ -123,14 +123,16 @@ rule uORFsxtail:
 rule final_table:
     input:
         xtailuORFs=rules.uORFsxtail.output.table,
-	    xtailCDS=rules.cdsxtail.output.table,
-	    annotation="uORFs/merged_uORFs.csv"
+	xtailCDS=rules.cdsxtail.output.table,
+	annotation="uORFs/merged_uORFs.csv",
+        uORFreads="uORFs/norm_uORFs_reads.csv",
+        cdsreads="uORFs/norm_CDS_reads.csv"
     output:
         report("uORFs/uORFs_regulation.tsv", caption="../report/regulation.rst", category="uORFs")
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --xtail_cds_file {input.xtailCDS} --xtail_uORF_file {input.xtailuORFs} --uORF_annotation {input.annotation} --output_csv_filepath {output}")
+    shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --xtail_cds_file {input.xtailCDS} --xtail_uORF_file {input.xtailuORFs} --uORF_reads {input.uORFreads} --ORF_reads {input.cdsreads} --uORF_annotation {input.annotation} --output_csv_filepath {output}")
 
 rule processing_summary:
     input:
