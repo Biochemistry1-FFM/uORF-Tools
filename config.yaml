@@ -1,0 +1,8 @@
+#Taxonomy of the samples to be processed, possible are Eukarya, Bacteria, Archea
+taxonomy: "Eukarya"
+#Adapter sequence used
+adapter: ""
+samples: "uORF-Tools/samples.tsv"
+genomeindexpath: ""
+uorfannotationpath: ""
+alternativestartcodons: "CUG,GUG,UUG"

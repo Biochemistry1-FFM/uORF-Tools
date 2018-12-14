@@ -116,9 +116,9 @@ def main():
     parser.add_argument("--output_csv_filepath", help='Path to write merged csv output')
     args = parser.parse_args()
     uorf_reads = pd.read_csv(args.uORF_reads)
-    uorf_reads = uorf_reads[uorf_reads.columns.drop(list(df.filter(regex='RNA')))]
+    uorf_reads = uorf_reads[uorf_reads.columns.drop(list(uorf_reads.filter(regex='RNA')))]
     uorf_cols = uorf_reads.columns.values
-    uORF_cols[0] = 'ID'
+    uorf_cols[0] = 'ID'
     uorf_reads.columns = uorf_cols
     uorf_reads_dict = uorf_reads.set_index('ID').T.to_dict('list')
     orf_reads = pd.read_csv(args.ORF_reads)
@@ -128,8 +128,9 @@ def main():
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
     changes_list = uORF_changes(df_final,uorf_reads_dict,orf_reads_dict)
-    changes_string = '\n'.join(map(str,changes_list))
-    f = open(args.changes_output, 'wt', encoding='utf-8')
+    changes_header = "chromosome\tstart\tstop\tstrand\tgene_id\tstrand\tstart_codon\tORF_length\ttranscript_id\tlog2FC_TE_final\tpvalue_final\tpvalue.adjust\tribo_change\tribo_symbol\n"
+    changes_string = changes_header + '\n'.join(map(str,changes_list))
+    f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
     #df_final.to_csv(args.output_csv_filepath, index = False, na_rep = 'NA', sep = "\t")
 
