@@ -35,14 +35,7 @@ rule all:
        "uORFs/merged_uORFs.csv",
        "tracks/annotation.bb",
        "uORFs/sfactors_lprot.csv",
-       "uORFs/xtail_uORFs.csv",
-       "uORFs/xtail_cds.csv",
        "uORFs/uORFs_regulation.tsv",
-       "uORFs/ribo_norm_CDS_reads.csv",
-       "uORFs/ribo_norm_CDS_reads.csv",
-       "uORFs/ribo_norm_uORFs_reads.csv",
-       "uORFs/ribo_raw_uORFs_reads.csv",
-       "uORFs/ribo_change.csv"
 
 onsuccess:
     print("Done, no error")
