@@ -8,7 +8,7 @@ Installation is described below, for usage examples and detailed a detailed manu
 
 uORF-Tools require snakemake (Version >=5.1.3), which can be installed with all dependencies via [conda](https://conda.io/docs/install/quick.html). Once you have conda installed simply type:
 
-         conda create -c bioconda -c conda-forge -n snakemake snakemake>=5.1.3
+         conda create -c bioconda -c conda-forge -n snakemake snakemake
          
          source activate uORF-Tools
 
