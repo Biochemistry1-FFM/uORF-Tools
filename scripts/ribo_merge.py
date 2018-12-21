@@ -10,6 +10,7 @@ import argparse
 import numpy as np
 import os
 
+
 # function to read in ribosome profiling output files ORFs_max_filt
 def create_table(name):
     df = pd.read_table(name)
@@ -22,6 +23,7 @@ def keep_uORFs(df):
     df_uORFs = df[(df["TisType"] == "5'UTR")]
     return df_uORFs
 
+
 # function to keep only certain columns
 def drop_cols(df_uORFs):
     df_uORFs = keep_uORFs(df_uORFs)
@@ -29,7 +31,6 @@ def drop_cols(df_uORFs):
     df_dropped.columns = ["ORF_id_gen", "start_codon", "ORF_length", "gene_id", "gene_symbol", "transcript_id"]
     return df_dropped
 
-#Tid	Symbol	GenomePos	StartCodon	Start	Stop	TisType	TISGroup	TISCounts
 
 # function to get chromosome name
 def chrom_name(column):
@@ -62,6 +63,7 @@ def stop(column):
             stop.append(stopstring)
     return stop
 
+
 def strand(column):
     strand = []
     for i in column:
@@ -73,74 +75,71 @@ def strand(column):
 
 # function to create final data frame
 def create_output(args):
-    #rearrange column
-
     df_final = pd.DataFrame(columns=["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","start_codon","ORF_length","transcript_id"])
     # Create data frame from all input files
     for name in args.ribotish_files:
-        #for nonempty files
+        # for nonempty files
         if os.stat(name).st_size != 0:
             print(name)
-            #read file into dataframe and drop columns not of interest
+            # read file into dataframe and drop columns not of interest
             df_sub = drop_cols(name)
             # rename columns to chromosome, start, and stop
             df_sub["strand"] = strand(df_sub["ORF_id_gen"])
             df_sub["chromosome"] = chrom_name(df_sub["ORF_id_gen"])
             df_sub["start"] = start(df_sub["ORF_id_gen"])
             df_sub["stop"] = stop(df_sub["ORF_id_gen"])
-            df_dropped = df_sub[["ORF_id_gen","chromosome","start","stop","gene_id","gene_symbol","strand","start_codon","ORF_length","transcript_id"]]
+            df_dropped = df_sub[["ORF_id_gen", "chromosome", "start", "stop", "gene_id", "gene_symbol", "strand", "start_codon", "ORF_length", "transcript_id"]]
             for new_index, new_row in df_dropped.iterrows():
-                 #check if entry with overlapping coordinates already exists
-                 orf_range = range((int(new_row.start)), (int(new_row.stop)))
-                 orf_set = set(orf_range)
-                 orf_length = int(new_row.stop) - int(new_row.start)
-                 intersection_switch = False
-                 if len(df_final) != 0:
-                     current_index = len(df_final)
-                     df_final.loc[current_index] = new_row
-                 else:
-                     current_index = 0
-                     df_final.loc[current_index] = new_row
-
+                # check if entry with overlapping coordinates already exists
+                orf_range = range((int(new_row.start)), (int(new_row.stop)))
+                orf_set = set(orf_range)
+                orf_length = int(new_row.stop) - int(new_row.start)
+                intersection_switch = False
+                if len(df_final) != 0:
+                    current_index = len(df_final)
+                    df_final.loc[current_index] = new_row
+                else:
+                    current_index = 0
+                    df_final.loc[current_index] = new_row
             # Cleaning up data frame
             df_final.drop_duplicates(subset="ORF_id_gen", inplace=True)
             df_final.reset_index(inplace=True)
             df_final.drop(["index"], axis=1, inplace=True)
-
-
             # Filter min and max uORF lengths
             if args.min_length is not None:
                 print("Length filterset to min: " + args.min_length)
                 df_final = df_final[df_final['ORF_length'] >= int(args.min_length)]
-
             if args.max_length is not None:
                 print("Length filterset to max: " + args.max_length)
                 df_final = df_final[df_final['ORF_length'] <= int(args.max_length)]
     return df_final
+
 
 def set_uORFids(args):
         tid_dict = {}
         uORFids = []
         for index, row in args.iterrows():
             if row.transcript_id in tid_dict:
-                current_tindex=tid_dict[row.transcript_id]
-                next_tindex=current_tindex + 1
-                tid_dict[row.transcript_id]=next_tindex
+                current_tindex = tid_dict[row.transcript_id]
+                next_tindex = current_tindex + 1
+                tid_dict[row.transcript_id] = next_tindex
             else:
                 next_tindex = 1
                 tid_dict[row.transcript_id] = next_tindex
             uORFid = row.transcript_id + '.' + str(next_tindex)
             uORFids.append(uORFid)
         m = np.asarray(uORFids)
-        args["uORFids"]=m
+        args["uORFids"] = m
         return(args)
+
 
 def make_uORFs_bed(args):
     uORFsString = ""
     for index, row in args.iterrows():
-        uORFString=row.chromosome + "\t" + row.start + "\t" + row.stop + "\t" + row.uORFids + "\t0\t" + row.strand + "\n"
-        uORFsString= uORFsString + uORFString
+        uORFString = row.chromosome + "\t" + row.start + "\t" + row.stop + "\t" + row.uORFids + "\t0\t" + row.strand + "\n"
+        uORFsString = uORFsString + uORFString
     return(uORFsString)
+
 
 def main():
     # store commandline args
@@ -158,14 +157,13 @@ def main():
     args = parser.parse_args()
     # make sure that min_length and max_length are given
     uorfsframe = create_output(args)
-    # get some general info on output
-    #print(output.describe(include='all'))
     # write output to csv file
-    uORFsdf=set_uORFids(uorfsframe)
+    uORFsdf = set_uORFids(uorfsframe)
     uORFsdf.to_csv(args.output_csv_filepath)
-    uORFsbed=make_uORFs_bed(uORFsdf)
+    uORFsbed = make_uORFs_bed(uORFsdf)
     f = open(args.output_bed_filepath, 'wt', encoding='utf-8')
     f.write(uORFsbed)
+
 
 if __name__ == '__main__':
     main()

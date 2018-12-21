@@ -4,70 +4,73 @@ import pandas as pd
 from snakemake.utils import validate, min_version
 min_version("5.3.1")
 
-ADAPTERS=config["adapter"]
-INDEXPATH=config["genomeindexpath"]
-UORFANNOTATIONPATH=config["uorfannotationpath"]
-CODONS=config["alternativestartcodons"]
+ADAPTERS = config["adapter"]
+INDEXPATH = config["genomeindexpath"]
+UORFANNOTATIONPATH = config["uorfannotationpath"]
+CODONS = config["alternativestartcodons"]
 
 samples = pd.read_table(config["samples"], dtype=str).set_index(["method", "condition", "replicate"], drop=False)
 samples.index = samples.index.set_levels([i.astype(str) for i in samples.index.levels])
+
 
 def replicate_check(samples):
     if(samples['replicate'].nunique() < 2):
         print("Warning: Please make sure your experiment contains replicates!")
 
+
 with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     print(samples)
 validate(samples, schema="schemas/samples.schema.yaml")
 
+
 onstart:
-   if not os.path.exists("logs"):
-     os.makedirs("logs")
-   replicate_check(samples)
+    if not os.path.exists("logs"):
+        os.makedirs("logs")
+    replicate_check(samples)
 
 report: "report/workflow.rst"
 
 rule all:
-   input:
-       expand("fastqc/raw/{sample.method}-{sample.condition}-{sample.replicate}-raw.html", sample=samples.itertuples()),
-       expand("fastqc/trimmed/{sample.method}-{sample.condition}-{sample.replicate}-trimmed.html", sample=samples.itertuples()),
-       expand("fastqc/norRNA/{sample.method}-{sample.condition}-{sample.replicate}-norRNA.html", sample=samples.itertuples()),
-       expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
-       expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
-       expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
-       "uORFs/merged_uORFs.csv",
-       "tracks/annotation.bb",
-       "uORFs/sfactors_lprot.csv",
-       "uORFs/xtail_uORFs.csv",
-       "uORFs/xtail_cds.csv",
-       "uORFs/uORFs_regulation.tsv",
-       "report/xtail_cds_fc.jpg",
-       "report/xtail_cds_r.jpg",
-       "report/xtail_cds_fc.jpg",
-       "report/xtail_cds_r.jpg",
-       "uORFs/processing_summary.tsv",
-       "uORFs/ribo_norm_CDS_reads.csv",
-       "uORFs/ribo_norm_CDS_reads.csv",
-       "uORFs/ribo_norm_uORFs_reads.csv",
-       "uORFs/ribo_raw_uORFs_reads.csv",
-       "uORFs/ribo_change.csv"
+    input:
+        expand("fastqc/raw/{sample.method}-{sample.condition}-{sample.replicate}-raw.html", sample=samples.itertuples()),
+        expand("fastqc/trimmed/{sample.method}-{sample.condition}-{sample.replicate}-trimmed.html", sample=samples.itertuples()),
+        expand("fastqc/norRNA/{sample.method}-{sample.condition}-{sample.replicate}-norRNA.html", sample=samples.itertuples()),
+        expand("ribotish/{sample.condition}-{sample.replicate}-newORFs.tsv_all.txt", sample=samples.itertuples()),
+        expand("report/{sample.condition}-{sample.replicate}-qual.jpg", sample=samples.itertuples()),
+        expand("tracks/{sample.method}-{sample.condition}-{sample.replicate}.bw", sample=samples.itertuples()),
+        "uORFs/merged_uORFs.csv",
+        "tracks/annotation.bb",
+        "uORFs/sfactors_lprot.csv",
+        "uORFs/xtail_uORFs.csv",
+        "uORFs/xtail_cds.csv",
+        "uORFs/uORFs_regulation.tsv",
+        "report/xtail_cds_fc.jpg",
+        "report/xtail_cds_r.jpg",
+        "report/xtail_cds_fc.jpg",
+        "report/xtail_cds_r.jpg",
+        "uORFs/processing_summary.tsv",
+        "uORFs/ribo_norm_CDS_reads.csv",
+        "uORFs/ribo_norm_CDS_reads.csv",
+        "uORFs/ribo_norm_uORFs_reads.csv",
+        "uORFs/ribo_raw_uORFs_reads.csv",
+        "uORFs/ribo_change.csv"
 
 onsuccess:
     print("Done, no error")
 
-#Copying of user provided genome annotion
+# Copying of user provided genome annotion
 include: "rules/preprocessing.smk"
-#Adaper removal and quality control
+# Adaper removal and quality control
 include: "rules/trimming.smk"
-#removal of reads mapping to ribosomal rna genes
+# Removal of reads mapping to ribosomal rna genes
 include: "rules/rrnafiltering.smk"
-#mapping
+# Mapping
 include: "rules/mapping.smk"
-#Visualization
+# Visualization
 include: "rules/visualization.smk"
-#Ribotish
+# Ribotish
 include: "rules/ribotish.smk"
-#uORF-tools
+# uORF-tools
 include: "rules/uORF-Tools.smk"
-#Report
+# Report
 include: "rules/report.smk"
