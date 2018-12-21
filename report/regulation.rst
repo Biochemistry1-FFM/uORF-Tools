@@ -1,31 +1,19 @@
-Result table for upstream open reading frames containing eleven columns. 
+Result table for upstream open reading frame.
 
-- uORF_id: uniquely identifies the found uORFs for a transcript by appending an index to the transcript id (e.g ENST00000421495.6.1).
+- coordinates: genomic coordinates of the potential uORF.
 
-- log2FC_TE_final_uORF: log fold change of overall translational efficiency between conditions for uORF.
+- gene_symbol: gene symbol of main ORF.
 
-- pvalue_final_uORF: significance of differential translation for uORF.
-
-- pvalue.adjust_uORF: significance of differential translation for uORF with multiple testing adjustment.
+- start_codon: Used start codon.
 
 - transcript_id: transcript identifier of main ORF.
 
-- log2FC_TE_final_CDS: log fold change of overall translational efficiency between conditions for ORF.
+- uORF_id: uniquely identifies the found uORFs for a transcript by appending an index to the transcript id (e.g ENST00000421495.6.1).
 
-- pvalue_final_CDS: significance of differential translation for main ORF.
-
-- pvalue.adjust_CDS: significance of differential translation for main ORF with multiple testing adjustment.
+- ribo_change: Ratio between the ratio of normalized ORF vs uORF for condition1 and ORF vs uORF for condition 2.
 
 - direction: describes potential regulation of main ORF by uORF by association of their change of translational efficiency.
 
-  - up: translational efficiency of both uORF and main ORF is upregulated.
+  - (+) up: Main ORF is upregulated vs uORF between condititon 1 and 2.
   
-  - down: translational efficency of both uORF and main ORF is downregulated.
-
-  - left: translational efficiency of uORF increases, translational efficiency of main ORF decreases.
-
-  - right: translational efficiency of uORF decreases, translation efficiency of main ORF increases.
-  
-- ORF_id_gen: genomic coordinates of the potential uORF.
-
-- gene_symbol: gene symbol of main ORF.
+  - (-) down: Main ORF is downrelated in comparison to uORF between condition 1 and 2.

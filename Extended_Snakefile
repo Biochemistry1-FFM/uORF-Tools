@@ -28,7 +28,7 @@ onstart:
         os.makedirs("logs")
     replicate_check(samples)
 
-report: "report/workflow.rst"
+report: "report/extended_workflow.rst"
 
 rule all:
     input:

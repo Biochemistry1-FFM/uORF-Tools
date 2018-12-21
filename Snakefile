@@ -4,7 +4,6 @@ import pandas as pd
 from snakemake.utils import validate, min_version
 min_version("5.3.1")
 
-INDEXPATH = config["genomeindexpath"]
 UORFANNOTATIONPATH = config["uorfannotationpath"]
 CODONS = config["alternativestartcodons"]
 
