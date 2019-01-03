@@ -20,6 +20,8 @@ def uORF_change(uORFrowIn, ORFreadsIn):
     uORFrow = uORFrowIn
     ORFreads = ORFreadsIn
     replicates = math.ceil(len(uORFrow)/2)
+    ratio1sum = 0
+    ratio2sum = 0
     changesum = 0
     for replicate in range(0, replicates):
         uORFCond1 = uORFrow[replicate] + 1
@@ -29,10 +31,13 @@ def uORF_change(uORFrowIn, ORFreadsIn):
         ratio1 = orfCond1 / uORFCond1
         ratio2 = orfCond2 / uORFCond2
         change = ratio1 / ratio2
+        ratio1sum += ratio1
+        ratio2sum += ratio2
         changesum += change
+    averageratio1 = ratiosum1 / replicates 
+    averageratio2 = ratiosum2 / replicates
     averagechange = changesum / replicates
-    return (averagechange)
-
+    return (averagechange,averageratio1,averageratio2)
 
 def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     changes = []
@@ -41,9 +46,10 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
         ORFid = uORFrow['transcript_id']
         uORFreads = uorf_reads_dict[uORFid]
         ORFreads = orf_reads_dict[ORFid]
-        averagechange = uORF_change(uORFreads, ORFreads)
+        (averagechange,averageratio1,averageratio2) = uORF_change(uORFreads, ORFreads)
         joined_row = '\t'.join(map(str, uORFrow))
-        uORF_changes_string = joined_row + "\t" + str(averagechange) + "\t" + set_change_symbol(averagechange)
+        logaveragechange = log2(averagechage)
+        uORF_changes_string = joined_row + "\t" + str(averageratio1) + "\t" + str(averageratio2) + "\t" + str(averagechange) + "\t" + str(logaveragechange) + "\t" + set_change_symbol(averagechange)
         changes.append(uORF_changes_string)
     return (changes)
 
@@ -83,7 +89,7 @@ def main():
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
-    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\tribo_change\tregulation\n"
+    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\torfvsuorfratio1\torvsuorfratio2\tribo_change\tlog_ribo_change\tregulation\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
