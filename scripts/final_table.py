@@ -34,8 +34,8 @@ def uORF_change(uORFrowIn, ORFreadsIn):
         ratio1sum += ratio1
         ratio2sum += ratio2
         changesum += change
-    averageratio1 = ratiosum1 / replicates 
-    averageratio2 = ratiosum2 / replicates
+    averageratio1 = ratio1sum / replicates 
+    averageratio2 = ratio2sum / replicates
     averagechange = changesum / replicates
     return (averagechange,averageratio1,averageratio2)
 
@@ -48,7 +48,7 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
         ORFreads = orf_reads_dict[ORFid]
         (averagechange,averageratio1,averageratio2) = uORF_change(uORFreads, ORFreads)
         joined_row = '\t'.join(map(str, uORFrow))
-        logaveragechange = log2(averagechage)
+        logaveragechange = math.log2(averagechange)
         uORF_changes_string = joined_row + "\t" + str(averageratio1) + "\t" + str(averageratio2) + "\t" + str(averagechange) + "\t" + str(logaveragechange) + "\t" + set_change_symbol(averagechange)
         changes.append(uORF_changes_string)
     return (changes)
@@ -89,7 +89,7 @@ def main():
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
-    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\torfvsuorfratio1\torvsuorfratio2\tribo_change\tlog_ribo_change\tregulation\n"
+    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\torf_uorf_ratio_c1\torf_uorfratio_c2\tribo_change\tlog_ribo_change\tregulation\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
