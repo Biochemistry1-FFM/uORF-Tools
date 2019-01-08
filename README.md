@@ -19,6 +19,6 @@ Create a project directory and change into it:
 
 Retrieve the uORF-Tools from GitHub:
 
-         git clone git@github.com:anibunny12/uORF-Tools.git
+         git clone git@github.com:Biochemistry1-FFM/uORF-Tools.git
 
 Using the workflow is described in the [Userguide](https://uorf-tools.readthedocs.io/en/latest/index.html).
