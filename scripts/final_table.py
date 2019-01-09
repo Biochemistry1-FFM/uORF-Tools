@@ -7,7 +7,8 @@ and computes the ribo_change parameter for regulatory uORFs and their mainORF.
 import pandas as pd
 import argparse
 import math
-
+from scipy.stats import norm
+import numpy as np
 
 def set_change_symbol(log2change):
     if log2change > 1:
@@ -31,27 +32,51 @@ def uORF_change(uORFrowIn, ORFreadsIn):
         ratio1 = orfCond1 / uORFCond1
         ratio2 = orfCond2 / uORFCond2
         change = ratio1 / ratio2
-        ratio1sum += ratio1
-        ratio2sum += ratio2
+        uorf1sum += uORFCond1
+        orf1sum += orfCond1
+        uorf2sum += uORFCond2
+        orf2sum += orfCond2
         changesum += change
-    averageratio1 = ratio1sum / replicates 
-    averageratio2 = ratio2sum / replicates
+    averageuORF1 = uorf1sum / replicates 
+    averageORF1 = orf1sum / replicates
+    averageuORF2 = uorf2sum / replicates 
+    averageORF2 = orf2sum / replicates
     averagechange = changesum / replicates
-    return (averagechange,averageratio1,averageratio2)
+    logaveragechange = math.log2(averagechange)
+    return (averagechange,averageuORF1,averageORF1,averageuORF2,averageORF2,logaveragechange)
 
 def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
-    changes = []
+    averagechanges = []
+    averageuORF1s = []
+    averageORF1s = []
+    averageuORF2s = []
+    averageORF2s = []
+    logaveragechanges = []
     for _, uORFrow in uorf_table.iterrows():
         uORFid = uORFrow['uORFids']
         ORFid = uORFrow['transcript_id']
         uORFreads = uorf_reads_dict[uORFid]
         ORFreads = orf_reads_dict[ORFid]
-        (averagechange,averageratio1,averageratio2) = uORF_change(uORFreads, ORFreads)
+        (averagechange,averageuORF1,averageORF1,averageuORF2,averageORF2,logaveragechange) = uORF_change(uORFreads, ORFreads)
+        averageuORF1s.append(averageuORF1)
+        averageORF1s.append(averageORF1)
+        averageuORF2s.append(averageuORF2)
+        averageORF2s.append(averageORF2)
+        averagechanges.append(averagechange)
+        logaveragechanges.append(logaveragechange)
+    uorf_table['averageuORF1s'] = averageuORF1s
+    uorf_table['averageORF1s'] = averageORF1s
+    uorf_table['averageuORF2s'] = averageuORF2s
+    uorf_table['averageORF2s'] = averageORF2s
+    uorf_table['averagechanges'] = averagechanges
+    uorf_table['logaveragechanges'] = logaveragechanges    
+    ouput = []
+    for _, uORFrow in uorf_table.iterrows():
         joined_row = '\t'.join(map(str, uORFrow))
-        logaveragechange = math.log2(averagechange)
-        uORF_changes_string = joined_row + "\t" + str(averageratio1) + "\t" + str(averageratio2) + "\t" + str(averagechange) + "\t" + str(logaveragechange) + "\t" + set_change_symbol(averagechange)
-        changes.append(uORF_changes_string)
-    return (changes)
+        uORF_changes_string = joined_row + "\t" + set_change_symbol(averagechange)
+        output.append(uORF_changes_string)
+    return (output)
+    
 
 
 # read in xtail output files
@@ -89,7 +114,7 @@ def main():
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
-    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\torf_uorf_ratio_c1\torf_uorf_ratio_c2\tribo_change\tlog_ribo_change\tregulation\n"
+    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\tavg_uorf_reads_c1\tavg_orf_reads_c1\tavg_uorf_reads_ratio_c2\tavg_orf_reads_c1\tribo_change\tlog_ribo_change\tregulation\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
