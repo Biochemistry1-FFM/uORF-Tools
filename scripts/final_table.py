@@ -7,7 +7,8 @@ and computes the ribo_change parameter for regulatory uORFs and their mainORF.
 import pandas as pd
 import argparse
 import math
-from scipy.stats import norm
+#from scipy.stats import norm
+import scipy.stats as stats
 import numpy as np
 
 def set_change_symbol(log2change):
@@ -69,11 +70,14 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     uorf_table['averageuORF2s'] = averageuORF2s
     uorf_table['averageORF2s'] = averageORF2s
     uorf_table['averagechanges'] = averagechanges
-    uorf_table['logaveragechanges'] = logaveragechanges    
+    uorf_table['logaveragechanges'] = logaveragechanges
+    uorf_table['zscore'] = stats.zscore(logaveragechanges)
+    mean = mean(logaveragechanges)
+    sigma = std(logaveragechanges)
     ouput = []
     for _, uORFrow in uorf_table.iterrows():
         joined_row = '\t'.join(map(str, uORFrow))
-        uORF_changes_string = joined_row + "\t" + set_change_symbol(averagechange)
+        uORF_changes_string = joined_row + "\t" + set_change_symbol(averagechange) + "\t" + stats.norm.cdf(x, mean, sigma)
         output.append(uORF_changes_string)
     return (output)
     
