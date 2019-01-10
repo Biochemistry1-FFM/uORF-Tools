@@ -79,7 +79,7 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     output = []
     for _, uORFrow2 in uorf_table.iterrows():
         joined_row = '\t'.join(map(str, uORFrow2))
-        p_val = stats.norm.ppf(uORFrow2['zscore']) 
+        p_val = stats.norm.cdf(abs(uORFrow2['zscore'])) 
         uORF_changes_string = joined_row + "\t" + set_change_symbol(averagechange) + "\t" + str(p_val)
         output.append(uORF_changes_string)
     return (output)
