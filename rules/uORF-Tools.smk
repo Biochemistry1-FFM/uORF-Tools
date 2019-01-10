@@ -10,7 +10,7 @@ rule riboMerge:
     params:
         annotationpath=lambda wildcards: ("NOTSET" if not UORFANNOTATIONPATH else (UORFANNOTATIONPATH))
     shell:
-        "if [ -d {params.annotationpath} ]; then mkdir -p uORFs; ln -T -s {params.annotationpath} {output.csv}; uORF-Tools/scripts/ribo_convert.py --input_csv_filepath {input} --output_bed_filepath {output.bed}; else mkdir -p uORFs; uORF-Tools/scripts/ribo_merge.py {input} --min_length 1 --max_length 400 --output_csv_filepath {output.csv} --output_bed_filepath {output.bed}; fi"
+        "if [ -e {params.annotationpath} ]; then export APATH=`readlink -f {params.annotationpath}`; mkdir -p uORFs; ln -T -s $APATH {output.csv}; uORF-Tools/scripts/ribo_convert.py --input_csv_filepath $APATH --output_bed_filepath {output.bed}; else mkdir -p uORFs; uORF-Tools/scripts/ribo_merge.py {input} --min_length 1 --max_length 400 --output_csv_filepath {output.csv} --output_bed_filepath {output.bed}; fi"
 
 rule longestTranscript:
     input:

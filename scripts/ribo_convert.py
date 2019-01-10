@@ -9,7 +9,7 @@ import os
 def make_uORFs_bed(args):
     uORFsString = ""
     for index, row in args.iterrows():
-        uORFString = row.chromosome + "\t" + row.start + "\t" + row.stop + "\t" + row.uORFids + "\t0\t" + row.strand + "\n"
+        uORFString = row.chromosome + "\t" + str(row.start) + "\t" + str(row.stop) + "\t" + row.uORFids + "\t0\t" + row.strand + "\n"
         uORFsString = uORFsString + uORFString
     return(uORFsString)
 
