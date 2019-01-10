@@ -22,8 +22,10 @@ def uORF_change(uORFrowIn, ORFreadsIn):
     uORFrow = uORFrowIn
     ORFreads = ORFreadsIn
     replicates = math.ceil(len(uORFrow)/2)
-    ratio1sum = 0
-    ratio2sum = 0
+    uorf1sum = 0
+    orf1sum = 0
+    uorf2sum = 0
+    orf2sum = 0
     changesum = 0
     for replicate in range(0, replicates):
         uORFCond1 = uORFrow[replicate] + 1
@@ -65,19 +67,20 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
         averageORF2s.append(averageORF2)
         averagechanges.append(averagechange)
         logaveragechanges.append(logaveragechange)
-    uorf_table['averageuORF1s'] = averageuORF1s
-    uorf_table['averageORF1s'] = averageORF1s
-    uorf_table['averageuORF2s'] = averageuORF2s
-    uorf_table['averageORF2s'] = averageORF2s
-    uorf_table['averagechanges'] = averagechanges
-    uorf_table['logaveragechanges'] = logaveragechanges
+    uorf_table['averageuORF1'] = averageuORF1s
+    uorf_table['averageORF1'] = averageORF1s
+    uorf_table['averageuORF2'] = averageuORF2s
+    uorf_table['averageORF2'] = averageORF2s
+    uorf_table['averagechange'] = averagechanges
+    uorf_table['logaveragechange'] = logaveragechanges
     uorf_table['zscore'] = stats.zscore(logaveragechanges)
-    mean = mean(logaveragechanges)
-    sigma = std(logaveragechanges)
-    ouput = []
-    for _, uORFrow in uorf_table.iterrows():
-        joined_row = '\t'.join(map(str, uORFrow))
-        uORF_changes_string = joined_row + "\t" + set_change_symbol(averagechange) + "\t" + stats.norm.cdf(x, mean, sigma)
+    log_mean = stats.norm.mean(logaveragechanges)
+    log_sigma = stats.norm.std(logaveragechanges)
+    output = []
+    for _, uORFrow2 in uorf_table.iterrows():
+        joined_row = '\t'.join(map(str, uORFrow2))
+        p_val = stats.norm.ppf(uORFrow2['zscore']) 
+        uORF_changes_string = joined_row + "\t" + set_change_symbol(averagechange) + "\t" + str(p_val)
         output.append(uORF_changes_string)
     return (output)
     
