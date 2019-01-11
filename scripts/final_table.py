@@ -80,7 +80,7 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     for _, uORFrow2 in uorf_table.iterrows():
         joined_row = '\t'.join(map(str, uORFrow2))
         p_val = stats.norm.cdf(abs(uORFrow2['zscore'])) 
-        uORF_changes_string = joined_row + "\t" + set_change_symbol(averagechange) + "\t" + str(p_val)
+        uORF_changes_string = joined_row + "\t" + "\t" + str(p_val)
         output.append(uORF_changes_string)
     return (output)
     
@@ -121,7 +121,7 @@ def main():
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
-    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\tavg_uorf_reads_c1\tavg_orf_reads_c1\tavg_uorf_reads_ratio_c2\tavg_orf_reads_c1\tribo_change\tlog_ribo_change\tz_score\tregulation\tp_value\n"
+    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\tavg_uorf_reads_c1\tavg_orf_reads_c1\tavg_uorf_reads_ratio_c2\tavg_orf_reads_c1\tribo_change\tlog_ribo_change\tz_score\tp_value\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
