@@ -121,7 +121,7 @@ def main():
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
-    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\tavg_uorf_reads_c1\tavg_orf_reads_c1\tavg_uorf_reads_ratio_c2\tavg_orf_reads_c1\tribo_change\tlog_ribo_change\tz_score\tp_value\n"
+    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\tavg_uorf_reads_c1\tavg_orf_reads_c1\tavg_uorf_reads_ratio_c2\tavg_orf_reads_c1\tribo_change\tlog2_ribo_change\tz_score\tp_value\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
