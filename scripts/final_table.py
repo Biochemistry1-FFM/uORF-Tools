@@ -74,13 +74,10 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     uorf_table['logaveragechange'] = logaveragechanges
     zscores = stats.zscore(logaveragechanges)
     uorf_table['zscore'] = zscores
-    uorf_table['pvalue'] = scipy.stats.norm.sf(abs(zscores))*2
-    #log_mean = stats.norm.mean(logaveragechanges)
-    #log_sigma = stats.norm.std(logaveragechanges)
+    uorf_table['pvalue'] = stats.norm.sf(abs(zscores))*2
     output = []
     for _, uORFrow2 in uorf_table.iterrows():
-        joined_row = '\t'.join(map(str, uORFrow2))
-        p_val = stats.norm.cdf(abs(uORFrow2['zscore'])) 
+        joined_row = '\t'.join(map(str, uORFrow2)) 
         uORF_changes_string = joined_row
         output.append(uORF_changes_string)
     return (output)
