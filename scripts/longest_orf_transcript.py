@@ -58,12 +58,17 @@ def main():
     orfs = []
     with open(args.annotation_gtf_filepath) as origin_file:
         for line in origin_file:
-            lineCoding = re.findall(r'protein_coding', line)
+            lineCoding = re.findall(r'transcript_type \"protein_coding\";', line)
             if lineCoding:
-                gtffields = line.split("\t")
+            	lineLevel = re.findall(r'level [1-2];', line)
+            	if lineLevel:
+            		gtffields = line.split("\t")
+            		if gtffields[2] != "gene":
+            			orfs.append(line)
+            		# gtffields = line.split("\t")
                 #genes are filtered, then transcripts are longest features per gene_id
-                if gtffields[2] != "gene":
-                    orfs.append(line)
+                	# if gtffields[2] != "gene":
+                	# 	orfs.append(line)
     transcripts = {}
     for orf in orfs:
         dkey = gtf_gene_id(orf)
