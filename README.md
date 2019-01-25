@@ -10,7 +10,7 @@ uORF-Tools require snakemake (Version >=5.1.3), which can be installed with all 
 
          conda create -c conda-forge -c bioconda -n snakemake snakemake
          
-         source activate uORF-Tools
+         source activate snakemake
 
 Create a project directory and change into it:
 
