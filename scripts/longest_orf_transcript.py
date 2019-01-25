@@ -65,10 +65,6 @@ def main():
             		gtffields = line.split("\t")
             		if gtffields[2] != "gene":
             			orfs.append(line)
-            		# gtffields = line.split("\t")
-                #genes are filtered, then transcripts are longest features per gene_id
-                	# if gtffields[2] != "gene":
-                	# 	orfs.append(line)
     transcripts = {}
     for orf in orfs:
         dkey = gtf_gene_id(orf)
