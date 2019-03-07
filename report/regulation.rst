@@ -10,10 +10,13 @@ Result table for upstream open reading frame.
 
 - uORF_id: uniquely identifies the found uORFs for a transcript by appending an index to the transcript id (e.g ENST00000421495.6.1).
 
-- ribo_change: Ratio between the ratio of normalized ORF vs uORF for condition1 and ORF vs uORF for condition 2.
+- mean_reads_uORF_c1: mean read count for uORFs in condition 1.
 
-- direction: describes potential regulation of main ORF by uORF by association of their change of translational efficiency.
+- mean_reads_ORF_c1: mean read count for ORFs in condition 1.
 
-  - (+) up: Main ORF is upregulated vs uORF between condititon 1 and 2.
-  
-  - (-) down: Main ORF is downrelated in comparison to uORF between condition 1 and 2.
+- mean_reads_uORF_c2: mean read count for uORFs in condition 2.
+
+- mean_reads_ORF_c2: mean read count for ORFs in condition 2.
+
+- log2FC_main_ORF_to_uORF_ratios: Ratio between the ratio of normalized ORF vs uORF for condition1 and ORF vs uORF for condition 2.
+

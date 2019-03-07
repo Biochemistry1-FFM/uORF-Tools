@@ -1,5 +1,0 @@
-method	condition	replicate	inputFile
-RIBO	A	1	"bam/FP-treat-1.bam"
-RIBO	A	2	"bam/FP-treat-2.bam"
-RIBO	B	1	"bam/FP-ctrl-1.bam"
-RIBO	B	2	"bam/FP-ctrl-2.bam"

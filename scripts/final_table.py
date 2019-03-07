@@ -6,15 +6,7 @@ and computes the ribo_change parameter for uORFs.
 import pandas as pd
 import argparse
 import math
-#from scipy.stats import norm
-import scipy.stats as stats
 import numpy as np
-
-def set_change_symbol(log2change):
-    if log2change > 1:
-        return "+"
-    else:
-        return "-"
 
 
 def uORF_change(uORFrowIn, ORFreadsIn):
@@ -70,31 +62,19 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     uorf_table['averageORF1'] = averageORF1s
     uorf_table['averageuORF2'] = averageuORF2s
     uorf_table['averageORF2'] = averageORF2s
-    uorf_table['averagechange'] = averagechanges
     uorf_table['logaveragechange'] = logaveragechanges
-    zscores = stats.zscore(logaveragechanges)
-    uorf_table['zscore'] = zscores
-    uorf_table['pvalue'] = stats.norm.sf(abs(zscores))*2
     output = []
     for _, uORFrow2 in uorf_table.iterrows():
         joined_row = '\t'.join(map(str, uORFrow2)) 
         uORF_changes_string = joined_row
         output.append(uORF_changes_string)
     return (output)
-    
-
-
-# read in xtail output files
-def create_table(name):
-    df = pd.read_table(name, sep=",", index_col=0)
-    df = df[["log2FC_TE_final", "pvalue_final", "pvalue.adjust"]]
-    return df
 
 
 # create output data frame
 def create_output(args):
-    annot = pd.read_table(args.uORF_annotation, sep=",", index_col=0)
-    annot.drop(columns=["chromosome", "start", "stop", "strand", "gene_id", "strand", "ORF_length"], axis=1, inplace=True)
+    annot = pd.read_csv(args.uORF_annotation, sep=",", index_col=0)
+    annot.drop(columns=["chromosome", "start", "stop", "strand", "start_codon", "gene_id", "strand", "ORF_length"], axis=1, inplace=True)
     return annot
 
 
@@ -119,7 +99,7 @@ def main():
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
-    changes_header = "coordinates\tgene_symbol\tstart_codon\ttranscript_id\tuORF_id\tavg_uorf_reads_c1\tavg_orf_reads_c1\tavg_uorf_reads_c2\tavg_orf_reads_c2\tribo_change\tlog2_ribo_change\tz_score\tp_value\n"
+    changes_header = "coordinates\tgene_symbol\ttranscript_id\tuORF_id\tmean_reads_uORF_c1\tmean_reads_ORF_c1\tmean_reads_uORF_c2\tmean_reads_ORF_c2\tlog2FC_main_ORF_to_uORF_ratios\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)

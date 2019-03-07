@@ -34,30 +34,6 @@ rule sizeFactors:
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_size_factors.R -t uORF-Tools/samples.tsv -b maplink/ -a {input.longestTranscript} -s uORFs/sfactors_lprot.csv;")
 
-rule cdsNormalizedCounts:
-    input:
-        bam=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
-        annotation=rules.longestTranscript.output,
-        sizefactor="uORFs/sfactors_lprot.csv"
-    output:
-        "uORFs/norm_CDS_reads.csv"
-    conda:
-        "../envs/uorftools.yaml"
-    threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_CDS.R -b maplink/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output};")
-
-rule uORFNormalizedCounts:
-    input:
-        bag=expand("maplink/{sample.method}-{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
-        annotation="uORFs/merged_uORFs.bed",
-        sizefactor="uORFs/sfactors_lprot.csv"
-    output:
-        "uORFs/norm_uORFs_reads.csv"
-    conda:
-        "../envs/uorftools.yaml"
-    threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_normalized_counts_uORFs.R -b maplink/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output};")
-
 rule cdsRiboCounts:
     input:
         bam=expand("maplink/RIBO/{sample.condition}-{sample.replicate}.bam", sample=samples.itertuples()),
@@ -95,31 +71,6 @@ rule riboChanges:
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/ribo_changes.py --uORF_reads {input.uorf} --ORF_read {input.orf} --changes_output {output.frac};")
 
-
-rule cdsxtail:
-    input:
-        "uORFs/norm_CDS_reads.csv"
-    output:
-        table=report("uORFs/xtail_cds.csv", caption="../report/xtail_cds_fc.rst", category="CDS"),
-        fcplot="uORFs/xtail_cds_fc.pdf",
-        rplot="uORFs/xtail_cds_r.pdf"
-    conda:
-        "../envs/xtail.yaml"
-    threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output.table} -f {output.fcplot} -p {output.rplot};")
-
-rule uORFsxtail:
-    input:
-        "uORFs/norm_uORFs_reads.csv"
-    output:
-        table=report("uORFs/xtail_uORFs.csv", caption="../report/xtail_uORFs_fc.rst", category="uORFs"),
-        fcplot="uORFs/xtail_uORFs_fc.pdf",
-        rplot="uORFs/xtail_uORFs_r.pdf"
-    conda:
-        "../envs/xtail.yaml"
-    threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/xtail_normalized_counts.R -t uORF-Tools/samples.tsv -r {input} -x {output.table} -f {output.fcplot} -p {output.rplot};")
-
 rule final_table:
     input:
         annotation="uORFs/merged_uORFs.csv",
@@ -131,15 +82,3 @@ rule final_table:
         "../envs/uorftoolspython.yaml"
     threads: 1
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --uORF_reads {input.uORFreads} --ORF_reads {input.cdsreads} --uORF_annotation {input.annotation} --output_csv_filepath {output}")
-
-rule processing_summary:
-    input:
-        "uORFs/merged_uORFs.csv"
-    output:
-        report("uORFs/processing_summary.tsv", caption="../report/summary.rst", category="uORFs")
-    conda:
-        "../envs/uorftoolspython.yaml"
-    params:
-       cwd=os.getcwd()
-    threads: 1
-    shell: ("mkdir -p uORFs; uORF-Tools/scripts/summary_results.py --sample_tsv uORF-Tools/samples.tsv --project_folder {params.cwd} --output_tsv_filepath {output}")
