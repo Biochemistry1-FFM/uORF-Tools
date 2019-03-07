@@ -2,7 +2,3 @@
 Adapter removal is performed with `TrimGalore <https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/>`__ and `Cutadapt <http://cutadapt.readthedocs.io>`__, afterwards the reads mapping to rRNA genes are
 removed with `SortMeRNA <http://bioinfo.lifl.fr/RNA/sortmerna/>`__. `FastQC <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/>`__ is used after each of these preprocessing steps. 
 The reads are then mapped with `STAR <https://github.com/alexdobin/STAR>`__  
-Novel ORFs are detected with `RiboTISH <https://github.com/zhpn1024/ribotish>`__  
-Read counts are normalized with `DESeq2 <https://bioconductor.org/packages/release/bioc/html/DESeq2.html>`__ .
-The normalized reads of detected uORFs together with their main ORF are evaluated regarding 
-their ribo_change helping to identify uORFs with a potentially regulatory effect.
