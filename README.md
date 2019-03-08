@@ -18,6 +18,12 @@ uORF-Tools requires snakemake (Version=5.4.2), which can be installed with all d
 
         $ conda activate snakemake
 
+**IF** your system does not recognize the command 'conda activate' you may need to use the older command:
+
+        $ source activate
+
+        $ source activate snakemake
+
 Create a project directory and change into it:
 
          $ mkdir project
