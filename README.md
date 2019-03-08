@@ -10,7 +10,7 @@ uORF-Tools requires snakemake (Version=5.4.2), which can be installed with all d
 
         $ conda create -c conda-forge -c bioconda -n snakemake snakemake==5.4.2
 
-**IMPORTANT!!!** The workflow relies in an older version of conda. To change your conda version type:
+**IMPORTANT!!!** The workflow relies on an older version of conda. To change your conda version type:
 
         $ conda install -n base conda=4.5.13
 
