@@ -14,12 +14,6 @@ uORF-Tools requires snakemake (Version=5.4.2), which can be installed with all d
 
         $ conda install -n base conda=4.5.13
 
-        $ conda activate
-
-        $ conda activate snakemake
-
-**IF** your system does not recognize the command 'conda activate' you may need to use the older command:
-
         $ source activate
 
         $ source activate snakemake
@@ -32,6 +26,6 @@ Create a project directory and change into it:
 
 Retrieve the uORF-Tools from GitHub:
 
-         $ git clone git@github.com:Biochemistry1-FFM/uORF-Tools.git
+         $ git clone https://github.com/Biochemistry1-FFM/uORF-Tools.git
 
 Now you can get started. Usage of the workflow is described in the [Userguide](https://uorf-tools.readthedocs.io/en/latest/index.html).
