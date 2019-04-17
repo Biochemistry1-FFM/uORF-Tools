@@ -38,9 +38,9 @@ def uORF_change(uORFrowIn, ORFreadsIn):
         uORFCond2 = uORFrow[replicate + replicates] + 1
         orfCond2 = ORFreads[replicate + replicates] + 1
         ratio1 = orfCond1 / uORFCond1
-        cond1ratios.append(ratio1)
+        cond1_ratios.append(ratio1)
         ratio2 = orfCond2 / uORFCond2
-        cond2ratios.append(ratio2)
+        cond2_ratios.append(ratio2)
         change = ratio1 / ratio2
         uorf1sum += uORFCond1
         orf1sum += orfCond1
