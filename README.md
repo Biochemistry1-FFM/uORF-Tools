@@ -6,13 +6,9 @@ Installation is described below, for usage please refer to the [Userguide](https
 
 ### <u>Installation via bioconda</u>
 
-uORF-Tools requires snakemake (Version=5.4.2), which can be installed with all dependencies via [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html). Once you have conda installed simply type:
+uORF-Tools requires snakemake (Version=5.4.5), which can be installed with all dependencies via [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html). Once you have conda installed simply type:
 
-        $ conda create -c conda-forge -c bioconda -n snakemake snakemake==5.4.2
-
-**IMPORTANT!!!** The workflow relies on an older version of conda. To change your conda version type:
-
-        $ conda install -n base conda=4.5.13
+        $ conda create -c conda-forge -c bioconda -n snakemake snakemake==5.4.5
 
         $ source activate
 

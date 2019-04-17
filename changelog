@@ -1,4 +1,11 @@
 -*-change-log-*-
+3.1.0 Florian Eggenhofer <egg@informatik.uni-freiburg.de> 17. April 2019
+	* Replaced average reads with uORF/ORF ratios for each replicate
+3.0.0 Rick Gelhausen  <gelhausr@informatik.uni-freiburg.de> 8. March 2019
+	* the workflow now uses .bam files as input.
+	* A second workflow (Preprocessing_Snakefile) is now available to convert .fastq to .bam files.
+	* all tool versions used are now fixed in order to ensure reproducibility and easier maintenance.
+	* some conda environment changes ensure faster runtimes.
 2.0.0 Florian Eggenhofer <egg@informatik.uni-freiburg.de> 21.December 2018
 	* New streamlined ribosome-profiling workflow
 	* Added computation of ribo_change parameter
