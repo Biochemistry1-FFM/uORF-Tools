@@ -26,9 +26,9 @@ def uORF_change(uORFrowIn, ORFreadsIn):
         uORFCond2 = uORFrow[replicate + replicates] + 1
         orfCond2 = ORFreads[replicate + replicates] + 1
         ratio1 = orfCond1 / uORFCond1
-        cond1ratios.append(ratio1)
+        cond1_ratios.append(ratio1)
         ratio2 = orfCond2 / uORFCond2
-        cond2ratios.append(ratio2)
+        cond2_ratios.append(ratio2)
         change = ratio1 / ratio2
         uorf1sum += uORFCond1
         orf1sum += orfCond1
@@ -41,7 +41,7 @@ def uORF_change(uORFrowIn, ORFreadsIn):
     averageORF2 = orf2sum / replicates
     averagechange = changesum / replicates
     logaveragechange = math.log2(averagechange)
-    return (cond1ratios,cond2ratios,replicates,logaveragechange)
+    return (cond1_ratios,cond2_ratios,replicates,logaveragechange)
 
 def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     averagechanges = []
@@ -55,7 +55,7 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
         ORFid = uORFrow['transcript_id']
         uORFreads = uorf_reads_dict[uORFid]
         ORFreads = orf_reads_dict[ORFid]
-        (cond1ratios,cond2ratios,,replicatenumber,logaveragechange) = uORF_change(uORFreads, ORFreads)
+        (cond1ratios,cond2ratios,replicatenumber,logaveragechange) = uORF_change(uORFreads, ORFreads)
         logaveragechanges.append(logaveragechange)
     uorf_table['logaveragechange'] = logaveragechanges
     output = []
