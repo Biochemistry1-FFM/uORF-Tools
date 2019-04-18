@@ -1,4 +1,6 @@
 -*-change-log-*-
+3.1.1 Anica Scholz <a.scholz@biochem.uni-frankfurt.de> 18. April 2019
+	* Fixed columns in output table
 3.1.0 Florian Eggenhofer <egg@informatik.uni-freiburg.de> 17. April 2019
 	* Replaced average reads with uORF/ORF ratios for each replicate
 3.0.0 Rick Gelhausen  <gelhausr@informatik.uni-freiburg.de> 8. March 2019
