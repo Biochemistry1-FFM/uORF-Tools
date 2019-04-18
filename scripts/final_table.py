@@ -11,7 +11,7 @@ import numpy as np
 def create_ratio_header(replicate_number):
     replicate_cond1 = []
     replicate_cond2 = []
-    for replicate in range(1, replicate_number+1):
+    for replicate in range(1, replicate_number):
         cond1 = "Ratio-A-" + str(replicate)
         replicate_cond1.append(cond1)
         cond2 = "Ratio-B-" + str(replicate)
