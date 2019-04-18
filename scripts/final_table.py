@@ -8,65 +8,65 @@ import argparse
 import math
 import numpy as np
 
+def create_ratio_header(replicate_number):
+    replicate_cond1 = []
+    replicate_cond2 = []
+    for replicate in range(1, replicate_number+1):
+        cond1 = "Ratio-A-" + str(replicate)
+        replicate_cond1.append(cond1)
+        cond2 = "Ratio-B-" + str(replicate)
+        replicate_cond2.append(cond2)
+        cond1string = '\t'.join(map(str,replicate_cond1)) 
+        cond2string = '\t'.join(map(str,replicate_cond2))
+        replicate_header = cond1string + "\t" + cond2string
+    return replicate_header
 
 def uORF_change(uORFrowIn, ORFreadsIn):
     uORFrow = uORFrowIn
     ORFreads = ORFreadsIn
-    replicates = math.ceil(len(uORFrow)/2)
+    replicate_number = math.ceil(len(uORFrow)/2)
     uorf1sum = 0
     orf1sum = 0
     uorf2sum = 0
     orf2sum = 0
     changesum = 0
-    for replicate in range(0, replicates):
+    cond1_ratios = []
+    cond2_ratios = []
+    for replicate in range(0, replicate_number):
         uORFCond1 = uORFrow[replicate] + 1
         orfCond1 = ORFreads[replicate] + 1
-        uORFCond2 = uORFrow[replicate + replicates] + 1
-        orfCond2 = ORFreads[replicate + replicates] + 1
+        uORFCond2 = uORFrow[replicate + replicate_number] + 1
+        orfCond2 = ORFreads[replicate + replicate_number] + 1
         ratio1 = orfCond1 / uORFCond1
+        cond1_ratios.append(ratio1)
         ratio2 = orfCond2 / uORFCond2
+        cond2_ratios.append(ratio2)
         change = ratio1 / ratio2
         uorf1sum += uORFCond1
         orf1sum += orfCond1
         uorf2sum += uORFCond2
         orf2sum += orfCond2
         changesum += change
-    averageuORF1 = uorf1sum / replicates 
-    averageORF1 = orf1sum / replicates
-    averageuORF2 = uorf2sum / replicates 
-    averageORF2 = orf2sum / replicates
-    averagechange = changesum / replicates
+    averageuORF1 = uorf1sum / replicate_number
+    averageORF1 = orf1sum / replicate_number
+    averageuORF2 = uorf2sum / replicate_number
+    averageORF2 = orf2sum / replicate_number
+    averagechange = changesum / replicate_number
     logaveragechange = math.log2(averagechange)
-    return (averagechange,averageuORF1,averageORF1,averageuORF2,averageORF2,logaveragechange)
+    return (cond1_ratios,cond2_ratios,logaveragechange)
 
 def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
-    averagechanges = []
-    averageuORF1s = []
-    averageORF1s = []
-    averageuORF2s = []
-    averageORF2s = []
-    logaveragechanges = []
+    output = []
     for _, uORFrow in uorf_table.iterrows():
         uORFid = uORFrow['uORFids']
         ORFid = uORFrow['transcript_id']
         uORFreads = uorf_reads_dict[uORFid]
         ORFreads = orf_reads_dict[ORFid]
-        (averagechange,averageuORF1,averageORF1,averageuORF2,averageORF2,logaveragechange) = uORF_change(uORFreads, ORFreads)
-        averageuORF1s.append(averageuORF1)
-        averageORF1s.append(averageORF1)
-        averageuORF2s.append(averageuORF2)
-        averageORF2s.append(averageORF2)
-        averagechanges.append(averagechange)
-        logaveragechanges.append(logaveragechange)
-    uorf_table['averageuORF1'] = averageuORF1s
-    uorf_table['averageORF1'] = averageORF1s
-    uorf_table['averageuORF2'] = averageuORF2s
-    uorf_table['averageORF2'] = averageORF2s
-    uorf_table['logaveragechange'] = logaveragechanges
-    output = []
-    for _, uORFrow2 in uorf_table.iterrows():
-        joined_row = '\t'.join(map(str, uORFrow2)) 
-        uORF_changes_string = joined_row
+        (cond1ratios,cond2ratios,logaveragechange) = uORF_change(uORFreads, ORFreads)
+        annotation_row = '\t'.join(map(str, uORFrow))
+        cond1ratiosstring = '\t'.join(map(str,cond1ratios)) 
+        cond2ratiosstring = '\t'.join(map(str,cond2ratios)) 
+        uORF_changes_string=annotation_row + "\t" + cond1ratiosstring + "\t" + cond2ratiosstring + "\t" + str(logaveragechange)
         output.append(uORF_changes_string)
     return (output)
 
@@ -98,8 +98,10 @@ def main():
     orf_reads.columns = orf_cols
     orf_reads_dict = orf_reads.set_index('ID').T.to_dict('list')
     df_final = create_output(args)
+    replicate_number = math.ceil(len(uorf_reads.columns)/2)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
-    changes_header = "coordinates\tgene_symbol\ttranscript_id\tuORF_id\tmean_reads_uORF_c1\tmean_reads_ORF_c1\tmean_reads_uORF_c2\tmean_reads_ORF_c2\tlog2FC_main_ORF_to_uORF_ratios\n"
+    ratios_header = create_ratio_header(replicate_number)
+    changes_header = "coordinates\tgene_symbol\ttranscript_id\tuORF_id\t" + ratios_header + "\tlog2FC_main_ORF_to_uORF_ratios\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
