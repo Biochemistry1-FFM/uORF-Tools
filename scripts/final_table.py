@@ -66,8 +66,8 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
         annotation_row = '\t'.join(map(str, uORFrow))
         cond1ratiosstring = '\t'.join(map(str,cond1ratios)) 
         cond2ratiosstring = '\t'.join(map(str,cond2ratios))
-        stdratios1=np.std(cond1ratios)
-        stdratios2=np.std(cond2ratios)
+        stdratios1=str(np.std(cond1ratios))
+        stdratios2=str(np.std(cond2ratios))
         uORF_changes_string=annotation_row + "\t" + cond1ratiosstring + "\t" + cond2ratiosstring + "\t" + stdratios1 + "\t" + stdratios2 + "\t" + str(logaveragechange) + "\n"
         output.append(uORF_changes_string)
     return (output)
