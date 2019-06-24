@@ -71,4 +71,4 @@ rule annotationBigBed:
         "../envs/bed.yaml"
     threads: 1
     shell:
-        "mkdir -p tracks; cut -f1-6 {input[0]} > tracks/annotation.bed6;  awk '{{$5=1 ; print ;}}' tracks/annotation.bed6 > tracks/annotationScore.bed6; bedToBigBed -type=bed6 -tab tracks/annotationScore.bed6 {input[1]} tracks/annotation.bb; rm tracks/annotationScore.bed6;"
+        "mkdir -p tracks; cut -f1-6 {input[0]} > tracks/annotation.bed6;  awk -F "\t" '{{$5=1 ; print ;}}' tracks/annotation.bed6 > tracks/annotationScore.bed6; bedToBigBed -type=bed6 -tab tracks/annotationScore.bed6 {input[1]} tracks/annotation.bb; rm tracks/annotationScore.bed6;"
