@@ -55,7 +55,7 @@ def uORF_change(uORFrowIn, ORFreadsIn):
     averageORF2 = orf2sum / replicate_number
     averagechange = changesum / replicate_number
     logaveragechange = math.log2(averagechange)
-    return (cond1_ratios,cond2_ratios,logaveragechange)
+    return (cond1_ratios,cond2_ratios,changes,logaveragechange)
 
 def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
     output = []
