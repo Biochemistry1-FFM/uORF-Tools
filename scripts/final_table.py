@@ -65,8 +65,10 @@ def uORF_changes(uorf_table, uorf_reads_dict, orf_reads_dict):
         (cond1ratios,cond2ratios,logaveragechange) = uORF_change(uORFreads, ORFreads)
         annotation_row = '\t'.join(map(str, uORFrow))
         cond1ratiosstring = '\t'.join(map(str,cond1ratios)) 
-        cond2ratiosstring = '\t'.join(map(str,cond2ratios)) 
-        uORF_changes_string=annotation_row + "\t" + cond1ratiosstring + "\t" + cond2ratiosstring + "\t" + str(logaveragechange)
+        cond2ratiosstring = '\t'.join(map(str,cond2ratios))
+        stdratios1=str(np.std(cond1ratios))
+        stdratios2=str(np.std(cond2ratios))
+        uORF_changes_string=annotation_row + "\t" + cond1ratiosstring + "\t" + cond2ratiosstring + "\t" + stdratios1 + "\t" + stdratios2 + "\t" + str(logaveragechange) + "\n"
         output.append(uORF_changes_string)
     return (output)
 
@@ -101,7 +103,7 @@ def main():
     replicate_number = math.ceil(len(uorf_reads.columns)/2)
     changes_list = uORF_changes(df_final, uorf_reads_dict, orf_reads_dict)
     ratios_header = create_ratio_header(replicate_number)
-    changes_header = "coordinates\tgene_symbol\ttranscript_id\tuORF_id\t" + ratios_header + "\tlog2FC_main_ORF_to_uORF_ratios\n"
+    changes_header = "coordinates\tgene_symbol\ttranscript_id\tuORF_id\t" + ratios_header + "\tstd_ratios_cond1\tstdratios_cond2\tlog2FC_main_ORF_to_uORF_ratios\n"
     changes_string = changes_header + '\n'.join(map(str, changes_list))
     f = open(args.output_csv_filepath, 'wt', encoding='utf-8')
     f.write(changes_string)
