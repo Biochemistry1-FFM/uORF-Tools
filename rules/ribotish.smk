@@ -7,6 +7,7 @@ rule ribobamindexlink:
         inlink=lambda wildcards, input:(os.getcwd() + "/" + str(input)),
         outlink=lambda wildcards, output:(os.getcwd() + "/" + str(output))
     threads: 1
+    log: "logs/{method}-{condition}-{replicate}_ribobamindexlink.log"
     shell:
         "mkdir -p maplink/RIBO/; ln -s {params.inlink} {params.outlink}"
 

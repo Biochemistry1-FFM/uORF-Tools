@@ -9,6 +9,7 @@ rule riboMerge:
     threads: 1
     params:
         annotationpath=lambda wildcards: ("NOTSET" if not UORFANNOTATIONPATH else (UORFANNOTATIONPATH))
+    log: "logs/riboMerge.log"
     shell:
         "if [ -e {params.annotationpath} ]; then export APATH=`readlink -f {params.annotationpath}`; mkdir -p uORFs; ln -T -s $APATH {output.csv}; uORF-Tools/scripts/ribo_convert.py --input_csv_filepath $APATH --output_bed_filepath {output.bed}; else mkdir -p uORFs; uORF-Tools/scripts/ribo_merge.py {input} --min_length 1 --max_length 400 --output_csv_filepath {output.csv} --output_bed_filepath {output.bed}; fi"
 
@@ -20,6 +21,7 @@ rule longestTranscript:
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
+    log: "logs/longestTranscript.log"
     shell:
         "mkdir -p uORFs; uORF-Tools/scripts/longest_orf_transcript.py -a {input} -o {output}"
 
@@ -32,6 +34,7 @@ rule sizeFactors:
     conda:
         "../envs/uorftools.yaml"
     threads: 1
+    log: "logs/sizeFactors.log"
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_size_factors.R -t uORF-Tools/samples.tsv -b maplink/ -a {input.longestTranscript} -s uORFs/sfactors_lprot.csv;")
 
 rule cdsRiboCounts:
@@ -45,6 +48,7 @@ rule cdsRiboCounts:
     conda:
         "../envs/uorftools.yaml"
     threads: 1
+    log: "logs/cdsRiboCounts.log"
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_ribo_counts_CDS.R -b maplink/RIBO/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output.norm} -r {output.raw};")
 
 rule uORFRiboCounts:
@@ -58,6 +62,7 @@ rule uORFRiboCounts:
     conda:
         "../envs/uorftools.yaml"
     threads: 1
+    log: "logs/uORFRiboCounts.log"
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/generate_ribo_counts_uORFs.R -b maplink/RIBO/ -a {input.annotation} -s {input.sizefactor} -t uORF-Tools/samples.tsv -n {output.norm} -r {output.raw};")
 
 rule riboChanges:
@@ -69,6 +74,7 @@ rule riboChanges:
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
+    log: "logs/riboChanges.log"
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/ribo_changes.py --uORF_reads {input.uorf} --ORF_read {input.orf} --changes_output {output.frac};")
 
 rule final_table:
@@ -81,4 +87,5 @@ rule final_table:
     conda:
         "../envs/uorftoolspython.yaml"
     threads: 1
+    log: "logs/final_table.log"
     shell: ("mkdir -p uORFs; uORF-Tools/scripts/final_table.py --uORF_reads {input.uORFreads} --ORF_reads {input.cdsreads} --uORF_annotation {input.annotation} --output_csv_filepath {output}")
