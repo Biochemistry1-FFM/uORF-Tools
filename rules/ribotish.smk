@@ -9,7 +9,7 @@ rule ribobamindexlink:
     threads: 1
     log: "logs/{method}-{condition}-{replicate}_ribobamindexlink.log"
     shell:
-        "mkdir -p maplink/RIBO/; ln -s {params.inlink} {params.outlink}"
+        "mkdir -p maplink/RIBO/; ln -s {params.inlink} {params.outlink} 2> {log}"
 
 rule ribotishQuality:
     input:
