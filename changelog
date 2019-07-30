@@ -1,4 +1,6 @@
 -*-change-log-*-
+3.2.1 Florian Eggenhofer <egg@informatik.uni-freiburg.de> 29. July 2019
+	* Added specific log files for use without queueing system
 3.2.0 Anica Scholz <a.scholz@biochem.uni-frankfurt.de> 26. June 2019
 	* added standard deviation to output files
 	* updated manual and docs
